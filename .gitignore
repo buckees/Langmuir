@@ -1,4 +1,4 @@
 
 *.pyc
-*.bak
-*.ini
+.spyproject\*.bak
+.spyproject\*.ini
