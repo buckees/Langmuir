@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com",
-    packages=['Geom_Mesh',],
+    packages=['Geom_and_Mesh',],
     # packages=setuptools.find_packages(),
     install_requires=['numpy', 'matplotlib'],
     classifiers=[
