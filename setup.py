@@ -15,7 +15,9 @@ setuptools.setup(
     url="https://github.com",
     packages=['Geom_and_Mesh',],
     # packages=setuptools.find_packages(),
-    install_requires=['numpy', 'matplotlib'],
+    # the package version is specified here
+    # if unsolvable errors occur, try rolling back to older versions
+    install_requires=['numpy==1.19.3', 'matplotlib==3.3.0'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
