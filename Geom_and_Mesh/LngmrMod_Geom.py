@@ -6,11 +6,11 @@ Langmuir Feature Model 2D
 Langmuir Reactor Model 1D and 2D
 """
 
-from Constants import color_dict
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 import numpy as np
+
+from .Constants import color_dict
 
 class Geom(object):
     """Define all shared basic properties."""
@@ -229,11 +229,11 @@ class RctMod2D(Geom):
         dpi: dimless, int, Dots Per Inch
         """ 
         if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
+            fig, axes = plt.subplots(nrows=1, ncols=2, figsize=figsize, 
+                                      dpi=dpi, constrained_layout=True)
         else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
+            fig, axes = plt.subplots(nrows=2, ncols=1, figsize=figsize, 
+                                      dpi=dpi, constrained_layout=True)
         
         ax = axes[0]
         temp_col = color_dict[self.mater_dict[self.domain.mater]]
