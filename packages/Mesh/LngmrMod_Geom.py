@@ -231,37 +231,17 @@ class Triangle(Shape):
         self.point3 = np.asarray(point3)
         self.type = 'Triangle'
 
-    # A utility function to calculate area  
-    # of triangle formed by (x1, y1),  
-    # (x2, y2) and (x3, y3) 
-      
-    def _trgl_area(self, x1, y1, x2, y2, x3, y3):
-        """Calc area of a triangle."""
-        return abs((x1 * (y2 - y3) + x2 * (y3 - y1)  
-                    + x3 * (y1 - y2)) / 2.0) 
-      
-      
-    # A function to check whether point P(x, y) 
-    # lies inside the triangle formed by  
-    # A(x1, y1), B(x2, y2) and C(x3, y3)  
-    def _isInsideTrgl(self, x1, y1, x2, y2, x3, y3, x, y): 
+    def _isInsideTrgl(self, x1, y1, x2, y2, x3, y3, xp, yp): 
         """Determine if a point is inside a triangle."""
-        # Calculate area of triangle ABC 
-        A = self._trgl_area(x1, y1, x2, y2, x3, y3) 
-      
-        # Calculate area of triangle PBC  
-        A1 = self._trgl_area(x, y, x2, y2, x3, y3) 
-          
-        # Calculate area of triangle PAC  
-        A2 = self._trgl_area(x1, y1, x, y, x3, y3) 
-          
-        # Calculate area of triangle PAB  
-        A3 = self._trgl_area(x1, y1, x2, y2, x, y) 
-          
-        # Check if sum of A1, A2 and A3 is same as A 
-        if(A >= (A1 + A2 + A3)): 
+        # A function to check whether point P(x, y) 
+        # lies inside the triangle formed by  
+        # A(x1, y1), B(x2, y2) and C(x3, y3)  
+        c1 = (x2-x1)*(yp-y1)-(y2-y1)*(xp-x1)
+        c2 = (x3-x2)*(yp-y2)-(y3-y2)*(xp-x2)
+        c3 = (x1-x3)*(yp-y3)-(y1-y3)*(xp-x3)
+        if (c1<0 and c2<0 and c3<0) or (c1>0 and c2>0 and c3>0):
             return True
-        else: 
+        else:
             return False
 
     def __contains__(self, posn):
