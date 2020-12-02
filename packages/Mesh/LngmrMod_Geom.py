@@ -267,22 +267,25 @@ class RctMod2D(Geom):
         ax = axes[0]
         temp_col = COLOR_DICT[self.mater_dict[self.domain.mater]]
         ax.add_patch(
-            patch.Rectangle(self.domain.bl, self.domain.width, self.domain.height,
-                            facecolor='w'))
+            patch.Rectangle(self.domain.bl, self.domain.width, 
+                            self.domain.height, facecolor='w'))
         for shape in self.sequence:
-            
+            temp_col = COLOR_DICT[self.mater_dict[shape.mater]]
                 
             if shape.type == 'Rectangle':
-                
-                temp_col = COLOR_DICT[self.mater_dict[shape.mater]]
                 ax.add_patch(
                     patch.Rectangle(shape.bl, shape.width, shape.height,
+                                    facecolor=temp_col))
+            
+            if shape.type == 'Circle':
+                ax.add_patch(
+                    patch.Circle(shape.center, shape.radius,
                                     facecolor=temp_col))
                 
         ax = axes[1]
         ax.add_patch(
-            patch.Rectangle(self.domain.bl, self.domain.width, self.domain.height,
-                            facecolor='purple'))
+            patch.Rectangle(self.domain.bl, self.domain.width, 
+                            self.domain.height, facecolor='purple'))
         for shape in self.sequence:
             if shape.type == 'Rectangle':
                 ax.add_patch(
