@@ -6,7 +6,7 @@ for i in glob.glob("*.png"):
     os.remove(i)
 
 from packages.Mesh.LngmrMod_Geom import (FeatMod2D, Domain2D, 
-                                         Rectangle, Circle)
+                                         Rectangle, Circle, Triangle)
 from packages.Mesh.LngmrMod_Mesh import Mesh2D
 
 # build the geometry
@@ -30,6 +30,14 @@ Vac_Rect = Rectangle('Plasma', (75.0e-9, 200.0e-9), (125.0e-9, 500.0e-9))
 Feat2d.add_shape(Vac_Rect)
 Vac_Circ = Circle('Plasma', (100.0e-9, 200.0e-9), 60.0e-9)
 Feat2d.add_shape(Vac_Circ)
+
+# Cut a sliding mask
+Vac_Trgl_1 = Triangle('Plasma', (50.0e-9, 450.0e-9), (75.0e-9, 450.0e-9), 
+                    (75.0e-9, 400.0e-9))
+Feat2d.add_shape(Vac_Trgl_1)
+Vac_Trgl_2 = Triangle('Plasma', (125.0e-9, 450.0e-9), (140.0e-9, 450.0e-9), 
+                    (125.0e-9, 400.0e-9))
+Feat2d.add_shape(Vac_Trgl_2)
 
 Feat2d.plot(figsize=(4, 4), ihoriz=1)
 print(Feat2d)
