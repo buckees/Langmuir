@@ -258,24 +258,23 @@ class Triangle(Shape):
         # Calculate area of triangle PAB  
         A3 = self._trgl_area(x1, y1, x2, y2, x, y) 
           
-        # Check if sum of A1, A2 and A3  
-        # is same as A 
-        if(A <= A1 + A2 + A3): 
+        # Check if sum of A1, A2 and A3 is same as A 
+        if(A >= (A1 + A2 + A3)): 
             return True
         else: 
             return False
 
-        def __contains__(self, posn):
-            """
-            Determind if a position is inside the Circle.
-            
-            posn: unit in m, (2, ) array, position as input
-            boundaries are not considered as "Inside"
-            """
-            return self._isInsideTrgl(*self.point1, 
-                                      *self.point2, 
-                                      *self.point3,
-                                      *posn)
+    def __contains__(self, posn):
+        """
+        Determind if a position is inside the Circle.
+        
+        posn: unit in m, (2, ) array, position as input
+        boundaries are not considered as "Inside"
+        """
+        return self._isInsideTrgl(*self.point1, 
+                                  *self.point2, 
+                                  *self.point3,
+                                  *posn)
 
 class Interval(Shape):
     """Interval is a 1D basic shape."""
@@ -347,7 +346,7 @@ class RctMod2D(Geom):
             
             if shape.type == 'Triangle':
                 ax.add_patch(
-                    patch.Triangle((shape.point1, shape.point2, shape.point3),
+                    patch.Polygon((shape.point1, shape.point2, shape.point3),
                                     facecolor=temp_col))
                 
         ax = axes[1]
