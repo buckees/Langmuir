@@ -8,12 +8,12 @@ setuptools.setup(
     name="Geometry and Mesh", # Replace with your own username
     version="0.1.0",
     author="Wei Tian",
-    author_email="buckees@gmail.com",
-    description="Geometry and mesh generator for structure mesh, 1D & 2D",
+    author_email=None,
+    description="Langmuir project is a comprehensive plasma model.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com",
-    packages=['Geom_and_Mesh',],
+    url=None,
+    packages=['packages',],
     # packages=setuptools.find_packages(),
     # the package version is specified here
     # if unsolvable errors occur, try rolling back to older versions
