@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 import numpy as np
 
-from Langmuir.Constants import COLOR_DICT
+from packages.Constants import COLOR_DICT
 
 class Geom(object):
     """Define all shared basic properties."""
