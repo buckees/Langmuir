@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="Geometry and Mesh", # Replace with your own username
+    name="Langmuir Project", # Replace with your own username
     version="0.1.0",
     author="Wei Tian",
     author_email=None,
