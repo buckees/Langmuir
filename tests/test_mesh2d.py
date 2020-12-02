@@ -21,7 +21,6 @@ top = Rectangle('Metal', (-0.25, 0.38), (0.25, 0.4))
 ICP2d.add_shape(top)
 bott = Rectangle('Metal', (-0.25, 0.0), (0.25, 0.02))
 ICP2d.add_shape(bott)
-# use -0.231 instead of -0.23 for mesh asymmetry
 left = Rectangle('Metal', (-0.25, 0.0), (-0.23, 0.4)) 
 ICP2d.add_shape(left)
 right = Rectangle('Metal', (0.23, 0.0), (0.25, 4.0))
@@ -53,7 +52,6 @@ coil4 = Rectangle('Coil', (0.18, 0.34), (0.20, 0.36))
 ICP2d.add_shape(coil4)
 coil5 = Rectangle('Coil', (0.12, 0.34), (0.14, 0.36))
 ICP2d.add_shape(coil5)
-# use 0.081 instead of 0.08 for mesh asymmetry
 coil6 = Rectangle('Coil', (0.06, 0.34), (0.08, 0.36))
 ICP2d.add_shape(coil6)
  
