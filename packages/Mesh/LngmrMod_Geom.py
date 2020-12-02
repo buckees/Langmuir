@@ -344,6 +344,11 @@ class RctMod2D(Geom):
                 ax.add_patch(
                     patch.Circle(shape.center, shape.radius,
                                     facecolor=temp_col))
+            
+            if shape.type == 'Triangle':
+                ax.add_patch(
+                    patch.Triangle((shape.point1, shape.point2, shape.point3),
+                                    facecolor=temp_col))
                 
         ax = axes[1]
         ax.add_patch(
