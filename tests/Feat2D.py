@@ -38,6 +38,10 @@ Feat2d.add_shape(Vac_Trgl_1)
 Vac_Trgl_2 = Triangle('Plasma', (125.0e-9, 450.0e-9), (140.0e-9, 450.0e-9), 
                     (125.0e-9, 400.0e-9))
 Feat2d.add_shape(Vac_Trgl_2)
+Vac_Trgl_3 = Triangle('Plasma', (100.0e-9, 400.0e-9), (100.0e-9, 200.0e-9), 
+                    (25.0e-9, 200.0e-9))
+Feat2d.add_shape(Vac_Trgl_3)
+
 
 Feat2d.plot(figsize=(4, 4), ihoriz=1)
 print(Feat2d)
