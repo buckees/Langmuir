@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 import numpy as np
 
-from .Constants import color_dict
+from Langmuir.Constants import COLOR_DICT
 
 class Geom(object):
     """Define all shared basic properties."""
@@ -236,7 +236,7 @@ class RctMod2D(Geom):
                                       dpi=dpi, constrained_layout=True)
         
         ax = axes[0]
-        temp_col = color_dict[self.mater_dict[self.domain.mater]]
+        temp_col = COLOR_DICT[self.mater_dict[self.domain.mater]]
         ax.add_patch(
             patch.Rectangle(self.domain.bl, self.domain.width, self.domain.height,
                             facecolor='w'))
@@ -245,7 +245,7 @@ class RctMod2D(Geom):
                 
             if shape.type == 'Rectangle':
                 
-                temp_col = color_dict[self.mater_dict[shape.mater]]
+                temp_col = COLOR_DICT[self.mater_dict[shape.mater]]
                 ax.add_patch(
                     patch.Rectangle(shape.bl, shape.width, shape.height,
                                     facecolor=temp_col))
@@ -297,7 +297,7 @@ class RctMod1D(Geom):
         ax.plot(self.domain.domain, (0.0, 0.0), 'o-',
                 linewidth=5, color='purple', markersize=16)
         for segment in self.sequence:
-            temp_col = color_dict[self.mater_dict[segment.mater]]
+            temp_col = COLOR_DICT[self.mater_dict[segment.mater]]
             ax.plot(segment.lr, (0.0, 0.0), 'o-',
                 linewidth=5, color=temp_col, markersize=16)
         fig.savefig(self.name, dpi=dpi)
