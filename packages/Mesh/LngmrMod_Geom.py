@@ -214,6 +214,69 @@ class Circle(Shape):
         """
         return np.power((posn - self.center), 2).sum() < self.radius**2
 
+class Triangle(Shape):
+    """Circle is a 2D basic shape."""
+    
+    def __init__(self, mater, point1, point2, point3):
+        """
+        Init the Circle.
+        
+        mater: str, var, material assigned to Interval.
+        point1,2,3: unit in m, (2, ) tuple, point position
+        type: str, var, type of Shape, fixed to 'Triangle'.
+        """
+        super().__init__(label='A', mater=mater, dim=2)
+        self.point1 = np.asarray(point1)
+        self.point2 = np.asarray(point2)
+        self.point3 = np.asarray(point3)
+        self.type = 'Triangle'
+
+    # A utility function to calculate area  
+    # of triangle formed by (x1, y1),  
+    # (x2, y2) and (x3, y3) 
+      
+    def _trgl_area(self, x1, y1, x2, y2, x3, y3):
+        """Calc area of a triangle."""
+        return abs((x1 * (y2 - y3) + x2 * (y3 - y1)  
+                    + x3 * (y1 - y2)) / 2.0) 
+      
+      
+    # A function to check whether point P(x, y) 
+    # lies inside the triangle formed by  
+    # A(x1, y1), B(x2, y2) and C(x3, y3)  
+    def _isInsideTrgl(self, x1, y1, x2, y2, x3, y3, x, y): 
+        """Determine if a point is inside a triangle."""
+        # Calculate area of triangle ABC 
+        A = self._trgl_area(x1, y1, x2, y2, x3, y3) 
+      
+        # Calculate area of triangle PBC  
+        A1 = self._trgl_area(x, y, x2, y2, x3, y3) 
+          
+        # Calculate area of triangle PAC  
+        A2 = self._trgl_area(x1, y1, x, y, x3, y3) 
+          
+        # Calculate area of triangle PAB  
+        A3 = self._trgl_area(x1, y1, x2, y2, x, y) 
+          
+        # Check if sum of A1, A2 and A3  
+        # is same as A 
+        if(A <= A1 + A2 + A3): 
+            return True
+        else: 
+            return False
+
+        def __contains__(self, posn):
+            """
+            Determind if a position is inside the Circle.
+            
+            posn: unit in m, (2, ) array, position as input
+            boundaries are not considered as "Inside"
+            """
+            return self._isInsideTrgl(*self.point1, 
+                                      *self.point2, 
+                                      *self.point3,
+                                      *posn)
+
 class Interval(Shape):
     """Interval is a 1D basic shape."""
     
