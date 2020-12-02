@@ -167,9 +167,10 @@ class Rectangle(Shape):
         """
         Init the Rectangle.
         
+        mater: str, var, material assigned to Interval.
         bottom_left: unit in m, (2, ) tuple, point position
         up_right: unit in m, (2, ) tuple, point position
-        type: str, var, type of Shape
+        type: str, var, type of Shape, fixed to 'Rectangle'.
         """
         super().__init__(label='A', mater=mater, dim=2)
         self.bl = np.asarray(bottom_left)
@@ -180,33 +181,61 @@ class Rectangle(Shape):
 
     def __contains__(self, posn):
         """
-        Determind if a position is inside the Interval.
+        Determind if a position is inside the Rectangle.
         
         posn: unit in m, (2, ) array, position as input
-        boundaries are not consindered as "Inside"
+        boundaries are not considered as "Inside"
         """
         return all(self.bl <= posn) and all(posn <= self.tr)
 
+class Circle(Shape):
+    """Circle is a 2D basic shape."""
+    
+    def __init__(self, mater, center, radius):
+        """
+        Init the Circle.
+        
+        mater: str, var, material assigned to Interval.
+        center: unit in m, (2, ) tuple, point position
+        radius: unit in m, float, point position
+        type: str, var, type of Shape, fixed to 'Circle'.
+        """
+        super().__init__(label='A', mater=mater, dim=2)
+        self.center = np.asarray(center)
+        self.radius = radius
+        self.type = 'Circle'
+
+    def __contains__(self, posn):
+        """
+        Determind if a position is inside the Circle.
+        
+        posn: unit in m, (2, ) array, position as input
+        boundaries are not considered as "Inside"
+        """
+        return np.power((posn - self.center), 2).sum() < self.radius**2
+
 class Interval(Shape):
-    """Rectangle is a 1D basic shape."""
+    """Interval is a 1D basic shape."""
     
     def __init__(self, mater, lr):
         """
         Init the Interval.
         
+        mater: str, var, material assigned to Interval.
         lr: unit in m, (2, ) tuple, defines the domain
-        mater: str, var, label of Interval.
+        type: str, var, type of Shape, fixed to 'Interval'.
         """
         super().__init__(label='A', mater=mater, dim=1)
         self.lr = np.asarray(lr)
         self.length = self.lr[1] - self.lr[0]
+        self.type = 'Interval'
 
     def __contains__(self, posn):
         """
         Determind if a position is inside the Interval.
         
-        posn: unit in m, (2, ) array, position as input
-        boundaries are consindered as "Inside"
+        posn: unit in m, float, position as input
+        boundaries are considered as "Inside"
         """
         return self.lr[0] <= posn <= self.lr[1]
 
