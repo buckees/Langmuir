@@ -3,22 +3,23 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from copy import copy, deepcopy
+from copy import copy
 
-from FeatMod2d_ops import (width, height, res_x, res_z, num_ptcl, ibc, 
-                          threshold, max_rflct, idstrb, step_fac, max_step,
-                          num_plot, surf_norm_range, surf_norm_mode)
-from FeatMod2d_mesh import MESHGRID
-from FeatMod2d_ptcl import PARTICLE
-from Species import Arp
-from FeatMod2d_rflct import REFLECT
-from FeatMod2d_mat import Si2d
 
-# create mesh
-mesh = MESHGRID(width, height, res_x, res_z)
-print(mesh)
-mesh.add_mat(Si2d)
-# mesh.plot()
+# from FeatMod2d_ops import (width, height, res_x, res_z, num_ptcl, ibc, 
+#                           threshold, max_rflct, idstrb, step_fac, max_step,
+#                           num_plot, surf_norm_range, surf_norm_mode)
+from packages.Feature2D.Feature2D_mesh import MESHGRID
+# from FeatMod2d_ptcl import PARTICLE
+# from Species import Arp
+# from FeatMod2d_rflct import REFLECT
+# from FeatMod2d_mat import Si2d
+
+# init MESHGRID obj
+mesh2d = MESHGRID()
+# readin mesh
+
+print('here')
 
 delta_L = min(res_x, res_z)*step_fac
 # delta_L = min(res_x, res_z)
