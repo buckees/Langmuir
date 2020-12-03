@@ -5,8 +5,8 @@ import glob
 for i in glob.glob("*.png"):
     os.remove(i)
 
-from packages.Mesh.LngmrMod_Geom import RctMod2D, Domain2D, Rectangle
-from packages.Mesh.LngmrMod_Mesh import Mesh2D
+from packages.Mesh.Geom import RctMod2D, Domain2D, Rectangle
+from packages.Mesh.Mesh import Mesh2D
 
 # build the geometry
 ICP2d = RctMod2D(name='ICP2D', is_cyl=False)

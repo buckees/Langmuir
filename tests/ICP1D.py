@@ -5,8 +5,8 @@ import glob
 for i in glob.glob("*.png"):
     os.remove(i)
 
-from packages.Mesh.LngmrMod_Geom import RctMod1D, Domain1D, Interval
-from packages.Mesh.LngmrMod_Mesh import Mesh1D
+from packages.Mesh.Geom import RctMod1D, Domain1D, Interval
+from packages.Mesh.Mesh import Mesh1D
 
 ICP1d = RctMod1D(name='ICP1D', is_cyl=False)
 domain1d = Domain1D(domain=(-10.0, 10.0))

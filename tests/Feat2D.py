@@ -5,9 +5,9 @@ import glob
 for i in glob.glob("*.png"):
     os.remove(i)
 
-from packages.Mesh.LngmrMod_Geom import (FeatMod2D, Domain2D, 
+from packages.Mesh.Geom import (FeatMod2D, Domain2D, 
                                          Rectangle, Circle, Triangle)
-from packages.Mesh.LngmrMod_Mesh import Mesh2D
+from packages.Mesh.Mesh import Mesh2D
 
 # build the geometry
 Feat2d = FeatMod2D(name='Feat2D', is_cyl=False)
