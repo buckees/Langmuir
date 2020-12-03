@@ -7,16 +7,13 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 colMap = copy.copy(cm.get_cmap("Accent"))
 colMap.set_under(color='white')
-
 from scipy.optimize import minimize, least_squares
-
-from FeatMod2d_misc import isInsideTrgl
-
 
 class MESHGRID(object):
     """Mesh object."""
 
-    def __init__(self, width, height, res_x, res_z):
+    def __init__(self, width=100.0e-9, height=100.0e-9, 
+                 res_x=1.0e-9, res_z=1.0e-9):
         self.width = width  # domain width in x direction
         self.height = height  # domain height in z direction
         self.res_x = res_x  # resolution in x direction
@@ -55,51 +52,8 @@ class MESHGRID(object):
                 % (self.width, self.height,
                    self.res_x, self.res_z,
                    self.nx, self.nz)
-
-    def add_mat(self, materials):
-        """Assign input materials to the mesh."""
-        self.mater = ['Vac_', 'PR_', 'Si_', 'SiO2_', 'SiCl_']
-
-        for material in materials:
-            mater = material[0]
-            itype = material[1]
-            
-            # check itype error
-            if itype in ['rect', 'circ', 'trgl']:
-                pass
-            else:
-                return print('itype = %s is not found' % itype)
-            
-            if itype == 'rect':
-                coord = material[2]
-                ncoord = rect_conv(coord, self.res_x, self.res_z)
-                self.mat[ncoord[2]:ncoord[3],
-                         ncoord[0]:ncoord[1]] = int(mater[1])
-            if itype == 'circ':
-                circ_x, circ_z, circ_r = material[2]
-                for j in range(1, self.nz-1):
-                    for i in range(self.nx):
-                        tempx = self.x[j, i]
-                        tempz = self.z[j, i]
-                        tempd = (tempx - circ_x)**2 + (tempz - circ_z)**2
-                        if tempd < circ_r**2:
-                            self.mat[j, i] = int(mater[1])
-                
-            if itype == 'trgl':
-                p1_x, p1_y, p2_x, p2_y, p3_x, p3_y = material[2]
-                for j in range(1, self.nz-1):
-                    for i in range(self.nx):
-                        tempx = self.x[j, i]
-                        tempz = self.z[j, i]
-                        if isInsideTrgl(p1_x, p1_y, p2_x, p2_y, p3_x, p3_y,
-                                        tempx, tempz):
-                            self.mat[j, i] = int(mater[1])
-        
-        # find the surf nodes and surf_vac nodes
-        self._find_surf()
-        self._find_surf_set()
-    
-    def restart_mat(self, fname='restart_mat.npy'):
+   
+    def readin_mat(self, fname='restart_mat.npy'):
         """Read in mat from restart file."""
         self.mat = np.load(fname)
         # find the surf nodes and surf_vac nodes
@@ -471,54 +425,3 @@ class MESHGRID(object):
         if imode == 'Remove':
             _idx_arr = np.where(self.surf == 1)
             pass
-
-def rect_conv(coord, res_x, res_z):
-    """Convert rectangular coordinates to index."""
-    ncoord = [np.ceil(coord[0]/res_x), np.ceil(coord[1]/res_z),
-              np.ceil(coord[2]/res_x), np.ceil(coord[3]/res_z)]
-    ncoord = [int(temp) for temp in ncoord]
-    return [ncoord[0], ncoord[0]+ncoord[2], ncoord[1], ncoord[1]+ncoord[3]]
-
-
-if __name__ == '__main__':
-    from FeatMod2d_ops import width, height, res_x, res_z
-    from FeatMod2d_mat import mat0, mat1, mat2, Si2d
-    mesh = MESHGRID(width, height, res_x, res_z)
-    mesh.add_mat(Si2d)
-    mesh.plot()
-    
-    colMap = copy.copy(cm.get_cmap("Accent"))
-    colMap.set_under(color='white')
-
-    rec_surf = []
-    for temp_idx in mesh.surf_set:
-        # temp_idx = (224, 13)
-        temp_svec, temp_stheta = mesh.calc_surf_norm(temp_idx, 
-                                                     radius=4,
-                                                     imode='Sum Vector')
-        rec_surf.append([temp_idx, temp_svec])
-
-    def plot_surf_norm(ax, posn, svec):
-        ax.quiver(posn[0], posn[1],
-                  svec[0], svec[1])
-
-    fig, axes = plt.subplots(1, 2, figsize=(8, 8),
-                             constrained_layout=True)
-    
-    ax = axes[0]
-    ax.contourf(mesh.x, mesh.z, mesh.mat, cmap=colMap, vmin=0.2, extend='both')
-    ax.set_xlim(0.0, mesh.width)
-    ax.set_ylim(0.0, mesh.height)
-    
-    ax = axes[1]
-    ax.scatter(mesh.x, mesh.z, c=mesh.mat, s=1, cmap=colMap, vmin=0.2)
-    ax.set_xlim(0.0, mesh.width)
-    ax.set_ylim(0.0, mesh.height)
-
-    for item in rec_surf:
-        temp_idx, temp_svec = item
-        temp_posn = np.array([mesh.x[temp_idx], mesh.z[temp_idx]])
-        plot_surf_norm(ax, temp_posn, temp_svec)
-    
-    plt.show()
-    fig.savefig('init.png', dpi=600)
