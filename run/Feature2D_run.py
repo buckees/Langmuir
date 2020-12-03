@@ -18,6 +18,8 @@ from packages.Feature2D.Feature2D_mesh import MESHGRID
 # init MESHGRID obj
 mesh2d = MESHGRID()
 # readin mesh
+fname = 'SiEtch_Base'
+mesh2d.readin_mat(fname)
 
 print('here')
 
