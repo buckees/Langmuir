@@ -6,7 +6,7 @@ for i in glob.glob("*.png"):
     os.remove(i)
 
 from packages.Mesh.Geom import (FeatMod2D, Domain2D, 
-                                         Rectangle, Circle, Triangle)
+                                Rectangle, Circle, Triangle)
 from packages.Mesh.Mesh import Mesh2D
 
 # build the geometry
@@ -53,5 +53,6 @@ mesh2d.plot(figsize=(4, 4), ihoriz=1, s_size=1)
 
 import numpy as np
 np.savez(mesh2d.name, x=mesh2d.x, z=mesh2d.z,
-         mat=mesh2d.mat, res=mesh2d.res, ngrid=mesh2d.ngrid)
+         mat=mesh2d.mat, res=mesh2d.res, ngrid=mesh2d.ngrid,
+         bl=mesh2d.geom.domain.bl, tr=mesh2d.geom.domain.tr)
 
