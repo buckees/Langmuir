@@ -15,6 +15,8 @@ class Mesh():
         """Import geometry as init."""
         self.geom = import_geom
         self.name = import_geom.name + '_Mesh'
+        self.mat_dict = dict([(v, k) 
+                              for k, v in import_geom.mat_dict.items()])
             
     def __str__(self):
         """Print out info."""
