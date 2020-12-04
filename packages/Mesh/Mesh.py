@@ -65,7 +65,7 @@ class Mesh2D(Mesh):
             z = self.z[idx]
             posn = np.array([x, z])
             mater = self.geom.get_mater(posn)
-            self.mat[idx] = self.geom.mater_dict[mater]
+            self.mat[idx] = self.geom.mat_dict[mater]
     
     def _calc_plasma_area(self):
         """Calc the total area of plasma region."""

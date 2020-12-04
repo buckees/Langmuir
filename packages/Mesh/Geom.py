@@ -24,16 +24,16 @@ class Geom(object):
         is_cyl: bool, var, whether cylindrical symmetry
         sequency: list of shapes
         idomain: bool, var, whether domain is created
-        mater_set: str, set of str, set of materials
-        mater_dict: dict, map material to number
+        mat_set: str, set of str, set of materials
+        mat_dict: dict, map material to number
         """
         self.name = name
         self.dim = 2
         self.is_cyl = is_cyl
         self.sequence = list()
         self.has_domain = False
-        self.mater_set = set()
-        self.mater_dict = dict()
+        self.mat_set = set()
+        self.mat_dict = dict()
     
     def __str__(self):
         """Print out info."""
@@ -51,8 +51,8 @@ class Geom(object):
         domain: class Shape
         """
         self.domain = domain
-        self.mater_set.add(domain.mater)
-        self.mater_dict.update({domain.mater:0})
+        self.mat_set.add(domain.mater)
+        self.mat_dict.update({domain.mater:0})
         self.has_domain = True
 
     def add_shape(self, shape):
@@ -63,11 +63,11 @@ class Geom(object):
         """
         if self.has_domain:
             self.sequence.append(shape)
-            if shape.mater in self.mater_set:
+            if shape.mater in self.mat_set:
                 pass
             else:
-                self.mater_set.add(shape.mater)
-                self.mater_dict.update({shape.mater:(len(self.mater_set)-1)})
+                self.mat_set.add(shape.mater)
+                self.mat_dict.update({shape.mater:(len(self.mat_set)-1)})
         else:
             res = 'Error: Domian is not created yet.'
             res += '\nRun self.create_domain() before self.add_shape()'
@@ -307,12 +307,12 @@ class RctMod2D(Geom):
                                       dpi=dpi, constrained_layout=True)
         
         ax = axes[0]
-        temp_col = COLOR_DICT[self.mater_dict[self.domain.mater]]
+        temp_col = COLOR_DICT[self.mat_dict[self.domain.mater]]
         ax.add_patch(
             patch.Rectangle(self.domain.bl, self.domain.width, 
                             self.domain.height, facecolor='w'))
         for shape in self.sequence:
-            temp_col = COLOR_DICT[self.mater_dict[shape.mater]]
+            temp_col = COLOR_DICT[self.mat_dict[shape.mater]]
                 
             if shape.type == 'Rectangle':
                 ax.add_patch(
@@ -376,7 +376,7 @@ class RctMod1D(Geom):
         ax.plot(self.domain.domain, (0.0, 0.0), 'o-',
                 linewidth=5, color='purple', markersize=16)
         for segment in self.sequence:
-            temp_col = COLOR_DICT[self.mater_dict[segment.mater]]
+            temp_col = COLOR_DICT[self.mat_dict[segment.mater]]
             ax.plot(segment.lr, (0.0, 0.0), 'o-',
                 linewidth=5, color=temp_col, markersize=16)
         fig.savefig(self.name, dpi=dpi)
