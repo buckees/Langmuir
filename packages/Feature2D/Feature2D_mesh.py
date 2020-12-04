@@ -204,6 +204,7 @@ class MESHGRID(object):
         ax = axes[1]
         ax.scatter(self.x, self.z, c=self.surf, s=1)
         fig.savefig(fname, dpi=dpi)
+        plt.close()
         
     def hit_check(self, posn):
         """
