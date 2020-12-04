@@ -63,6 +63,7 @@ class MESHGRID(object):
         self.ngrid = temp['ngrid']
         self.bl = temp['bl']
         self.tr = temp['tr']
+        self.mat_dict = temp['mat_dict']
         self.nx, self.nz = self.ngrid
         self.dx, self.dz = self.res
         self.bottom, self.left = self.bl
@@ -216,6 +217,7 @@ class MESHGRID(object):
         idx = np.flipud(idx)
         # convert idx to index format
         idx = tuple(idx)
+        print(posn, idx)
         return self.mat[idx], idx
 
     def change_mat(self, idx, mat_name='Vac'):
