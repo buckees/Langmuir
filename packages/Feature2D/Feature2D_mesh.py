@@ -55,7 +55,7 @@ class MESHGRID(object):
    
     def readin_mesh(self, fname='restart'):
         """Read in mat, x and z from npy files."""
-        temp = np.load(fname+'.npz', allow_pickle=True)
+        temp = np.load(fname+'.npz')
         self.x = temp['x']
         self.z = temp['z']
         self.mat = temp['mat']
@@ -63,11 +63,11 @@ class MESHGRID(object):
         self.ngrid = temp['ngrid']
         self.bl = temp['bl']
         self.tr = temp['tr']
-        self.mat_dict = temp['mat_dict'].item()
+        self.mat_dict = temp['mat_dict']
         self.nx, self.nz = self.ngrid
         self.dx, self.dz = self.res
-        self.left, self.bottom = self.bl
-        self.right, self.top = self.tr
+        self.bottom, self.left = self.bl
+        self.top, self.right = self.tr
         self.width = self.right - self.left
         self.height = self.top - self.bottom
         # find the surf nodes and surf_vac nodes
@@ -217,6 +217,7 @@ class MESHGRID(object):
         idx = np.flipud(idx)
         # convert idx to index format
         idx = tuple(idx)
+        print(posn, idx)
         return self.mat[idx], idx
 
     def change_mat(self, idx, mat_name='Vac'):
