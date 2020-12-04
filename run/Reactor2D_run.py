@@ -11,8 +11,7 @@ import glob
 for i in glob.glob("*.png"):
     os.remove(i)
 
-from Constants import PI
-import numpy as np
+# import numpy as np
 from copy import copy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -21,81 +20,27 @@ colMap.set_under(color='white')
 
 
 """Import plasma modules."""
-from RctMod2d_Geom import Geom2d, Domain, Rectangle
-from RctMod2d_Mesh import Mesh2d
-from RctMod2d_Plasma import Plasma2d
-from RctMod2d_Transp import Ambi2d
-from RctMod2d_React import React2d
-from RctMod2d_Eergy import Eergy2d
-from RctMod2d_Power import Power2d
+from packages.Constants import PI
+from packages.Reactor2D.Reactor2D_Mesh import MESH2D
+from packages.Reactor2D.Reactor2D_Plasma import PLASMA2D
+from packages.Reactor2D.Reactor2D_Transp import AMBI2D
+from packages.Reactor2D.Reactor2D_React import REACT2D
+from packages.Reactor2D.Reactor2D_Eergy import EERGY2D
+from packages.Reactor2D.Reactor2D_Power import POWER2D
 
-# build the geometry
-geom2d = Geom2d(name='2D Plasma', is_cyl=False)
-#               (left, bottom), (width, height)
-domain = Domain((-0.25, 0.0),    (0.5, 0.4))
-geom2d.add_domain(domain)
+fname = 'ICP2D_Mesh'
+# init MESHGRID obj
+mesh = MESH2D(fname)
+# readin mesh
+mesh.readin_mesh(fname)
 
-# Add metal wall to all boundaries
-# In Metal, vector potential A = 0
-#                        (left, bottom), (right, top)
-top = Rectangle('Metal', (-0.25, 0.38), (0.25, 0.4))
-geom2d.add_shape(top)
-bott = Rectangle('Metal', (-0.25, 0.0), (0.25, 0.02))
-geom2d.add_shape(bott)
-# use -0.231 instead of -0.23 for mesh asymmetry
-left = Rectangle('Metal', (-0.25, 0.0), (-0.231, 0.4)) 
-geom2d.add_shape(left)
-right = Rectangle('Metal', (0.23, 0.0), (0.25, 4.0))
-geom2d.add_shape(right)
-ped = Rectangle('Metal', (-0.20, 0.0), (0.20, 0.1))
-geom2d.add_shape(ped)
-
-
-# Add quartz to separate coil area and plasma area
-# Quartz conductivity = 1e-5 S/m
-quartz = Rectangle('Quartz', (-0.23, 0.3), (0.23, 0.32))
-geom2d.add_shape(quartz)
-
-# Add air to occupy the top coil area to make it non-plasma
-# Air concudctivity = 0.0 S/m
-air = Rectangle('Air', (-0.23, 0.32), (0.23, 0.38))
-geom2d.add_shape(air)
-
-# Add coil within air and overwirte air
-# coil 1, 2, 3: J = -J0*exp(iwt)
-# coil 4, 5, 6: J = +J0*exp(iwt)
-coil1 = Rectangle('Coil', (-0.20, 0.34), (-0.18, 0.36))
-geom2d.add_shape(coil1)
-coil2 = Rectangle('Coil', (-0.14, 0.34), (-0.12, 0.36))
-geom2d.add_shape(coil2)
-coil3 = Rectangle('Coil', (-0.08, 0.34), (-0.06, 0.36))
-geom2d.add_shape(coil3)
-coil4 = Rectangle('Coil', (0.18, 0.34), (0.20, 0.36))
-geom2d.add_shape(coil4)
-coil5 = Rectangle('Coil', (0.12, 0.34), (0.14, 0.36))
-geom2d.add_shape(coil5)
-# use 0.081 instead of 0.08 for mesh asymmetry
-coil6 = Rectangle('Coil', (0.06, 0.34), (0.081, 0.36))
-geom2d.add_shape(coil6)
-
-
-
-geom2d.plot(figsize=(10, 4), ihoriz=1)
-print(geom2d)
-# generate mesh to imported geometry
-mesh2d = Mesh2d()
-mesh2d.import_geom(geom2d)
-mesh2d.generate_mesh(ngrid=(51, 41))
-mesh2d.plot(figsize=(10, 4), ihoriz=1)
-
-
-pla2d = Plasma2d(mesh2d)
+pla2d = PLASMA2D(mesh)
 pla2d.init_plasma(ne=1e16, Te=1.5)
 
 pla2d.get_eps()
 pla2d.plot_eps()
 
-temp_ratio = domain.domain[0]/domain.domain[1]
+temp_ratio = mesh.width/mesh.height
 if temp_ratio > 2.0:
     figsize = (4, 8)
     ihoriz = 0
@@ -106,22 +51,22 @@ pla2d.plot_plasma(figsize=figsize, ihoriz=ihoriz)
 pla2d.plot_Te(figsize=figsize, ihoriz=ihoriz)
 
 # init Transp module
-# txp2d = Diff_2d(pla2d)
-txp2d = Ambi2d(pla2d)
+# txp2d = DIFF2D(pla2d)
+txp2d = AMBI2D(pla2d)
 txp2d.calc_transp_coeff(pla2d)
 txp2d.calc_ambi(pla2d)
 # txp2d.plot_transp_coeff(pla2d)
 # init React module
-src2d = React2d(pla2d)
+src2d = REACT2D(pla2d)
 src2d.calc_src(pla2d)
 src2d.plot_src(pla=pla2d, fname='src_itn0', 
                           figsize=figsize, ihoriz=ihoriz)
 # init Power module
-pwr2d = Power2d(pla2d)
+pwr2d = POWER2D(pla2d)
 pwr2d.calc_pwr_in(pla2d, pwr=0.0, imode='ne')
 pwr2d.plot_pwr(pla2d)
 # init Eergy module
-een2d = Eergy2d(pla2d)
+een2d = EERGY2D(pla2d)
 een2d.get_pwr(pwr2d)
 
 pla2d.plot_plasma(fname='plasma_itn0', 
@@ -129,18 +74,6 @@ pla2d.plot_plasma(fname='plasma_itn0',
                   iplot_geom=0)
 
 pla2d.calc_conde(2*PI*13.56e6)
-
-# save matrix in numpy binary format
-np.save('cond_e', pla2d.conde)
-np.save('cond_e_real', pla2d.conde.real)
-np.save('cond_e_imag', pla2d.conde.imag)
-np.save('eps', pla2d.eps)
-np.save('De', txp2d.De)
-np.save('Di', txp2d.Di)
-np.save('Mue', txp2d.Mue)
-np.save('Mui', txp2d.Mui)
-np.save('ne', pla2d.ne)
-np.save('ni', pla2d.ni)
 
 dt = 1e-5
 niter = 100
@@ -206,11 +139,3 @@ for itn in range(niter):
         
         fig.savefig('Ave_vs_Time.png', dpi=300)
         plt.close()
-
-
-
-
-# save matrix in csv format
-np.savetxt("cond_e.csv", pla2d.conde, delimiter=",")
-np.savetxt("cond_e_real.csv", pla2d.conde.real, delimiter=",")
-np.savetxt("cond_e_imag.csv", pla2d.conde.imag, delimiter=",")
