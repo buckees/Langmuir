@@ -6,25 +6,24 @@ import matplotlib.cm as cm
 from copy import copy
 
 
-# from FeatMod2d_ops import (width, height, res_x, res_z, num_ptcl, ibc, 
-#                           threshold, max_rflct, idstrb, step_fac, max_step,
-#                           num_plot, surf_norm_range, surf_norm_mode)
+from packages.Feature2D.Feature2D_ops import (width, height, 
+                                               res_x, res_z, num_ptcl, ibc, 
+                          threshold, max_rflct, idstrb, step_fac, max_step,
+                          num_plot, surf_norm_range, surf_norm_mode)
 from packages.Feature2D.Feature2D_mesh import MESHGRID
-# from FeatMod2d_ptcl import PARTICLE
-# from Species import Arp
-# from FeatMod2d_rflct import REFLECT
-# from FeatMod2d_mat import Si2d
+from packages.Feature2D.Feature2D_ptcl import PARTICLE
+from packages.Species import Arp
+from packages.Feature2D.Feature2D_rflct import REFLECT
 
 # init MESHGRID obj
 mesh2d = MESHGRID()
 # readin mesh
-fname = 'SiEtch_Base'
-mesh2d.readin_mat(fname)
+fname = 'SiEtch_Base_Mesh'
+mesh2d.readin_mesh(fname)
 
-print('here')
 
-delta_L = min(res_x, res_z)*step_fac
-# delta_L = min(res_x, res_z)
+
+delta_L = (mesh2d.res*step_fac).min()
 
 # species information is imported from species
 # Initialize the PARTICLE() object
@@ -40,7 +39,7 @@ for k in range(num_ptcl):
         mesh.plot(dpi=300, fname='nptcl=%d.png' % (k+1))
         # rec_mesh.append(deepcopy(mesh.mat))
     ptcl.dead = 0
-    ptcl.init_posn(width, height)
+    ptcl.init_posn(mesh2d.left, mesh2d.right, mesh2d.top)
     # record initial position
     if k > num_ptcl - 20:
         rec_traj.append([])
@@ -53,7 +52,7 @@ for k in range(num_ptcl):
         # advance the ptcl by delta_L
         ptcl.move_ptcl(delta_L)
         # periodic b.c. at left and right bdry
-        ptcl.bdry_check(mesh.width, mesh.height, ibc)
+        ptcl.bdry_check(mesh2d.left, mesh2d.right, mesh2d.top, ibc)
         # check if the ptcl is dead
         if ptcl.dead:
             # record ptcl posn when dead
