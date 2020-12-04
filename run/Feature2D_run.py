@@ -16,14 +16,14 @@ from packages.Species import Arp
 from packages.Feature2D.Feature2D_rflct import REFLECT
 
 # init MESHGRID obj
-mesh2d = MESHGRID()
+mesh = MESHGRID()
 # readin mesh
 fname = 'SiEtch_Base_Mesh'
-mesh2d.readin_mesh(fname)
+mesh.readin_mesh(fname)
 
 
 
-delta_L = (mesh2d.res*step_fac).min()
+delta_L = (mesh.res*step_fac).min()
 
 # species information is imported from species
 # Initialize the PARTICLE() object
@@ -39,7 +39,7 @@ for k in range(num_ptcl):
         mesh.plot(dpi=300, fname='nptcl=%d.png' % (k+1))
         # rec_mesh.append(deepcopy(mesh.mat))
     ptcl.dead = 0
-    ptcl.init_posn(mesh2d.left, mesh2d.right, mesh2d.top)
+    ptcl.init_posn(mesh.left, mesh.right, mesh.top)
     # record initial position
     if k > num_ptcl - 20:
         rec_traj.append([])
@@ -52,7 +52,7 @@ for k in range(num_ptcl):
         # advance the ptcl by delta_L
         ptcl.move_ptcl(delta_L)
         # periodic b.c. at left and right bdry
-        ptcl.bdry_check(mesh2d.left, mesh2d.right, mesh2d.top, ibc)
+        ptcl.bdry_check(mesh.left, mesh.right, mesh.top, ibc)
         # check if the ptcl is dead
         if ptcl.dead:
             # record ptcl posn when dead
@@ -65,7 +65,7 @@ for k in range(num_ptcl):
             if k > num_ptcl - 20:
                 rec_traj[-1].append(ptcl.posn.copy())
             # at this position, th ptcl hits a mat
-            mat_name = mesh.mater[hit_mat]
+            mat_name = mesh.mat_dict[hit_mat]
             # calc surf norm
             ptcl_rflct.svec, ptcl_rflct.stheta = \
                 mesh.calc_surf_norm(hit_idx, radius=surf_norm_range, 
