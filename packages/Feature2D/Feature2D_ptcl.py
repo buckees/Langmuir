@@ -29,10 +29,10 @@ class PARTICLE(object):
                % (self.name, self.mass,
                   self.ptype, self.charge)
 
-    def init_posn(self, width, height):
+    def init_posn(self, left, right, top):
         """Initialize the position at the top boundary."""
-        init_posx = np.random.uniform(0.0, 1.0)*width
-        self.posn = np.array([init_posx, height])
+        init_posx = np.random.uniform(left, right)
+        self.posn = np.array([init_posx, top])
 
     def init_uvec(self, idstrb=None):
         """
@@ -96,7 +96,7 @@ class PARTICLE(object):
         """Move each partile in a length of delta_L along its v-vector."""
         self.posn += self.uvec*delta_L
 
-    def bdry_check(self, width, height, imode='lost'):
+    def bdry_check(self, left, right, top, imode='lost'):
         """
         Check the b.c. for moving ptcl.
 
@@ -105,13 +105,13 @@ class PARTICLE(object):
             lost, periodic and reflective
         left bdry is alway at 0.0
         """
-        if self.posn[1] >= height:
+        if self.posn[1] >= top:
             self.dead = 1
         elif imode == 'lost':
-            if not (0.0 < self.posn[0] < width):
+            if not (left < self.posn[0] < right):
                 self.dead = 1
         elif imode == 'periodic':
-            self.posn[0] = self.posn[0] % width
+            self.posn[0] = left + ((self.posn[0] - left) % (right - left))
         elif imode == 'reflective':
             pass
 
