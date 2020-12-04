@@ -54,5 +54,6 @@ mesh2d.plot(figsize=(4, 4), ihoriz=1, s_size=1)
 import numpy as np
 np.savez(mesh2d.name, x=mesh2d.x, z=mesh2d.z,
          mat=mesh2d.mat, res=mesh2d.res, ngrid=mesh2d.ngrid,
-         bl=mesh2d.geom.domain.bl, tr=mesh2d.geom.domain.tr)
+         bl=mesh2d.geom.domain.bl, tr=mesh2d.geom.domain.tr,
+         mat_dict=mesh2d.mat_dict)
 
