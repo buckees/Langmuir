@@ -9,7 +9,7 @@ import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
 
-class Mesh2d():
+class MESH2D():
     """Define 2d Mesh."""
 
     def __init__(self, name='Mesh2d'):
@@ -55,6 +55,27 @@ class Mesh2d():
         self.x, self.z = np.meshgrid(tempx, tempz)
         self._find_bndy()
 
+    def readin_mesh(self, fname='restart'):
+        """Read in mat, x and z from npy files."""
+        temp = np.load(fname+'.npz', allow_pickle=True)
+        self.x = temp['x']
+        self.z = temp['z']
+        self.mat = temp['mat']
+        self.res = temp['res']
+        self.ngrid = temp['ngrid']
+        self.bl = temp['bl']
+        self.tr = temp['tr']
+        self.mat_dict = temp['mat_dict'].item()
+        self.nx, self.nz = self.ngrid
+        self.dx, self.dz = self.res
+        self.left, self.bottom = self.bl
+        self.right, self.top = self.tr
+        self.width = self.right - self.left
+        self.height = self.top - self.bottom
+        # find the surf nodes and surf_vac nodes
+        self._find_bndy()
+        self._calc_plasma_area()
+        
     def _find_bndy(self):
         """Add boundaries."""
         self.bndy = np.zeros_like(self.x)
@@ -83,7 +104,7 @@ class Mesh2d():
         self.area = 0
         for _idx, _mat in np.ndenumerate(self.mat):
             if not _mat:
-                self.area += self.delx * self.delz
+                self.area += self.dx * self.dz
 
     def plot(self, figsize=(8, 8), dpi=600, fname='Mesh.png',  ihoriz=1):
         """Plot mesh."""
@@ -117,9 +138,9 @@ class Mesh2d():
         # they are eventually specified in boundary conditions
         # dy[0] = dy[1]; dy[-1] = dy[-2]
         for i in range(1, self.nx-1):
-            dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.delx/2.0
+            dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.dx/2.0
         for j in range(1, self.nz-1):
-            dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.delz/2.0
+            dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.dz/2.0
         dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
         dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
         return dfx, dfz
@@ -139,35 +160,10 @@ class Mesh2d():
         # they are eventually specified in boundary conditions
         # d2y[0] = d2y[1]; d2y[-1] = d2y[-2]
         for i in range(1, self.nx-1):
-            d2fx[:, i] = (f[:, i+1] - 2 * f[:, i] + f[:, i-1])/self.delx**2
+            d2fx[:, i] = (f[:, i+1] - 2 * f[:, i] + f[:, i-1])/self.dx**2
         for j in range(1, self.nz-1):
-            d2fz[j, :] = (f[j+1, :] - 2 * f[j, :] + f[j-1, :])/self.delz**2
+            d2fz[j, :] = (f[j+1, :] - 2 * f[j, :] + f[j-1, :])/self.dz**2
         d2fx[:, 0], d2fx[:, -1] = deepcopy(d2fx[:, 1]), deepcopy(d2fx[:, -2])
         d2fz[0, :], d2fz[-1, :] = deepcopy(d2fz[1, :]), deepcopy(d2fz[-2, :])
         d2f = d2fx + d2fz
         return d2f
-
-if __name__ == '__main__':
-    """Test Mesh."""
-    from RctMod2d_Geom import Geom2d, Domain, Rectangle
-    # build the geometry
-    geom2d = Geom2d(name='Geom2D_Test', is_cyl=False)
-    domain = Domain((-1.0, 0.0), (2.0, 4.0))
-    geom2d.add_domain(domain)
-    top = Rectangle('Metal', (-1.0, 3.5), (1.0, 4.0))
-    geom2d.add_shape(top)
-    bott = Rectangle('Metal', (-0.8, 0.0), (0.8, 0.2))
-    geom2d.add_shape(bott)
-    left = Rectangle('Metal', (-1.0, 0.0), (-0.9, 4.0))
-    geom2d.add_shape(left)
-    right = Rectangle('Metal', (0.9, 0.0), (1.0, 4.0))
-    geom2d.add_shape(right)
-    quartz = Rectangle('Quartz', (-0.9, 3.3), (0.9, 3.5))
-    geom2d.add_shape(quartz)
-    geom2d.plot(fname='geom2d.png')
-    print(geom2d)
-    # generate mesh to imported geometry
-    mesh2d = Mesh2d('Mesh2D_Test')
-    mesh2d.import_geom(geom2d)
-    mesh2d.generate_mesh(ngrid=(21, 41))
-    mesh2d.plot()
