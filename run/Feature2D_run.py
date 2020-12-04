@@ -21,8 +21,6 @@ mesh = MESHGRID()
 fname = 'SiEtch_Base_Mesh'
 mesh.readin_mesh(fname)
 
-
-
 delta_L = (mesh.res*step_fac).min()
 
 # species information is imported from species
