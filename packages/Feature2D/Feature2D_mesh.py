@@ -53,7 +53,7 @@ class MESHGRID(object):
                    self.res_x, self.res_z,
                    self.nx, self.nz)
    
-    def readin_mat(self, fname='restart'):
+    def readin_mesh(self, fname='restart'):
         """Read in mat, x and z from npy files."""
         temp = np.load(fname+'.npz')
         self.x = temp['x']
@@ -61,8 +61,14 @@ class MESHGRID(object):
         self.mat = temp['mat']
         self.res = temp['res']
         self.ngrid = temp['ngrid']
+        self.bl = temp['bl']
+        self.tr = temp['tr']
         self.nx, self.nz = self.ngrid
         self.dx, self.dz = self.res
+        self.bottom, self.left = self.bl
+        self.top, self.right = self.tr
+        self.width = self.right - self.left
+        self.height = self.top - self.bottom
         # find the surf nodes and surf_vac nodes
         self._find_surf()
         self._find_surf_set()
