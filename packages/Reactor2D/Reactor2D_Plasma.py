@@ -6,8 +6,6 @@ Plasma_2d contains:
     temperature: copy from energy module    
 """
 
-from Constants import AMU, color_dict, UNIT_CHARGE, EON_MASS
-
 import numpy as np
 from copy import copy, deepcopy
 import matplotlib.pyplot as plt
@@ -16,8 +14,9 @@ import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
 colMap.set_under(color='white')
 
+from packages.Constants import (AMU, UNIT_CHARGE, EON_MASS, COLOR_DICT)
 
-class Plasma2d(object):
+class PLASMA2D(object):
     """Define 2d Plasma."""
 
     def __init__(self, mesh):
@@ -134,7 +133,7 @@ class Plasma2d(object):
             if iplot_geom:
                 for shape in self.mesh.geom.sequence:
                     if shape.type == 'Rectangle':
-                        temp_col = color_dict[self.mesh.geom.label[shape.label]]
+                        temp_col = COLOR_DICT[self.mesh.geom.label[shape.label]]
                         ax.add_patch(
                             patch.Rectangle(shape.bl, shape.width, shape.height,
                                             facecolor=temp_col, edgecolor='w')

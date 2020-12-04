@@ -12,8 +12,6 @@ Transp_2d contains:
     Output: dF/dx for continuity equation.
 """
 
-from Constants import KB_EV, EON_MASS, UNIT_CHARGE
-
 import numpy as np
 from copy import copy, deepcopy
 import matplotlib.pyplot as plt
@@ -21,9 +19,9 @@ import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
 colMap.set_under(color='white')
 
+from packages.Constants import (UNIT_CHARGE, EON_MASS, KB_EV)
 
-
-class Transp2d(object):
+class TRANSP2D(object):
     """Define the base tranport module/object."""
     
     def __init__(self, pla):
@@ -152,7 +150,7 @@ class Transp2d(object):
         plt.close()
 
 
-class Diff2d(Transp2d):
+class DIFF2D(TRANSP2D):
     """
     Calc the dflux for Diffusion Only Module.
     
@@ -173,7 +171,7 @@ class Diff2d(Transp2d):
         self.dfluxi = -self.Di * pla.mesh.cnt_diff_2nd(pla.ni)
 
     
-class Ambi2d(Transp2d):
+class AMBI2D(TRANSP2D):
     """
     Calc the dflux for Ambipolar Diffusion Module.
 
@@ -218,51 +216,3 @@ class Ambi2d(Transp2d):
         self.dfluxe = -self.Da * pla.mesh.cnt_diff_2nd(pla.ne)
         self.dfluxi = -self.Da * pla.mesh.cnt_diff_2nd(pla.ni)
         # self.bndy_ambi()
-
-
-if __name__ == '__main__':
-    """Test the tranp coeff calc."""
-    from RctMod2d_Mesh import Mesh2d
-    from RctMod2d_React import React_2d
-    from RctMod2d_Geom import Geom2d, Domain, Rectangle
-    from RctMod2d_Plasma import Plasma2d
-    # build the geometry
-    geom2d = Geom2d(name='2D Plasma', is_cyl=False)
-    domain = Domain((-1.0, 0.0), (2.0, 4.0))
-    geom2d.add_domain(domain)
-    top = Rectangle('Metal', (-1.0, 3.5), (1.0, 4.0))
-    geom2d.add_shape(top)
-    bott = Rectangle('Metal', (-0.5, 0.0), (0.5, 1.0))
-    geom2d.add_shape(bott)
-    left = Rectangle('Metal', (-1.0, 0.0), (-0.9, 4.0))
-    geom2d.add_shape(left)
-    right = Rectangle('Metal', (0.9, 0.0), (1.0, 4.0))
-    geom2d.add_shape(right)
-    quartz = Rectangle('Quartz', (-0.9, 3.3), (0.9, 3.5))
-    geom2d.add_shape(quartz)
-    geom2d.plot(fname='geom2d.png')
-    print(geom2d)
-    # generate mesh to imported geometry
-    mesh2d = Mesh2d()
-    mesh2d.import_geom(geom2d)
-    mesh2d.generate_mesh(ngrid=(21, 41))
-    mesh2d.plot()
-
-    
-    pla2d = Plasma2d(mesh2d)
-    pla2d.init_plasma()
-
-    if domain.domain[0] > domain.domain[1]:
-        figsize = tuple([domain.domain[0], domain.domain[1]*2])
-        ihoriz = 0
-    else:
-        figsize = tuple([domain.domain[0]*2*1.5, domain.domain[1]])
-        ihoriz = 1
-    pla2d.plot_plasma(figsize=figsize, ihoriz=ihoriz)
-    
-    txp2d = Ambi2d(pla2d)
-    txp2d.calc_transp_coeff(pla2d)
-    txp2d.plot_transp_coeff(pla=pla2d, figsize=figsize, ihoriz=ihoriz)
-    txp2d.calc_ambi(pla2d)
-    txp2d.plot_flux(pla=pla2d, figsize=figsize, ihoriz=ihoriz)
-    

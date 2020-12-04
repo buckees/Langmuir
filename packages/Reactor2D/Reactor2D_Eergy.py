@@ -8,8 +8,6 @@ Eergy_2d contains:
     Output: Te
 """
 
-from Constants import KB_EV, EON_MASS, UNIT_CHARGE
-
 import numpy as np
 from copy import copy, deepcopy
 import matplotlib.pyplot as plt
@@ -17,9 +15,9 @@ import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
 colMap.set_under(color='white')
 
+from packages.Constants import KB_EV
 
-
-class Eergy2d(object):
+class EERGY2D(object):
     """Define the eon energy module/object."""
     
     def __init__(self, pla):

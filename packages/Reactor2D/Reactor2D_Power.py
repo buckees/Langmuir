@@ -15,7 +15,7 @@ import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
 colMap.set_under(color='white')
 
-class Power2d(object):
+class POWER2D(object):
     """Define the power module/object."""
     
     def __init__(self, pla):

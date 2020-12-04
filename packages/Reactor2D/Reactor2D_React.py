@@ -19,7 +19,7 @@ import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
 colMap.set_under(color='white')
 
-class React2d(object):
+class REACT2D(object):
     """Define the base tranport module/object."""
     
     def __init__(self, pla):
