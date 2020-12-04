@@ -52,6 +52,6 @@ mesh2d.gen_mesh(ngrid=(50, 125))
 mesh2d.plot(figsize=(4, 4), ihoriz=1, s_size=1)
 
 import numpy as np
-np.save(mesh2d.name+'_mat', mesh2d.mat)
-np.save(mesh2d.name+'_x', mesh2d.x)
-np.save(mesh2d.name+'_z', mesh2d.z)
+np.savez(mesh2d.name, x=mesh2d.x, z=mesh2d.z,
+         mat=mesh2d.mat, res=mesh2d.res, ngrid=mesh2d.ngrid)
+
