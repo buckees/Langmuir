@@ -13,7 +13,7 @@ Transp_2d contains:
 """
 
 import numpy as np
-from copy import copy, deepcopy
+from copy import copy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
@@ -26,6 +26,8 @@ class TRANSP2D(object):
     
     def __init__(self, pla):
         """Import geometry information."""
+        self.ne = copy(pla.ne)
+        self.ni = copy(pla.ni)
         self.fluxex = np.zeros_like(pla.ne)  # initial eon flux in x direction
         self.fluxez = np.zeros_like(pla.ne)  # initial eon flux in z direction
         self.fluxix = np.zeros_like(pla.ne)  # initial ion flux in x direction
@@ -33,37 +35,47 @@ class TRANSP2D(object):
         self.dfluxe = np.zeros_like(pla.ne)  # initial eon flux
         self.dfluxi = np.zeros_like(pla.ne)  # initial ion flux
 
-    def calc_transp_coeff(self, pla):
+    def _calc_transp_coeff(self, PLA):
         """
         Calc diffusion coefficient and mobility.
 
-        pla: Plasma2d object/class
+        PLA: PLASMA2D object/class
         De,i: m^2/s, (nz, nx) matrix, D = k*T/(m*coll_m)
         Mue,i: m^2/(V*s), (nz, nx) matrix, Mu = q/(m*coll_m)
-        D and Mu depend only on pla.
+        D and Mu depend only on PLA.
         """
         # calc diff coeff: D = k*T/(m*coll_m)
-        self.De = np.divide(KB_EV*pla.Te, EON_MASS*pla.coll_em)  
-        self.Di = np.divide(KB_EV*pla.Ti, pla.Mi*pla.coll_im)  
+        self.De = np.divide(KB_EV*PLA.Te, EON_MASS*PLA.coll_em)  
+        self.Di = np.divide(KB_EV*PLA.Ti, PLA.Mi*PLA.coll_im)  
         # calc mobility: Mu = q/(m*coll_m)
-        self.Mue = UNIT_CHARGE/EON_MASS/pla.coll_em
-        self.Mui = UNIT_CHARGE/pla.Mi/pla.coll_im
+        self.Mue = UNIT_CHARGE/EON_MASS/PLA.coll_em
+        self.Mui = UNIT_CHARGE/PLA.Mi/PLA.coll_im
+    
+    def solve_fluid(self, SRC, dt):
+        """
+        Evolve the density.
+        
+        SRC: REACT2D object/class
+        dt: s, float, timestep
+        """
+        self.ne += (-self.dfluxe + SRC.Se)*dt
+        self.ni += (-self.dfluxi + SRC.Si)*dt
 
-    def plot_transp_coeff(self, pla, figsize=(8, 8), ihoriz=1, 
+    def plot_transp_coeff(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Transp_coeff.png', imode='Contour'):
         """
         Plot transp coeff vs position.
         
         var include diffusion coeff and mobility.
-        pla: Plasma2d object
-            use pla.mesh.x,z for plot
+        PLA: PLAsma2d object
+            use PLA.mesh.x,z for plot
         figsize: a.u., (2, ) tuple, size of fig
         ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
         dpi: a.u., dots per inch
         fname: str, var, name of png file to save
         imode: str, var, ['Contour', 'Scatter']
         """
-        _x, _z = pla.mesh.x, pla.mesh.z
+        _x, _z = PLA.mesh.x, PLA.mesh.z
         if ihoriz:
             fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
                                      constrained_layout=True)
@@ -91,21 +103,21 @@ class TRANSP2D(object):
         fig.savefig(fname, dpi=dpi)
         plt.close()
     
-    def plot_flux(self, pla, figsize=(8, 8), ihoriz=1, 
+    def plot_flux(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='flux.png', imode='Contour'):
         """
         Plot flux vs position.
         
         var include flux and dflux.
-        pla: Plasma2d object
-            use pla.mesh.x,z for plot
+        PLA: PLAsma2d object
+            use PLA.mesh.x,z for plot
         figsize: a.u., (2, ) tuple, size of fig
         ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
         dpi: a.u., dots per inch
         fname: str, var, name of png file to save
         imode: str, var, ['Contour', 'Scatter']
         """
-        _x, _z = pla.mesh.x, pla.mesh.z
+        _x, _z = PLA.mesh.x, PLA.mesh.z
         if ihoriz:
             fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
                                      constrained_layout=True)
@@ -159,16 +171,16 @@ class DIFF2D(TRANSP2D):
     Output: D * d2n/dx2
     """
     
-    def calc_diff(self, pla):
+    def calc_diff(self, PLA):
         """Calc diffusion term: D * d2n/dx2 and diffusion flux D * dn/dx."""
         # Calc transp coeff first
-        self.calc_transp_coeff(pla)
+        self.calc_transp_coeff(PLA)
         # Calc flux
-        self.fluxex, self.fluxez = -self.De * pla.mesh.cnt_diff(pla.ne)
-        self.fluxix, self.fluxiz = -self.Di * pla.mesh.cnt_diff(pla.ni)
+        self.fluxex, self.fluxez = -self.De * PLA.mesh.cnt_diff(PLA.ne)
+        self.fluxix, self.fluxiz = -self.Di * PLA.mesh.cnt_diff(PLA.ni)
         # Calc dflux
-        self.dfluxe = -self.De * pla.mesh.cnt_diff_2nd(pla.ne)
-        self.dfluxi = -self.Di * pla.mesh.cnt_diff_2nd(pla.ni)
+        self.dfluxe = -self.De * PLA.mesh.cnt_diff_2nd(PLA.ne)
+        self.dfluxi = -self.Di * PLA.mesh.cnt_diff_2nd(PLA.ni)
 
     
 class AMBI2D(TRANSP2D):
@@ -181,38 +193,38 @@ class AMBI2D(TRANSP2D):
     Output: Da * d2n/dx2 and E-field
     """
 
-    def calc_ambi(self, pla):
+    def calc_ambi(self, PLA):
         """
         Calc ambipolar diffusion coefficient.
 
         The ambipolar diffusion assumptions:
             1. steady state, dne/dt = 0. it cannot be used to
-            describe plasma decay.
+            describe PLAsma decay.
             2. ni is calculated from continuity equation.
-            3. plasma is charge neutral, ne = ni
+            3. PLAsma is charge neutral, ne = ni
             4. Ionization Se is needed to balance diffusion loss.
         Da = (De*Mui + Di*Mue)/(Mue + Mui)
         Da = Di(1 + Te/Ti).
         Ea = (Di - De)/(Mui + Mue)*dn/dx/n
         Orginal Ambipolar Coeff Da = (De*Mui + Di*Mue)/(Mue + Mui)
-        self.Da = (Plasma_1d.De*Plasma_1d.Mui + Plasma_1d.Di*Plasma_1d.Mue) / \
-                  (Plasma_1d.Mue + Plasma_1d.Mui)
+        self.Da = (PLAsma_1d.De*PLAsma_1d.Mui + PLAsma_1d.Di*PLAsma_1d.Mue) / \
+                  (PLAsma_1d.Mue + PLAsma_1d.Mui)
         Assume Te >> Ti, Ambipolar Coeff can be simplified as
         Da = Di(1 + Te/Ti).
         """
         # Calc transp coeff first
-        self.calc_transp_coeff(pla)
+        self.calc_transp_coeff(PLA)
         # Calc ambi coeff
-        self.Da = self.Di*(1.0 + np.divide(pla.Te, pla.Ti))
-        _dnix, _dniz = pla.mesh.cnt_diff(pla.ni)
+        self.Da = self.Di*(1.0 + np.divide(PLA.Te, PLA.Ti))
+        _dnix, _dniz = PLA.mesh.cnt_diff(PLA.ni)
         self.Eax = np.divide(self.Di - self.De, self.Mui + self.Mue)
         self.Eaz = deepcopy(self.Eax)
-        self.Eax *= np.divide(_dnix, pla.ni)
-        self.Eaz *= np.divide(_dniz, pla.ni)
+        self.Eax *= np.divide(_dnix, PLA.ni)
+        self.Eaz *= np.divide(_dniz, PLA.ni)
         # # Calc flux
-        self.fluxex, self.fluxez = -self.Da * pla.mesh.cnt_diff(pla.ne)
-        self.fluxix, self.fluxiz = -self.Da * pla.mesh.cnt_diff(pla.ni)
+        self.fluxex, self.fluxez = -self.Da * PLA.mesh.cnt_diff(PLA.ne)
+        self.fluxix, self.fluxiz = -self.Da * PLA.mesh.cnt_diff(PLA.ni)
         # Calc dflux
-        self.dfluxe = -self.Da * pla.mesh.cnt_diff_2nd(pla.ne)
-        self.dfluxi = -self.Da * pla.mesh.cnt_diff_2nd(pla.ni)
+        self.dfluxe = -self.Da * PLA.mesh.cnt_diff_2nd(PLA.ne)
+        self.dfluxi = -self.Da * PLA.mesh.cnt_diff_2nd(PLA.ni)
         # self.bndy_ambi()
