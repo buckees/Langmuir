@@ -101,9 +101,8 @@ class PLASMA2D(object):
         self.Te = np.clip(self.Te, T_min, T_max)
         self.Ti = np.clip(self.Ti, T_min, T_max)
 
-    def plot(self, figsize=(8, 8), ihoriz=1, 
-                    dpi=300, fname='Plasma.png', imode='Contour',
-                    iplot_geom=0):
+    def plot(self, figsize=(8, 8), ihoriz=1, dpi=300, 
+             fname='Plasma.png', imode='Contour', iplot_geom=0):
         """
         Plot plasma variables vs. position.
             
