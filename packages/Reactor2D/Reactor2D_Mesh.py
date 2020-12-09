@@ -20,41 +20,6 @@ class MESH2D():
         """
         self.name = name
 
-    def import_geom(self, geom):
-            """Import geometry."""
-            self.geom = geom
-
-    def generate_mesh(self, ngrid=(11, 11)):
-        """Generate mesh according to the imported geometry."""
-        self.width, self.height = self.geom.domain
-        self.ngrid = np.asarray(ngrid)
-        self.nx, self.nz = self.ngrid
-        self.res = np.divide(self.geom.domain, self.ngrid - 1)
-        self.dx, self.dz = self.res
-        tempx = np.linspace(self.geom.bl[0], self.geom.bl[0] + self.width, 
-                            self.nx)
-        tempz = np.linspace(self.geom.bl[1], self.geom.bl[1] + self.height, 
-                            self.nz)
-        self.x, self.z = np.meshgrid(tempx, tempz)
-        self.mat = np.zeros_like(self.x)
-        self._find_bndy()
-        self._assign_mat()
-        self._calc_plasma_area()
-       
-    def create_mesh(self, bl=(0.0, 0.0), domain=(1.0, 1.0), ngrid=(11, 11)):
-        """Create standalone mesh."""
-        self.bl = np.asarray(bl)
-        self.domain = np.asarray(domain)
-        self.ngrid = np.asarray(ngrid)
-        self.res = np.divide(self.domain, self.ngrid - 1)
-        self.width, self.height = self.domain
-        self.nx, self.nz = self.ngrid
-        self.delx, self.delz = self.res
-        tempx = np.linspace(0.0, self.width, self.nx)
-        tempz = np.linspace(0.0, self.height, self.nz)
-        self.x, self.z = np.meshgrid(tempx, tempz)
-        self._find_bndy()
-
     def readin_mesh(self, fname='restart'):
         """Read in mat, x and z from npy files."""
         temp = np.load(fname+'.npz', allow_pickle=True)
