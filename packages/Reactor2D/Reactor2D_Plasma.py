@@ -65,7 +65,11 @@ class PLASMA2D(object):
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
         self.coll_em = np.ones_like(x)*(press/10.0*1e7)  # eon coll freq (mom)
         self.coll_im = np.ones_like(x)*(press/10.0*1e7)  # ion coll freq (mom)
-        
+        self.pot = np.zeros_like(x)  # initial uniform potential
+        self.Ex = np.zeros_like(x)  # initial uniform E-field
+        self.Ez = np.zeros_like(x)  # initial uniform E-field
+        self.Ey = np.zeros_like(x)  # initial uniform E-field
+        # modify init
         self._set_bc()
         self._set_nonPlasma()
         self._limit_plasma()
@@ -198,28 +202,6 @@ class PLASMA2D(object):
             ax.set_aspect('equal')
         fig.savefig(fname, dpi=dpi)
         plt.close()
-
-    def init_pot(self, phi=0.0):
-        """Initiate potential attributes."""
-        nx = self.mesh.nx
-        self.pot = np.ones(nx)*phi  # initial uniform potential
-        self.ef = np.zeros_like(self.pot)  # initial uniform E-field
-        self.ef_ambi = np.zeros_like(self.pot)  # initial ambipolar E-field
-
-    def plot_pot(self):
-        """Plot potential, E-field."""
-        x = self.mesh.x
-        fig, axes = plt.subplots(1, 2, figsize=(8, 4),
-                                 constrained_layout=True)
-        # plot potential
-        ax = axes[0]
-        ax.plot(x, self.pot, 'y-')
-        ax.legend(['Potential'])
-        # plot E-field
-        ax = axes[1]
-        ax.plot(x, self.ef, 'g-')
-        ax.legend(['E-field'])
-        plt.show()
 
     def den_evolve(self, delt, txp, src):
         """
