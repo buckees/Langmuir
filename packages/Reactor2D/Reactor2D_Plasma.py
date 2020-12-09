@@ -1,9 +1,10 @@
 """
-2D Plasma Module - Main Module.
+2D Plasma Module - Data Transfer/Communication Hub.
 
-Plasma_2d contains:
-    density: update using explicit method, integrating by delt
-    temperature: copy from energy module    
+PLASMA2D contains:
+    all updated variables
+    plot
+    diagnostics
 """
 
 import numpy as np
