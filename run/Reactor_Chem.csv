@@ -6,5 +6,5 @@ e,Ar,None,Ar3P0,e,None,1,True,1.35e-15,0.0,-12.42,0,
 e,Ar,None,Ar1P1,e,None,1,True,2.72e-16,0.0,-12.14,0,
 e,Ar,None,Ar4P,e,None,1,True,2.12e-14,0.0,-13.13,0,
 Ar4P,Ar4P,None,Ar+,Ar,e,2,None,5.0e-16,0.0,0.0,0,
-Ar+,Ar4P,None,Ar4P,Ar+,e,2,None,5.66e-10,0.5,0.0,0,
+Ar+,Ar4P,None,Ar4P,Ar+,e,3,None,5.66e-10,0.5,0.0,0,
 
