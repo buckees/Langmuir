@@ -115,14 +115,5 @@ class PARTICLE(object):
         elif imode == 'reflective':
             pass
 
-
-if __name__ == '__main__':
-    from Species import Arp
-    fig = plt.figure()
-    for i in range(100):
-        Arp.init_uvec(['Uniform3D', -45.0, 45.0])
-        vec = Arp.uvec
-        plt.scatter(vec[0], vec[1])
-    plt.show()
         
     
