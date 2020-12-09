@@ -2,6 +2,7 @@
 2D Plasma Module - Data Transfer/Communication Hub.
 
 PLASMA2D contains:
+    mesh
     all updated variables
     plot
     diagnostics
@@ -18,14 +19,18 @@ colMap.set_under(color='white')
 from packages.Constants import (AMU, UNIT_CHARGE, EON_MASS, COLOR_DICT)
 
 class PLASMA2D(object):
-    """Define 2d Plasma."""
+    """Define PLASMA2D."""
 
+    def __init__(self, name='Plasma2d'):
         """
-        Plasma2d is defined as a container.
+        Init the Shape.
+        
+        name: str, var, name of the Mesh2d.
+        """
+        self.name = name
 
-        Plasma_2d as a basket containing:
-            mesh
-        """
+    def import_mesh(self, mesh):
+        """Import mesh."""
         self.mesh = mesh
 
     def init_plasma(self, ne=1e17, press=10, Te=1, Ti=0.1, Mi=40):
@@ -47,16 +52,19 @@ class PLASMA2D(object):
                             1e9 at 1000 mTorr
         Mi: kg, ion mass
         """
-        _x = self.mesh.x
-        self.ne = np.ones_like(_x)*ne  # init uniform ne on 1d mesh
-        self.ni = np.ones_like(_x)*ne  # init ni to neutralize ne
-        self.nn = np.ones_like(_x)*(press*3.3e19)  # init neutral density
         self.press = press
-        self.Te = np.ones_like(_x)*Te  # init eon temperature
-        self.Ti = np.ones_like(_x)*Ti  # init ion temperature
-        self.coll_em = np.ones_like(_x)*(press/10.0*1e7)  # eon coll freq (mom)
-        self.coll_im = np.ones_like(_x)*(press/10.0*1e7)  # ion coll freq (mom)
-        self.Mi = Mi*AMU # ion mass 
+        self.Me = EON_MASS # eon mass in kg
+        self.Mi = Mi*AMU # ion mass in kg
+        x = self.mesh.x
+        self.ne = np.ones_like(x)*ne  # init uniform ne on 1d mesh
+        self.ni = np.ones_like(x)*ne  # init ni to neutralize ne
+        self.nn = np.ones_like(x)*(press*3.3e19)  # init neutral density
+        
+        self.Te = np.ones_like(x)*Te  # init eon temperature
+        self.Ti = np.ones_like(x)*Ti  # init ion temperature
+        self.coll_em = np.ones_like(x)*(press/10.0*1e7)  # eon coll freq (mom)
+        self.coll_im = np.ones_like(x)*(press/10.0*1e7)  # ion coll freq (mom)
+        
         self._set_bc()
         self._set_nonPlasma()
         self._limit_plasma()
