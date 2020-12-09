@@ -30,7 +30,7 @@ class MESH2D():
         self.ngrid = np.asarray(ngrid)
         self.nx, self.nz = self.ngrid
         self.res = np.divide(self.geom.domain, self.ngrid - 1)
-        self.delx, self.delz = self.res
+        self.dx, self.dz = self.res
         tempx = np.linspace(self.geom.bl[0], self.geom.bl[0] + self.width, 
                             self.nx)
         tempz = np.linspace(self.geom.bl[1], self.geom.bl[1] + self.height, 
