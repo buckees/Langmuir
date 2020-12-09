@@ -33,7 +33,8 @@ class PLASMA2D(object):
         """Import mesh."""
         self.mesh = mesh
 
-    def init_plasma(self, ne=1e17, press=10, Te=1, Ti=0.1, Mi=40):
+    def init_plasma(self, ne=1e17, press=10, 
+                    Te=1, Ti=0.1, Mi=40, wrf=13.56e6):
         """
         Initiate plasma attributes.
 
@@ -56,6 +57,7 @@ class PLASMA2D(object):
         self._press = press # pressure in Torr
         self._Me = EON_MASS # eon mass in kg
         self._Mi = Mi*AMU # ion mass in kg
+        self._wrf = wrf # rf frequency in angular frequency,  rad/s
         # public attributes
         x = self.mesh.x
         self.ne = np.ones_like(x)*ne  # init uniform ne on 1d mesh
@@ -203,21 +205,13 @@ class PLASMA2D(object):
         fig.savefig(fname, dpi=dpi)
         plt.close()
 
-    def den_evolve(self, delt, txp, src):
+    def update_plasma(self):
         """
-        Evolve the density in Plasma by solving the continuity equation.
-
-        dn/dt = -dFlux/dx + Se
-        dn(t + dt) = dn(t) - dFlux/dx*dt + Se*dt
-        delt: s, var, time step for explict method
-        txp: Transp2d() object
-        src: React2d() object
+        Make sure the all attr in PLASMA2D are updated.
+        
+        aaa
         """
-        self.ne += (-txp.dfluxe + src.Se)*delt
-        self.ni += (-txp.dfluxi + src.Si)*delt
-        self._set_bc()
-        self._set_nonPlasma()
-        self._limit_plasma()
+        self._calc_conde()
 
     def readin_EF(self,fname):
         """Read in E-Field from external file."""
@@ -270,13 +264,13 @@ class PLASMA2D(object):
         fig.savefig(fname, dpi=dpi)
         plt.close()
 
-    def calc_conde(self, w_rf):
+    def _calc_conde(self):
         """Calc eon conductivity."""
         temp_conde = UNIT_CHARGE**2/EON_MASS
         temp_conde *= self.ne
         self.conde = np.zeros_like(self.ne, dtype=complex)
         self.conde += self.coll_em
-        self.conde += complex(0.0, w_rf)
+        self.conde += complex(0.0, self._wrf)
         self.conde = np.divide(temp_conde, self.conde)
     
     def plot_conde(self, figsize=(8, 8), ihoriz=1, 
