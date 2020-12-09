@@ -52,14 +52,15 @@ class PLASMA2D(object):
                             1e9 at 1000 mTorr
         Mi: kg, ion mass
         """
-        self.press = press
-        self.Me = EON_MASS # eon mass in kg
-        self.Mi = Mi*AMU # ion mass in kg
+        # private attributes
+        self._press = press # pressure in Torr
+        self._Me = EON_MASS # eon mass in kg
+        self._Mi = Mi*AMU # ion mass in kg
+        # public attributes
         x = self.mesh.x
         self.ne = np.ones_like(x)*ne  # init uniform ne on 1d mesh
         self.ni = np.ones_like(x)*ne  # init ni to neutralize ne
         self.nn = np.ones_like(x)*(press*3.3e19)  # init neutral density
-        
         self.Te = np.ones_like(x)*Te  # init eon temperature
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
         self.coll_em = np.ones_like(x)*(press/10.0*1e7)  # eon coll freq (mom)
@@ -71,22 +72,22 @@ class PLASMA2D(object):
 
     def _set_bc(self):
         """Impose b.c. on the plasma."""
-        for _idx in self.mesh.bndy_list:
-            self.ne[_idx] = 1e11
-            self.ni[_idx] = 1e11
-            self.nn[_idx] = 1e11
-            self.Te[_idx] = 0.1
-            self.Ti[_idx] = 0.01
+        for idx in self.mesh.bndy_list:
+            self.ne[idx] = 1e11
+            self.ni[idx] = 1e11
+            self.nn[idx] = 1e11
+            self.Te[idx] = 0.1
+            self.Ti[idx] = 0.01
 
     def _set_nonPlasma(self):
         """Impose fixed values on the non-plasma materials."""
-        for _idx, _mat in np.ndenumerate(self.mesh.mat):
-            if _mat:
-                self.ne[_idx] = 1e11
-                self.ni[_idx] = 1e11
-                self.nn[_idx] = 1e11
-                self.Te[_idx] = 0.1
-                self.Ti[_idx] = 0.01
+        for idx, mat in np.ndenumerate(self.mesh.mat):
+            if mat:
+                self.ne[idx] = 1e11
+                self.ni[idx] = 1e11
+                self.nn[idx] = 1e11
+                self.Te[idx] = 0.1
+                self.Ti[idx] = 0.01
 
     def _limit_plasma(self, n_min=1e11, n_max=1e22, T_min=0.001, T_max=100.0):
         """Limit variables in the plasma."""
