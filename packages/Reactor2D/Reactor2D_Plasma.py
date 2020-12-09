@@ -72,9 +72,7 @@ class PLASMA2D(object):
         self.Ez = np.zeros_like(x)  # initial uniform E-field
         self.Ey = np.zeros_like(x)  # initial uniform E-field
         # modify init
-        self._set_bc()
-        self._set_nonPlasma()
-        self._limit_plasma()
+        self.update_plasma()
 
     def _set_bc(self):
         """Impose b.c. on the plasma."""
@@ -212,6 +210,9 @@ class PLASMA2D(object):
         aaa
         """
         self._calc_conde()
+        self._set_bc()
+        self._set_nonPlasma()
+        self._limit_plasma()
 
     def readin_EF(self,fname):
         """Read in E-Field from external file."""
