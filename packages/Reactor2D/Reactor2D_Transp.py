@@ -24,16 +24,28 @@ from packages.Constants import (UNIT_CHARGE, EON_MASS, KB_EV)
 class TRANSP2D(object):
     """Define the base tranport module/object."""
     
-    def __init__(self, pla):
-        """Import geometry information."""
-        self.ne = copy(pla.ne)
-        self.ni = copy(pla.ni)
-        self.fluxex = np.zeros_like(pla.ne)  # initial eon flux in x direction
-        self.fluxez = np.zeros_like(pla.ne)  # initial eon flux in z direction
-        self.fluxix = np.zeros_like(pla.ne)  # initial ion flux in x direction
-        self.fluxiz = np.zeros_like(pla.ne)  # initial ion flux in z direction
-        self.dfluxe = np.zeros_like(pla.ne)  # initial eon flux
-        self.dfluxi = np.zeros_like(pla.ne)  # initial ion flux
+    def __init__(self, name='Txp2d'):
+        """
+        Init TRANSP2D.
+        
+        name: str, var, name of the TRANSP2D.
+        """
+        self.name = name
+    
+    def get_plasma(self, PLA):
+        """Copy var from PLASMA2D."""
+        self.ne = copy(PLA.ne)
+        self.ni = copy(PLA.ni)
+        self.pot = copy(PLA.pot)
+        self.Ex = copy(PLA.Ex)
+        self.Ez = copy(PLA.Ez)
+        self.fluxex = np.zeros_like(PLA.ne)
+        self.fluxez = np.zeros_like(PLA.ne)
+        self.fluxix = np.zeros_like(PLA.ne)
+        self.fluxiz = np.zeros_like(PLA.ne)
+        self.dfluxe = np.zeros_like(PLA.ne)
+        self.dfluxi = np.zeros_like(PLA.ne)
+        self._calc_transp_coeff(PLA)
 
     def _calc_transp_coeff(self, PLA):
         """
@@ -61,7 +73,7 @@ class TRANSP2D(object):
         self.ne += (-self.dfluxe + SRC.Se)*dt
         self.ni += (-self.dfluxi + SRC.Si)*dt
 
-    def plot_transp_coeff(self, PLA, figsize=(8, 8), ihoriz=1, 
+    def plot_txp_coeff(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Transp_coeff.png', imode='Contour'):
         """
         Plot transp coeff vs position.
