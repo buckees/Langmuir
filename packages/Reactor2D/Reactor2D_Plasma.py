@@ -20,13 +20,11 @@ from packages.Constants import (AMU, UNIT_CHARGE, EON_MASS, COLOR_DICT)
 class PLASMA2D(object):
     """Define 2d Plasma."""
 
-    def __init__(self, mesh):
         """
         Plasma2d is defined as a container.
 
         Plasma_2d as a basket containing:
             mesh
-            physics.
         """
         self.mesh = mesh
 
