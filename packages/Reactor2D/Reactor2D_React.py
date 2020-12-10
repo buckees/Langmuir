@@ -1,5 +1,5 @@
 """
-2D Plasma React Module.
+2D PLAsma React Module.
 
 REACT2D contains:
     
@@ -15,34 +15,34 @@ colMap.set_under(color='white')
 class REACT2D(object):
     """Define the base tranport module/object."""
     
-    def __init__(self, pla):
+    def __init__(self, PLA):
         """Import geometry information."""
-        self.Se = np.zeros_like(pla.ne)  # initial eon flux
-        self.Si = np.zeros_like(pla.ne)  # initial ion flux
+        self.Se = np.zeros_like(PLA.ne)  # initial eon flux
+        self.Si = np.zeros_like(PLA.ne)  # initial ion flux
     
-    def calc_src(self, pla, ke=2.34e-14):
+    def calc_src(self, PLA, ke=2.34e-14):
         """Calc src due to ionization."""
-        self.Se = ke * np.power(pla.Te, 0.59)
-        self.Se *= np.exp(-17.8/pla.Te)
-        self.Se *= np.multiply(pla.ne, pla.nn)
+        self.Se = ke * np.power(PLA.Te, 0.59)
+        self.Se *= np.exp(-17.8/PLA.Te)
+        self.Se *= np.multiply(PLA.ne, PLA.nn)
         self.Si = deepcopy(self.Se)
-        self._set_bc(pla)
-        self._set_nonPlasma(pla)
+        self._set_bc(PLA)
+        self._set_nonPLAsma(PLA)
         
-    def _set_bc(self, pla):
+    def _set_bc(self, PLA):
         """Impose b.c. on the src."""
-        for _idx in pla.mesh.bndy_list:
+        for _idx in PLA.mesh.bndy_list:
             self.Se[_idx] = 0.0
             self.Si[_idx] = 0.0
 
-    def _set_nonPlasma(self, pla):
-        """Impose fixed Te on the non-plasma materials."""
-        for _idx, _mat in np.ndenumerate(pla.mesh.mat):
+    def _set_nonPLAsma(self, PLA):
+        """Impose fixed Te on the non-PLAsma materials."""
+        for _idx, _mat in np.ndenumerate(PLA.mesh.mat):
             if _mat:
                 self.Se[_idx] = 0.0
                 self.Si[_idx] = 0.0
         
-    def plot_src(self, pla, figsize=(8, 8), ihoriz=1, 
+    def plot_src(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Power.png', imode='Contour'):
         """
         Plot power vs. position.
@@ -54,7 +54,7 @@ class REACT2D(object):
         fname: str, var, name of png file to save
         imode: str, var, ['Contour', 'Scatter']
         """
-        _x, _z = pla.mesh.x, pla.mesh.z
+        _x, _z = PLA.mesh.x, PLA.mesh.z
         if ihoriz:
             fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
                                      constrained_layout=True)
