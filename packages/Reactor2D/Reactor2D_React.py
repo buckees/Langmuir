@@ -1,15 +1,8 @@
 """
-2D Plasma Transport Module.
+2D Plasma React Module.
 
-Transp_1d contains:
-    Diffusion only
-    Ambipolar
-    Drfit-Diffusion
-    Momentum Solver
-
-    Continuity Eq. dn/dt = -dF/dx * dt + S * det
-    Input: depends on transport mode
-    Output: dF/dx for continuity equation.
+REACT2D contains:
+    
 """
 
 import numpy as np
