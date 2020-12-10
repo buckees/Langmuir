@@ -24,9 +24,14 @@ class REACT2D(object):
         self.name = name
         
     def from_plasma(self, PLA):
-        """Import geometry information."""
+        """Init REACT2D."""
         self.Se = np.zeros_like(PLA.ne)
         self.Si = np.zeros_like(PLA.ne)
+    
+    def to_transp(self, TXP):
+        """Copy var to PLASMA2D."""
+        TXP.Se = deepcopy(self.Se)
+        TXP.Si = deepcopy(self.Si)
     
     def calc_src(self, PLA, ke=2.34e-14):
         """Calc src due to ionization."""
@@ -34,21 +39,14 @@ class REACT2D(object):
         self.Se *= np.exp(-17.8/PLA.Te)
         self.Se *= np.multiply(PLA.ne, PLA.nn)
         self.Si = deepcopy(self.Se)
-        self._set_bc(PLA)
         self._set_nonPLAsma(PLA)
-        
-    def _set_bc(self, PLA):
-        """Impose b.c. on the src."""
-        for _idx in PLA.mesh.bndy_list:
-            self.Se[_idx] = 0.0
-            self.Si[_idx] = 0.0
 
     def _set_nonPLAsma(self, PLA):
         """Impose fixed Te on the non-PLAsma materials."""
-        for _idx, _mat in np.ndenumerate(PLA.mesh.mat):
-            if _mat:
-                self.Se[_idx] = 0.0
-                self.Si[_idx] = 0.0
+        for idx, mat in np.ndenumerate(PLA.mesh.mat):
+            if mat:
+                self.Se[idx] = 0.0
+                self.Si[idx] = 0.0
         
     def plot_src(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Power.png', imode='Contour'):
