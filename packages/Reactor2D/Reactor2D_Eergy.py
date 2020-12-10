@@ -94,7 +94,6 @@ class EERGY2D(object):
         self._calc_th_flux(PLA)
         self.ergy_e += (-self.dQe + PLA.pwr_in)*dt
         self.Te = np.divide(self.ergy_e, PLA.ne)/1.5/KB_EV
-        self._set_bc(PLA)
         self._set_nonPlasma(PLA)
         self._limit_Te()
 
