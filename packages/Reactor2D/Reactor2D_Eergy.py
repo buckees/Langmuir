@@ -57,7 +57,7 @@ class EERGY2D(object):
         for idx, mat in np.ndenumerate(PLA.mesh.mat):
             if mat:
                 self.th_cond_e[idx] = 1e-3
-                self.Te = 0.1
+                self.Te[idx] = 0.1
     
     def _calc_th_flux(self, PLA):
         """
@@ -82,7 +82,7 @@ class EERGY2D(object):
         """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def calc_Te(self, dt, PLA):
+    def calc_Te(self, PLA, dt):
         """
         Calc Te.
         
