@@ -82,9 +82,9 @@ class EERGY2D(object):
         """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def calc_Te(self, PLA, dt):
+    def solve_Te(self, PLA, dt):
         """
-        Calc Te.
+        Solve for Te.
         
         dt: s, var, time step for explict method
         PLA: PLASMA2D object/class.
