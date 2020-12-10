@@ -73,6 +73,9 @@ class PLASMA2D(object):
         self.Ey = np.zeros_like(x)  # initial uniform E-field
         self.conde = np.zeros_like(x)
         self.pwr_in = np.zeros_like(x)
+        self.fluxex, self.fluxez = np.zeros_like(x), np.zeros_like(x)
+        self.fluxix, self.fluxiz = np.zeros_like(x), np.zeros_like(x)
+        self.dfluxe, self.dfluxi = np.zeros_like(x), np.zeros_like(x)
         # modify init
         self.update_plasma()
 

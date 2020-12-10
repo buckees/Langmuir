@@ -33,12 +33,9 @@ class EERGY2D(object):
         self.Te = deepcopy(PLA.Te)
         # eon energy = 3/2 * ne * kTe
         self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
-    
-    def from_TRANSP(self, TXP):
-        """Copy var from PLASMA2D."""
-        self.fluxex = deepcopy(TXP.fluxex)
-        self.fluxez = deepcopy(TXP.fluxez)
-        self.dfluxe = deepcopy(TXP.dfluxe)
+        self.fluxex = deepcopy(PLA.fluxex)
+        self.fluxez = deepcopy(PLA.fluxez)
+        self.dfluxe = deepcopy(PLA.dfluxe)
         
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""

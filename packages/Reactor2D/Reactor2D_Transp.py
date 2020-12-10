@@ -53,11 +53,15 @@ class TRANSP2D(object):
     
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
-        PLA.ne = deepcopy(self.ne)
-        PLA.ni = deepcopy(self.ni)
+        PLA.ne, PLA.ni = deepcopy(self.ne), deepcopy(self.ni)
         PLA.pot = deepcopy(self.pot)
-        PLA.Ex = deepcopy(self.Ex)
-        PLA.Ez = deepcopy(self.Ez)
+        PLA.Ex, PLA.Ez = deepcopy(self.Ex), deepcopy(self.Ez)
+        PLA.fluxex = deepcopy(self.fluxex)
+        PLA.fluxez = deepcopy(self.fluxez)
+        PLA.fluxix = deepcopy(self.fluxix)
+        PLA.fluxiz = deepcopy(self.fluxiz)
+        PLA.dfluxe = deepcopy(self.dfluxe)
+        PLA.dfluxi = deepcopy(self.dfluxi)
 
     def _calc_transp_coeff(self, PLA):
         """
