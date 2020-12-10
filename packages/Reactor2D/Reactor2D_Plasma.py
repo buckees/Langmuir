@@ -212,9 +212,19 @@ class PLASMA2D(object):
         """
         self._calc_conde()
         self._calc_pwr_in()
+        self._calc_grad()
         self._set_bc()
         self._set_nonPlasma()
         self._limit_plasma()
+
+    def _calc_diff(self):
+        """Calc gradient: dn/dx and d2n/dx2."""
+        # Calc dn/dx
+        self.dnex, self.dnez = self.mesh.cnt_diff(self.ne)
+        self.dnix, self.dniz = self.mesh.cnt_diff(self.ni)
+        # Calc d2n/dx2
+        self.d2ne = self.mesh.cnt_diff_2nd(self.ne)
+        self.d2ni = self.mesh.cnt_diff_2nd(self.ni)
 
     def _calc_pwr_in(self):
         """Calc input power due to E-field."""
