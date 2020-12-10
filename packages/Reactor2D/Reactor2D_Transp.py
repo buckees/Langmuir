@@ -32,7 +32,7 @@ class TRANSP2D(object):
         """
         self.name = name
     
-    def from_plasma(self, PLA):
+    def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
         self.ne = deepcopy(PLA.ne)
         self.ni = deepcopy(PLA.ni)
@@ -49,11 +49,7 @@ class TRANSP2D(object):
         self.Si = np.zeros_like(PLA.ne)
         self._calc_transp_coeff(PLA)
     
-    def from_transp(self, TXP):
-        """Copy var from PLASMA2D."""
-        self.fluxex = deepcopy(TXP.fluxex)
-    
-    def to_plasma(self, PLA):
+    def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
         PLA.ne = deepcopy(self.ne)
         PLA.ni = deepcopy(self.ni)

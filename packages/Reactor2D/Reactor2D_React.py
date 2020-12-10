@@ -23,12 +23,12 @@ class REACT2D(object):
         """
         self.name = name
         
-    def from_plasma(self, PLA):
+    def from_PLASMA(self, PLA):
         """Init REACT2D."""
         self.Se = np.zeros_like(PLA.ne)
         self.Si = np.zeros_like(PLA.ne)
     
-    def to_transp(self, TXP):
+    def to_TRANSP(self, TXP):
         """Copy var to PLASMA2D."""
         TXP.Se = deepcopy(self.Se)
         TXP.Si = deepcopy(self.Si)
