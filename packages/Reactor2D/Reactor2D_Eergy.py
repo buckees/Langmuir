@@ -34,25 +34,23 @@ class EERGY2D(object):
         self.pwr_in = deepcopy(PLA.pwr_in)
         # eon energy = 3/2 * ne * kTe
         self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
-
-    def get_pwr(self, pwr):
-        """
-        Get input power from Power2d().
-        
-        pwr: Power2d() object.
-        """
-        self.pwr = pwr.input
     
-    def _calc_th_cond_coeff(self, pla):
+    def _calc_th_cond_coeff(self, PLA):
         """
         Calc thermal conduction coefficient.
 
-        pla: Plasma2d() object.
-        heat_cond_e: W/m/K, (nz, nx) matrix, heat conductivity for eon
-        th_cond_e depend only on pla.
+        PLA: PLASMA2D object/class.
+        th_cond_e: W/m/K, (nz, nx) matrix, heat conductivity for eon
         """
         # calc thermal conductivity for eon
-        self.th_cond_e = np.ones_like(pla.ne)*1e-3
+        self.th_cond_e = np.ones_like(PLA.ne)*1e-3
+        self._set_nonPlasma(PLA)
+
+    def _set_nonPlasma(self, PLA):
+        """Impose fixed th_cond_coeff on the non-PLAsma materials."""
+        for idx, mat in np.ndenumerate(PLA.mesh.mat):
+            if mat:
+                self.th_cond_e[idx] = 1e-3
     
     def _calc_th_flux(self, pla, txp):
         """
