@@ -28,13 +28,19 @@ class EERGY2D(object):
         """
         self.name = name
     
-    def from_PLAsma(self, PLA):
+    def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
         self.Te = deepcopy(PLA.Te)
         # eon energy = 3/2 * ne * kTe
         self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
+    
+    def from_TRANSP(self, TXP):
+        """Copy var from PLASMA2D."""
+        self.fluxex = deepcopy(TXP.fluxex)
+        self.fluxez = deepcopy(TXP.fluxez)
+        self.dfluxe = deepcopy(TXP.dfluxe)
         
-    def to_plasma(self, PLA):
+    def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
         PLA.Te = deepcopy(self.Te)
     
@@ -56,19 +62,18 @@ class EERGY2D(object):
                 self.th_cond_e[idx] = 1e-3
                 self.Te = 0.1
     
-    def _calc_th_flux(self, PLA, TXP):
+    def _calc_th_flux(self, PLA):
         """
         Calc eon thermal flux, Qe.
         
         Qe = 5/2kTe * fluxe - ke * dTe/dx
         dQe = 5/2kTe * dfluxe - ke * d2Te/dx2
-        PLA: Plasma2d() object
-        txp: Transp2d() object
+        PLA: PLASMA2D obj/class
         """
         # calc convection term
-        self.Qex = 2.5*KB_EV*np.multiply(self.Te, TXP.fluxex)
-        self.Qez = 2.5*KB_EV*np.multiply(self.Te, TXP.fluxez)
-        self.dQe = 2.5*KB_EV*np.multiply(self.Te, TXP.dfluxe)
+        self.Qex = 2.5*KB_EV*np.multiply(self.Te, self.fluxex)
+        self.Qez = 2.5*KB_EV*np.multiply(self.Te, self.fluxez)
+        self.dQe = 2.5*KB_EV*np.multiply(self.Te, self.dfluxe)
         # calc conduction term
         self.dTex, self.dTez = PLA.mesh.cnt_diff(self.Te)
         self.d2Te = PLA.mesh.cnt_diff_2nd(self.Te)
