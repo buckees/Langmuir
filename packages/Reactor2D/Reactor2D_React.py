@@ -39,9 +39,9 @@ class REACT2D(object):
         self.Se *= np.exp(-17.8/PLA.Te)
         self.Se *= np.multiply(PLA.ne, PLA.nn)
         self.Si = deepcopy(self.Se)
-        self._set_nonPLAsma(PLA)
+        self._set_nonPlasma(PLA)
 
-    def _set_nonPLAsma(self, PLA):
+    def _set_nonPlasma(self, PLA):
         """Impose fixed Te on the non-PLAsma materials."""
         for idx, mat in np.ndenumerate(PLA.mesh.mat):
             if mat:
