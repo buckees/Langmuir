@@ -70,8 +70,8 @@ class TRANSP2D(object):
         self.De = np.divide(KB_EV*PLA.Te, EON_MASS*PLA.coll_em)  
         self.Di = np.divide(KB_EV*PLA.Ti, PLA.Mi*PLA.coll_im)  
         # calc mobility: Mu = q/(m*coll_m)
-        self.Mue = UNIT_CHARGE/EON_MASS/PLA.coll_em
-        self.Mui = UNIT_CHARGE/PLA.Mi/PLA.coll_im
+        self.Mue = UNIT_CHARGE/PLA._Me/PLA.coll_em
+        self.Mui = UNIT_CHARGE/PLA._Mi/PLA.coll_im
     
     def solve_fluid(self, dt):
         """
