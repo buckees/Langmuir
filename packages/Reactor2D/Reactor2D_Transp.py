@@ -13,7 +13,7 @@ Transp_2d contains:
 """
 
 import numpy as np
-from copy import copy
+from copy import copy, deepcopy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 colMap = copy(cm.get_cmap("jet"))
@@ -32,13 +32,13 @@ class TRANSP2D(object):
         """
         self.name = name
     
-    def get_plasma(self, PLA):
+    def from_plasma(self, PLA):
         """Copy var from PLASMA2D."""
-        self.ne = copy(PLA.ne)
-        self.ni = copy(PLA.ni)
-        self.pot = copy(PLA.pot)
-        self.Ex = copy(PLA.Ex)
-        self.Ez = copy(PLA.Ez)
+        self.ne = deepcopy(PLA.ne)
+        self.ni = deepcopy(PLA.ni)
+        self.pot = deepcopy(PLA.pot)
+        self.Ex = deepcopy(PLA.Ex)
+        self.Ez = deepcopy(PLA.Ez)
         self.fluxex = np.zeros_like(PLA.ne)
         self.fluxez = np.zeros_like(PLA.ne)
         self.fluxix = np.zeros_like(PLA.ne)
@@ -46,6 +46,14 @@ class TRANSP2D(object):
         self.dfluxe = np.zeros_like(PLA.ne)
         self.dfluxi = np.zeros_like(PLA.ne)
         self._calc_transp_coeff(PLA)
+    
+    def to_plasma(self, PLA):
+        """Copy var to PLASMA2D."""
+        PLA.ne = deepcopy(self.ne)
+        PLA.ni = deepcopy(self.ni)
+        PLA.pot = deepcopy(self.pot)
+        PLA.Ex = deepcopy(self.Ex)
+        PLA.Ez = deepcopy(self.Ez)
 
     def _calc_transp_coeff(self, PLA):
         """
@@ -186,13 +194,13 @@ class DIFF2D(TRANSP2D):
     def calc_diff(self, PLA):
         """Calc diffusion term: D * d2n/dx2 and diffusion flux D * dn/dx."""
         # Calc transp coeff first
-        self.calc_transp_coeff(PLA)
+        self.calc_txp_coeff(PLA)
         # Calc flux
-        self.fluxex, self.fluxez = -self.De * PLA.mesh.cnt_diff(PLA.ne)
-        self.fluxix, self.fluxiz = -self.Di * PLA.mesh.cnt_diff(PLA.ni)
+        self.fluxex, self.fluxez = -self.De * PLA.mesh.cnt_diff(self.ne)
+        self.fluxix, self.fluxiz = -self.Di * PLA.mesh.cnt_diff(self.ni)
         # Calc dflux
-        self.dfluxe = -self.De * PLA.mesh.cnt_diff_2nd(PLA.ne)
-        self.dfluxi = -self.Di * PLA.mesh.cnt_diff_2nd(PLA.ni)
+        self.dfluxe = -self.De * PLA.mesh.cnt_diff_2nd(self.ne)
+        self.dfluxi = -self.Di * PLA.mesh.cnt_diff_2nd(self.ni)
 
     
 class AMBI2D(TRANSP2D):
@@ -225,18 +233,18 @@ class AMBI2D(TRANSP2D):
         Da = Di(1 + Te/Ti).
         """
         # Calc transp coeff first
-        self.calc_transp_coeff(PLA)
+        self.calc_txp_coeff(PLA)
         # Calc ambi coeff
         self.Da = self.Di*(1.0 + np.divide(PLA.Te, PLA.Ti))
-        _dnix, _dniz = PLA.mesh.cnt_diff(PLA.ni)
-        self.Eax = np.divide(self.Di - self.De, self.Mui + self.Mue)
-        self.Eaz = deepcopy(self.Eax)
-        self.Eax *= np.divide(_dnix, PLA.ni)
-        self.Eaz *= np.divide(_dniz, PLA.ni)
+        dnix, dniz = PLA.mesh.cnt_diff(self.ni)
+        self.Ex = np.divide(self.Di - self.De, self.Mui + self.Mue)
+        self.Ez = deepcopy(self.Eax)
+        self.Ex *= np.divide(dnix, self.ni)
+        self.Ez *= np.divide(dniz, self.ni)
         # # Calc flux
-        self.fluxex, self.fluxez = -self.Da * PLA.mesh.cnt_diff(PLA.ne)
-        self.fluxix, self.fluxiz = -self.Da * PLA.mesh.cnt_diff(PLA.ni)
+        self.fluxex, self.fluxez = -self.Da * PLA.mesh.cnt_diff(self.ne)
+        self.fluxix, self.fluxiz = -self.Da * PLA.mesh.cnt_diff(self.ni)
         # Calc dflux
-        self.dfluxe = -self.Da * PLA.mesh.cnt_diff_2nd(PLA.ne)
-        self.dfluxi = -self.Da * PLA.mesh.cnt_diff_2nd(PLA.ni)
-        # self.bndy_ambi()
+        self.dfluxe = -self.Da * PLA.mesh.cnt_diff_2nd(self.ne)
+        self.dfluxi = -self.Da * PLA.mesh.cnt_diff_2nd(self.ni)
+        
