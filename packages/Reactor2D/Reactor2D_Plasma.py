@@ -102,23 +102,7 @@ class PLASMA2D(object):
         self.ni = np.clip(self.ni, n_min, n_max)
         self.nn = np.clip(self.nn, n_min, n_max)
         self.Te = np.clip(self.Te, T_min, T_max)
-        self.Ti = np.clip(self.Ti, T_min, T_max)    
-
-    def _calc_pwr_in(self):
-        """Calc input power due to E-field."""
-        EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
-        self.pwr_in = np.multiply(np.real(self.conde), EF2)
-    
-    def _calc_ave(self):
-        """Calc averaged variables."""
-        self.ne_ave = np.multiply(self.ne, self.isPlasma)
-    
-    def get_eps(self):
-        """Get epsilon from materials."""
-        self.eps = np.ones_like(self.ne)
-        for idx, mat in np.ndenumerate(self.mesh.mat):
-            if mat == 2:
-                self.eps[idx] = 3.8
+        self.Ti = np.clip(self.Ti, T_min, T_max)
         
     def _calc_conde(self):
         """Calc eon conductivity."""
@@ -128,3 +112,23 @@ class PLASMA2D(object):
         self.conde += self.coll_em
         self.conde += complex(0.0, self._wrf)
         self.conde = np.divide(temp_conde, self.conde)
+        
+    def _calc_pwr_in(self):
+        """Calc input power due to E-field."""
+        EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
+        self.pwr_in = np.multiply(np.real(self.conde), EF2)
+    
+    def _calc_ave(self):
+        """Calc averaged variables."""
+        sum_isPlasma = self.isPlasma.sum()
+        self.ne_ave = np.multiply(self.ne, self.isPlasma).sum()/sum_isPlasma
+        self.ni_ave = np.multiply(self.ni, self.isPlasma).sum()/sum_isPlasma
+        self.Te_ave = np.multiply(self.Te, self.isPlasma).sum()/sum_isPlasma
+        self.Ti_ave = np.multiply(self.Ti, self.isPlasma).sum()/sum_isPlasma
+    
+    def get_eps(self):
+        """Get epsilon from materials."""
+        self.eps = np.ones_like(self.ne)
+        for idx, mat in np.ndenumerate(self.mesh.mat):
+            if mat == 2:
+                self.eps[idx] = 3.8
