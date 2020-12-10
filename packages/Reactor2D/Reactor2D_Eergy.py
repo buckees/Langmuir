@@ -82,7 +82,7 @@ class EERGY2D(object):
         """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def calc_Te(self, dt, PLA, TXP):
+    def calc_Te(self, dt, PLA):
         """
         Calc Te.
         
@@ -91,7 +91,7 @@ class EERGY2D(object):
         TXP: TRANSP2D object/class.
         """
         self._calc_th_cond_coeff(PLA)
-        self._calc_th_flux(PLA, TXP)
+        self._calc_th_flux(PLA)
         self.ergy_e += (-self.dQe + PLA.pwr_in)*dt
         self.Te = np.divide(self.ergy_e, PLA.ne)/1.5/KB_EV
         self._set_bc(PLA)
