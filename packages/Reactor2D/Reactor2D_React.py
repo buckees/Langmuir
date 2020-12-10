@@ -15,10 +15,18 @@ colMap.set_under(color='white')
 class REACT2D(object):
     """Define the base tranport module/object."""
     
-    def __init__(self, PLA):
+    def __init__(self, name='Rct2d'):
+        """
+        Init REACT2D.
+        
+        name: str, var, name of the REACT2D.
+        """
+        self.name = name
+        
+    def from_plasma(self, PLA):
         """Import geometry information."""
-        self.Se = np.zeros_like(PLA.ne)  # initial eon flux
-        self.Si = np.zeros_like(PLA.ne)  # initial ion flux
+        self.Se = np.zeros_like(PLA.ne)
+        self.Si = np.zeros_like(PLA.ne)
     
     def calc_src(self, PLA, ke=2.34e-14):
         """Calc src due to ionization."""
