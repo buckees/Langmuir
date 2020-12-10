@@ -120,11 +120,11 @@ class PLASMA2D(object):
     
     def _calc_ave(self):
         """Calc averaged variables."""
-        sum_isPlasma = self.isPlasma.sum()
-        self.ne_ave = np.multiply(self.ne, self.isPlasma).sum()/sum_isPlasma
-        self.ni_ave = np.multiply(self.ni, self.isPlasma).sum()/sum_isPlasma
-        self.Te_ave = np.multiply(self.Te, self.isPlasma).sum()/sum_isPlasma
-        self.Ti_ave = np.multiply(self.Ti, self.isPlasma).sum()/sum_isPlasma
+        sum_isPlasma = self.mesh.isPlasma.sum()
+        self.ne_ave = (self.ne*self.mesh.isPlasma).sum()/sum_isPlasma
+        self.ni_ave = (self.ni*self.mesh.isPlasma).sum()/sum_isPlasma
+        self.Te_ave = (self.Te*self.mesh.isPlasma).sum()/sum_isPlasma
+        self.Ti_ave = (self.Ti*self.mesh.isPlasma).sum()/sum_isPlasma
     
     def get_eps(self):
         """Get epsilon from materials."""
