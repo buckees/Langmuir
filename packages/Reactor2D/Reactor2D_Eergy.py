@@ -1,7 +1,7 @@
 """
 2D Plasma Electron Energy Module.
 
-Eergy_2d contains:
+EERGY2D contains:
     Electron energy equation
     d(3/2nekTe)/dt = -dQ/dx + Power_in(ext.) - Power_loss(react)
     Input: ne, Te from Plasma1d, E_ext from field solver
@@ -18,9 +18,17 @@ colMap.set_under(color='white')
 from packages.Constants import KB_EV
 
 class EERGY2D(object):
-    """Define the eon energy module/object."""
+    """Define the Eon Energy Module."""
     
-    def __init__(self, pla):
+    def __init__(self, name='Eergy2d'):
+        """
+        Init the EERGY2D.
+        
+        name: str, var, name of the EERGY2D.
+        """
+        self.name = name
+    
+    def from_plasma(self, pla):
         """Import Plasma1d information."""
         self.Te = deepcopy(pla.Te)
         self.pwr = np.zeros_like(pla.Te)
