@@ -45,6 +45,8 @@ class TRANSP2D(object):
         self.fluxiz = np.zeros_like(PLA.ne)
         self.dfluxe = np.zeros_like(PLA.ne)
         self.dfluxi = np.zeros_like(PLA.ne)
+        self.Se = np.zeros_like(PLA.ne)
+        self.Si = np.zeros_like(PLA.ne)
         self._calc_transp_coeff(PLA)
     
     def to_plasma(self, PLA):
@@ -71,15 +73,15 @@ class TRANSP2D(object):
         self.Mue = UNIT_CHARGE/EON_MASS/PLA.coll_em
         self.Mui = UNIT_CHARGE/PLA.Mi/PLA.coll_im
     
-    def solve_fluid(self, SRC, dt):
+    def solve_fluid(self, dt):
         """
         Evolve the density.
         
         SRC: REACT2D object/class
         dt: s, float, timestep
         """
-        self.ne += (-self.dfluxe + SRC.Se)*dt
-        self.ni += (-self.dfluxi + SRC.Si)*dt
+        self.ne += (-self.dfluxe + self.Se)*dt
+        self.ni += (-self.dfluxi + self.Si)*dt
 
     def plot_txp_coeff(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Transp_coeff.png', imode='Contour'):
