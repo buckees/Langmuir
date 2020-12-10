@@ -9,7 +9,7 @@ PLASMA2D contains:
 """
 
 import numpy as np
-from copy import copy
+from copy import copy, deepcopy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 import matplotlib.cm as cm
@@ -159,7 +159,7 @@ class PLASMA2D(object):
         
         een: Eergy2d() boject.
         """
-        self.Te = copy(een.Te)
+        self.Te = deepcopy(een.Te)
     
     def plot_Te(self, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='Te.png', imode='Contour'):
