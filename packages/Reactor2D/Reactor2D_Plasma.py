@@ -115,8 +115,8 @@ class PLASMA2D(object):
 
     def _calc_pwr_in(self):
         """Calc input power due to E-field."""
-        EF2 = self.Ex**2 + self.Ez**2 + self.Ey**2
-        self.pwr_in = np.multiply(self.conde, EF2)
+        EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
+        self.pwr_in = np.multiply(np.real(self.conde), EF2)
     
     def get_eps(self):
         """Get epsilon from materials."""
