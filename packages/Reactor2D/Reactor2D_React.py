@@ -28,10 +28,10 @@ class REACT2D(object):
         self.Se = np.zeros_like(PLA.ne)
         self.Si = np.zeros_like(PLA.ne)
     
-    def to_TRANSP(self, TXP):
+    def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
-        TXP.Se = deepcopy(self.Se)
-        TXP.Si = deepcopy(self.Si)
+        PLA.Se = deepcopy(self.Se)
+        PLA.Si = deepcopy(self.Si)
     
     def calc_src(self, PLA, ke=2.34e-14):
         """Calc src due to ionization."""
