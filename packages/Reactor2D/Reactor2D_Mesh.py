@@ -61,19 +61,10 @@ class MESH2D():
         for idx in self.bndy_list:
             self.bndy[idx] = 1
 
-    def _assign_mat(self):
-        """Assign materials to nodes."""
-        for _idx, _x in np.ndenumerate(self.x):
-            _z = self.z[_idx]
-            _posn = np.array([_x, _z])
-            _label, self.mat[_idx] = self.geom.get_label(_posn)
-    
     def _calc_plasma_area(self):
         """Calc the total area of plasma region."""
-        self.area = 0
-        for _idx, _mat in np.ndenumerate(self.mat):
-            if not _mat:
-                self.area += self.dx * self.dz
+        self.isPlasma = (self.mat == 0).astype(int)
+        self.area = self.dx * self.dz * self.isPlasma.sum()
 
     def cnt_diff(self, f):
         """
