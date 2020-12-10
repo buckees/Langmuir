@@ -28,18 +28,13 @@ class EERGY2D(object):
         """
         self.name = name
     
-    def from_plasma(self, pla):
-        """Import Plasma1d information."""
-        self.Te = deepcopy(pla.Te)
-        self.pwr = np.zeros_like(pla.Te)
+    def from_PLAsma(self, PLA):
+        """Copy var from PLASMA2D."""
+        self.Te = deepcopy(PLA.Te)
+        self.pwr_in = deepcopy(PLA.pwr_in)
         # eon energy = 3/2 * ne * kTe
-        self.ergy_e = 1.5*KB_EV*np.multiply(pla.ne, pla.Te)
-        
-        
-    def __str__(self):
-        """Print eon energy module."""
-        return f'energy flux = {self.qdfluxe}'
-    
+        self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
+
     def get_pwr(self, pwr):
         """
         Get input power from Power2d().
