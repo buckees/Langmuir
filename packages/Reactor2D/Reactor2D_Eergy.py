@@ -53,13 +53,13 @@ class EERGY2D(object):
                 self.th_cond_e[idx] = 1e-3
                 self.Te = 0.1
     
-    def _calc_th_flux(self, pla, txp):
+    def _calc_th_flux(self, PLA, txp):
         """
         Calc eon thermal flux, Qe.
         
         Qe = 5/2kTe * fluxe - ke * dTe/dx
         dQe = 5/2kTe * dfluxe - ke * d2Te/dx2
-        pla: Plasma2d() object
+        PLA: Plasma2d() object
         txp: Transp2d() object
         """
         # calc convection term
@@ -67,33 +67,33 @@ class EERGY2D(object):
         self.Qez = 2.5*KB_EV*np.multiply(self.Te, txp.fluxez)
         self.dQe = 2.5*KB_EV*np.multiply(self.Te, txp.dfluxe)
         # calc conduction term
-        self.dTex, self.dTez = pla.mesh.cnt_diff(self.Te)
-        self.d2Te = pla.mesh.cnt_diff_2nd(self.Te)
+        self.dTex, self.dTez = PLA.mesh.cnt_diff(self.Te)
+        self.d2Te = PLA.mesh.cnt_diff_2nd(self.Te)
         self.Qex -= np.multiply(self.th_cond_e, self.dTex)
         self.Qez -= np.multiply(self.th_cond_e, self.dTez)
         self.dQe -= np.multiply(self.th_cond_e, self.d2Te)
 
     def _limit_Te(self, T_min=0.001, T_max=100.0):
-        """Limit Te in the plasma."""
+        """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def calc_Te(self, delt, pla, txp):
+    def calc_Te(self, delt, PLA, txp):
         """
         Calc Te.
         
         delt: s, var, time step for explict method
-        pla: Plasma2d() object.
+        PLA: Plasma2d() object.
         txp: Transp2d() object.
         """
-        self._calc_th_cond_coeff(pla)
-        self._calc_th_flux(pla, txp)
+        self._calc_th_cond_coeff(PLA)
+        self._calc_th_flux(PLA, txp)
         self.ergy_e += (-self.dQe + self.pwr)*delt
-        self.Te = np.divide(self.ergy_e, pla.ne)/1.5/KB_EV
-        self._set_bc(pla)
-        self._set_nonPlasma(pla)
+        self.Te = np.divide(self.ergy_e, PLA.ne)/1.5/KB_EV
+        self._set_bc(PLA)
+        self._set_nonPlasma(PLA)
         self._limit_Te()
 
-    def plot_dQe(self, pla, figsize=(8, 8), ihoriz=1, 
+    def plot_dQe(self, PLA, figsize=(8, 8), ihoriz=1, 
                     dpi=300, fname='dQe.png', imode='Contour'):
         """
         Plot power vs. position.
@@ -105,7 +105,7 @@ class EERGY2D(object):
         fname: str, var, name of png file to save
         imode: str, var, ['Contour', 'Scatter']
         """
-        _x, _z = pla.mesh.x, pla.mesh.z
+        _x, _z = PLA.mesh.x, PLA.mesh.z
         if ihoriz:
             fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
                                      constrained_layout=True)
