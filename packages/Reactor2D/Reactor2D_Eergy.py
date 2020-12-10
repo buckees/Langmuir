@@ -31,9 +31,12 @@ class EERGY2D(object):
     def from_PLAsma(self, PLA):
         """Copy var from PLASMA2D."""
         self.Te = deepcopy(PLA.Te)
-        self.pwr_in = deepcopy(PLA.pwr_in)
         # eon energy = 3/2 * ne * kTe
         self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
+        
+    def to_plasma(self, PLA):
+        """Copy var to PLASMA2D."""
+        PLA.Te = deepcopy(self.Te)
     
     def _calc_th_cond_coeff(self, PLA):
         """
@@ -53,7 +56,7 @@ class EERGY2D(object):
                 self.th_cond_e[idx] = 1e-3
                 self.Te = 0.1
     
-    def _calc_th_flux(self, PLA, txp):
+    def _calc_th_flux(self, PLA, TXP):
         """
         Calc eon thermal flux, Qe.
         
@@ -63,9 +66,9 @@ class EERGY2D(object):
         txp: Transp2d() object
         """
         # calc convection term
-        self.Qex = 2.5*KB_EV*np.multiply(self.Te, txp.fluxex)
-        self.Qez = 2.5*KB_EV*np.multiply(self.Te, txp.fluxez)
-        self.dQe = 2.5*KB_EV*np.multiply(self.Te, txp.dfluxe)
+        self.Qex = 2.5*KB_EV*np.multiply(self.Te, TXP.fluxex)
+        self.Qez = 2.5*KB_EV*np.multiply(self.Te, TXP.fluxez)
+        self.dQe = 2.5*KB_EV*np.multiply(self.Te, TXP.dfluxe)
         # calc conduction term
         self.dTex, self.dTez = PLA.mesh.cnt_diff(self.Te)
         self.d2Te = PLA.mesh.cnt_diff_2nd(self.Te)
@@ -77,17 +80,17 @@ class EERGY2D(object):
         """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def calc_Te(self, delt, PLA, txp):
+    def calc_Te(self, dt, PLA, TXP):
         """
         Calc Te.
         
-        delt: s, var, time step for explict method
-        PLA: Plasma2d() object.
-        txp: Transp2d() object.
+        dt: s, var, time step for explict method
+        PLA: PLASMA2D object/class.
+        TXP: TRANSP2D object/class.
         """
         self._calc_th_cond_coeff(PLA)
-        self._calc_th_flux(PLA, txp)
-        self.ergy_e += (-self.dQe + self.pwr)*delt
+        self._calc_th_flux(PLA, TXP)
+        self.ergy_e += (-self.dQe + PLA.pwr_in)*dt
         self.Te = np.divide(self.ergy_e, PLA.ne)/1.5/KB_EV
         self._set_bc(PLA)
         self._set_nonPlasma(PLA)
