@@ -13,13 +13,9 @@ Transp_2d contains:
 """
 
 import numpy as np
-from copy import copy, deepcopy
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-colMap = copy(cm.get_cmap("jet"))
-colMap.set_under(color='white')
+from copy import deepcopy
 
-from packages.Constants import (UNIT_CHARGE, EON_MASS, KB_EV)
+from packages.Constants import (UNIT_CHARGE, KB_EV)
 
 class TRANSP2D(object):
     """Define the base tranport module/object."""
@@ -84,107 +80,6 @@ class TRANSP2D(object):
         """
         self.ne += (-self.dfluxe + self.Se)*dt
         self.ni += (-self.dfluxi + self.Si)*dt
-
-    def plot_txp_coeff(self, PLA, figsize=(8, 8), ihoriz=1, 
-                    dpi=300, fname='Transp_coeff.png', imode='Contour'):
-        """
-        Plot transp coeff vs position.
-        
-        var include diffusion coeff and mobility.
-        PLA: PLAsma2d object
-            use PLA.mesh.x,z for plot
-        figsize: a.u., (2, ) tuple, size of fig
-        ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
-        dpi: a.u., dots per inch
-        fname: str, var, name of png file to save
-        imode: str, var, ['Contour', 'Scatter']
-        """
-        _x, _z = PLA.mesh.x, PLA.mesh.z
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot transp coeff
-        if imode == 'Contour':
-            for _ax, _den, _title in zip(axes, (self.De, self.Di), 
-                            ('E Diffusion Coeff', 'Ion Diffusion Coeff')):
-                _cs = _ax.contourf(_x, _z, _den, cmap=colMap)
-                _ax.set_title(_title)
-                fig.colorbar(_cs, ax=_ax, shrink=0.9)
-            
-        elif imode == 'Scatter':
-            for _ax, _den, _title in zip(axes, (self.De, self.Di), 
-                                         ('E Density', 'Ion Density')):
-                _ax.scatter(_x, _z, c=_den, s=5, cmap=colMap)
-                _ax.set_title(_title)
-            
-        for ax in axes:
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        fig.savefig(fname, dpi=dpi)
-        plt.close()
-    
-    def plot_flux(self, PLA, figsize=(8, 8), ihoriz=1, 
-                    dpi=300, fname='flux.png', imode='Contour'):
-        """
-        Plot flux vs position.
-        
-        var include flux and dflux.
-        PLA: PLAsma2d object
-            use PLA.mesh.x,z for plot
-        figsize: a.u., (2, ) tuple, size of fig
-        ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
-        dpi: a.u., dots per inch
-        fname: str, var, name of png file to save
-        imode: str, var, ['Contour', 'Scatter']
-        """
-        _x, _z = PLA.mesh.x, PLA.mesh.z
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot flux
-        if imode == 'Contour':
-            for _ax, _den, _title in zip(axes, (self.fluxex, self.fluxez), 
-                            ('E flux in x', 'E flux in z')):
-                _cs = _ax.contourf(_x, _z, _den, cmap=colMap)
-                _ax.set_title(_title)
-                fig.colorbar(_cs, ax=_ax, shrink=0.9)
-        
-        for ax in axes:
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        fig.savefig('Eon_'+fname, dpi=dpi)
-        plt.close()
-        
-        # plot dflux
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot flux
-        if imode == 'Contour':
-            for _ax, _den, _title in zip(axes, (self.dfluxe, self.dfluxi), 
-                            ('E dflux', 'Ion dflux')):
-                _cs = _ax.contourf(_x, _z, _den, cmap=colMap)
-                _ax.set_title(_title)
-                fig.colorbar(_cs, ax=_ax, shrink=0.9)
-        
-        for ax in axes:
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        fig.savefig('d'+fname, dpi=dpi)
-        plt.close()
-
 
 class DIFF2D(TRANSP2D):
     """
