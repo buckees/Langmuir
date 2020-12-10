@@ -74,15 +74,6 @@ class PLASMA2D(object):
         # modify init
         self.update_plasma()
 
-    def _set_bc(self):
-        """Impose b.c. on the plasma."""
-        for idx in self.mesh.bndy_list:
-            self.ne[idx] = 1e11
-            self.ni[idx] = 1e11
-            self.nn[idx] = 1e11
-            self.Te[idx] = 0.1
-            self.Ti[idx] = 0.01
-
     def _set_nonPlasma(self):
         """Impose fixed values on the non-plasma materials."""
         for idx, mat in np.ndenumerate(self.mesh.mat):
@@ -109,14 +100,18 @@ class PLASMA2D(object):
         """
         self._calc_conde()
         self._calc_pwr_in()
-        self._set_bc()
         self._set_nonPlasma()
         self._limit_plasma()
+        self._calc_ave()
 
     def _calc_pwr_in(self):
         """Calc input power due to E-field."""
         EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
         self.pwr_in = np.multiply(np.real(self.conde), EF2)
+    
+    def _calc_ave(self):
+        """Calc averaged variables."""
+        self.ne_ave = np.multiply(self.ne, self.isPlasma)
     
     def get_eps(self):
         """Get epsilon from materials."""
