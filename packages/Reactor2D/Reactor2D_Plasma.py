@@ -60,6 +60,8 @@ class PLASMA2D(object):
         self.nn = np.ones_like(x)*(press*3.3e19)  # init neutral density
         self.Te = np.ones_like(x)*Te  # init eon temperature
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
+        self.Se = np.zeros_like(x)
+        self.Si = np.zeros_like(x)
         self.coll_em = np.ones_like(x)*(press/10.0*1e7)  # eon coll freq (mom)
         self.coll_im = np.ones_like(x)*(press/10.0*1e7)  # ion coll freq (mom)
         self.pot = np.zeros_like(x)  # initial uniform potential
@@ -90,11 +92,9 @@ class PLASMA2D(object):
         """Impose fixed values on the non-plasma materials."""
         for idx, mat in np.ndenumerate(self.mesh.mat):
             if mat:
-                self.ne[idx] = 1e11
-                self.ni[idx] = 1e11
-                self.nn[idx] = 1e11
-                self.Te[idx] = 0.1
-                self.Ti[idx] = 0.01
+                self.ne[idx], self.ni[idx], self.nn[idx] = 1e11, 1e11, 1e11
+                self.Te[idx], self.Ti[idx] = 0.1, 0.01
+                self.Ex[idx], self.Ez[idx] = 0.0, 0.0
 
     def _limit_plasma(self, n_min=1e11, n_max=1e22, T_min=0.001, T_max=100.0):
         """Limit variables in the plasma."""
