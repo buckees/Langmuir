@@ -242,7 +242,7 @@ class AMBI2D(TRANSP2D):
         self.Da = self.Di*(1.0 + np.divide(PLA.Te, PLA.Ti))
         dnix, dniz = PLA.mesh.cnt_diff(self.ni)
         self.Ex = np.divide(self.Di - self.De, self.Mui + self.Mue)
-        self.Ez = deepcopy(self.Eax)
+        self.Ez = deepcopy(self.Ex)
         self.Ex *= np.divide(dnix, self.ni)
         self.Ez *= np.divide(dniz, self.ni)
         # # Calc flux
