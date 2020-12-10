@@ -41,26 +41,9 @@ class Mesh2D(Mesh):
                             self.nz)
         self.x, self.z = np.meshgrid(tempx, tempz)
         self.mat = np.zeros_like(self.x)
-        self._find_bndy()
         self._assign_mat()
         self._calc_plasma_area()
        
-    def _find_bndy(self):
-        """Add boundaries."""
-        self.bndy = np.zeros_like(self.x)
-        self.bndy_list = list()
-        for i in range(self.nx-1):
-            self.bndy_list.append((0, i))
-        for j in range(self.nz-1):
-            self.bndy_list.append((j, self.nx-1))
-        for i in reversed(range(1, self.nx)):
-            self.bndy_list.append((self.nz-1, i))
-        for j in reversed(range(1, self.nz)):
-            self.bndy_list.append((j, 0))
-        # sign value at bndy as 1
-        for idx in self.bndy_list:
-            self.bndy[idx] = 1
-
     def _assign_mat(self):
         """Assign materials to nodes."""
         for idx, x in np.ndenumerate(self.x):
@@ -68,31 +51,22 @@ class Mesh2D(Mesh):
             posn = np.array([x, z])
             mater = self.geom.get_mater(posn)
             self.mat[idx] = self.geom.mat_dict[mater]
-    
-    def _calc_plasma_area(self):
-        """Calc the total area of plasma region."""
-        self.area = 0
-        for idx, mat in np.ndenumerate(self.mat):
-            if not mat:
-                self.area += self.dx * self.dz
 
-    def plot(self, figsize=(8, 8), dpi=600, ihoriz=1, s_size=10):
+    def save_npz(self, fname):
+        """Save mesh to *.npz file."""
+        np.savez(self.name, x=self.x, z=self.z,
+                 mat=self.mat, res=self.res, ngrid=self.ngrid,
+                 bl=self.geom.domain.bl, tr=self.geom.domain.tr,
+                 mat_dict=self.mat_dict)
+
+    def plot(self, figsize=(8, 8), dpi=600, s_size=10):
         """Plot mesh."""
         colMap = plt.get_cmap('Set1')
-        
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
+        fig, ax = plt.subplots(1, 1, figsize=figsize, dpi=dpi,
                                      constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        ax = axes[0]
         ax.scatter(self.x, self.z, c=self.mat, s=s_size, cmap=colMap)
-        ax = axes[1]
-        ax.scatter(self.x, self.z, c=self.bndy, s=s_size, cmap=colMap)
         fig.savefig(self.name, dpi=dpi)
         plt.close()
-        
 
 class Mesh1D(Mesh):
     """Define 1D Mesh."""
@@ -108,24 +82,12 @@ class Mesh1D(Mesh):
         self._assign_mat()
         self._calc_plasma_area()
 
-    def _find_bndy(self):
-        """Add boundaries."""
-        self.bndy = np.zeros_like(self.x)
-        self.bndy[0], self.bndy[-1] = 1, 1        
-
     def _assign_mat(self):
         """Assign materials to nodes."""
         for idx, x in np.ndenumerate(self.x):
             mater = self.geom.get_mater(x)
             self.mat[idx] = self.geom.mater_dict[mater]
     
-    def _calc_plasma_area(self):
-        """Calc the total area of plasma region."""
-        self.area = 0
-        for mat in self.mat:
-            if not mat:
-                self.area += self.dx
-
     def plot(self, figsize=(8, 8), dpi=600, ihoriz=1):
         """Plot mesh."""
         colMap = plt.get_cmap('Set1')
