@@ -23,9 +23,9 @@ class PLASMA2D(object):
 
     def __init__(self, name='Plasma2d'):
         """
-        Init the Shape.
+        Init the PLASMA2D.
         
-        name: str, var, name of the Mesh2d.
+        name: str, var, name of the PLASMA2D.
         """
         self.name = name
 
