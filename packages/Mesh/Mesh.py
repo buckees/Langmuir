@@ -42,7 +42,6 @@ class Mesh2D(Mesh):
         self.x, self.z = np.meshgrid(tempx, tempz)
         self.mat = np.zeros_like(self.x)
         self._assign_mat()
-        self._calc_plasma_area()
        
     def _assign_mat(self):
         """Assign materials to nodes."""
@@ -52,7 +51,7 @@ class Mesh2D(Mesh):
             mater = self.geom.get_mater(posn)
             self.mat[idx] = self.geom.mat_dict[mater]
 
-    def save_npz(self, fname):
+    def save_npz(self):
         """Save mesh to *.npz file."""
         np.savez(self.name, x=self.x, z=self.z,
                  mat=self.mat, res=self.res, ngrid=self.ngrid,
