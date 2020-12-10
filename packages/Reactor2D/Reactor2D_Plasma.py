@@ -71,6 +71,8 @@ class PLASMA2D(object):
         self.Ex = np.zeros_like(x)  # initial uniform E-field
         self.Ez = np.zeros_like(x)  # initial uniform E-field
         self.Ey = np.zeros_like(x)  # initial uniform E-field
+        self.conde = np.zeros_like(x)
+        self.pwr_in = np.zeros_like(x)
         # modify init
         self.update_plasma()
 
@@ -209,16 +211,15 @@ class PLASMA2D(object):
         aaa
         """
         self._calc_conde()
+        self._calc_pwr_in()
         self._set_bc()
         self._set_nonPlasma()
         self._limit_plasma()
 
-    def readin_EF(self,fname):
-        """Read in E-Field from external file."""
-        temp_EF = np.fromfile(fname, dtype='f4')
-        temp_EF = np.reshape(temp_EF, (41, 51))
-        temp_EF = np.flip(temp_EF, 0)
-        self.EF = temp_EF
+    def _calc_pwr_in(self):
+        """Calc input power due to E-field."""
+        EF2 = self.Ex**2 + self.Ez**2 + self.Ey**2
+        self.pwr_in = np.multiply(self.conde, EF2)
     
     def get_eps(self):
         """Get epsilon from materials."""
