@@ -66,27 +66,46 @@ class MESH2D():
         self.isPlasma = (self.mat == 0).astype(int)
         self.area = self.dx * self.dz * self.isPlasma.sum()
 
-    def cnt_diff(self, f):
+    def cnt_diff(self, f, imode='Scalar'):
         """
         Caculate dy/dx using central differencing.
         
-        input: y
-        dy/dx = (y[i+1] - y[i-1])/(2.0*dx)
-        dy[0] = dy[1]; dy[-1] = dy[-2]
-        output: dy
+        f: scalar or vector
+        imode: str, var, 'Scalar' or 'Vector'
+        if imode == 'Scalar':
+            df/dx = (f[i+1] - f[i-1])/(2.0*dx)
+            df[0] = df[1]; df[-1] = dy[-2]
+            df/dz = ...
+        if imode == 'Vector':
+            (d/dx, d/dz)*(fx, fz) = dfx/dx + dfz/dz
         """
-        dfx = np.zeros_like(self.x)
-        dfz = np.zeros_like(self.z)
-        # Although dy[0] and dy[-1] are signed here,
-        # they are eventually specified in boundary conditions
-        # dy[0] = dy[1]; dy[-1] = dy[-2]
-        for i in range(1, self.nx-1):
-            dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.dx/2.0
-        for j in range(1, self.nz-1):
-            dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.dz/2.0
-        dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
-        dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
-        return dfx, dfz
+        if imode not in ['Scalar', 'Vector']:
+            return 'Error: imode not found!'
+        
+        if imode == 'Scalar':
+            dfx = np.zeros_like(self.x)
+            dfz = np.zeros_like(self.z)
+            # Although dy[0] and dy[-1] are signed here,
+            # they are eventually specified in boundary conditions
+            # dy[0] = dy[1]; dy[-1] = dy[-2]
+            for i in range(1, self.nx-1):
+                dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.dx/2.0
+            for j in range(1, self.nz-1):
+                dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.dz/2.0
+            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
+            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
+            return dfx, dfz
+        elif imode == 'Vector':
+            fx, fz = f
+            dfx, dfz = np.zeros_like(self.x), np.zeros_like(self.x)
+            for i in range(1, self.nx-1):
+                dfx[:, i] = (fx[:, i+1] - fx[:, i-1])/self.dx/2.0
+            for j in range(1, self.nz-1):
+                dfz[j, :] = (fz[j+1, :] - fz[j-1, :])/self.dz/2.0
+            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
+            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
+            df = dfx + dfz
+            return df
     
     def cnt_diff_2nd(self, f):
         """
@@ -133,7 +152,7 @@ class MESH2D():
         plt.close()
         
     def plot_var(self, var, var_name,
-                 fname='Plasma.png',figsize=(8, 8), ihoriz=1, dpi=300, 
+                 fname='Plasma.png',figsize=(16, 8), ihoriz=1, dpi=300, 
                  imode='Contour', iplot_geom=0):
         """
         Plot plasma variables vs. position.
