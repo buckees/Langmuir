@@ -73,7 +73,19 @@ class PLASMA2D(object):
         self.dfluxe, self.dfluxi = np.zeros_like(x), np.zeros_like(x)
         # modify init
         self.update_plasma()
-
+        
+    def update_plasma(self):
+        """
+        Make sure the all attr in PLASMA2D are updated.
+        
+        aaa
+        """
+        self._set_nonPlasma()
+        self._limit_plasma()
+        self._calc_conde()
+        self._calc_pwr_in()
+        self._calc_ave()
+        
     def _set_nonPlasma(self):
         """Impose fixed values on the non-plasma materials."""
         for idx, mat in np.ndenumerate(self.mesh.mat):
@@ -91,18 +103,6 @@ class PLASMA2D(object):
         self.nn = np.clip(self.nn, n_min, n_max)
         self.Te = np.clip(self.Te, T_min, T_max)
         self.Ti = np.clip(self.Ti, T_min, T_max)    
-    
-    def update_plasma(self):
-        """
-        Make sure the all attr in PLASMA2D are updated.
-        
-        aaa
-        """
-        self._calc_conde()
-        self._calc_pwr_in()
-        self._set_nonPlasma()
-        self._limit_plasma()
-        self._calc_ave()
 
     def _calc_pwr_in(self):
         """Calc input power due to E-field."""
