@@ -10,7 +10,7 @@ PLASMA2D contains:
 
 import numpy as np
 
-from packages.Constants import (AMU, UNIT_CHARGE, EON_MASS)
+from packages.Constants import (PI, AMU, UNIT_CHARGE, EON_MASS)
 
 class PLASMA2D(object):
     """Define PLASMA2D."""
@@ -28,13 +28,14 @@ class PLASMA2D(object):
         self.mesh = mesh
 
     def init_plasma(self, ne=1e17, press=10, 
-                    Te=1, Ti=0.1, Mi=40, wrf=13.56e6):
+                    Te=1, Ti=0.1, Mi=40, freq=13.56e6):
         """
         Initiate plasma attributes.
 
         ne: 1/m^3, eon denisty
         ni: 1/m^3, ion density = eon density initially
         press: mTorr, pressure
+        freq: Hz, frequency
         nn: 1/m^3, neutral density determined by pressure
             At 1 atm, number density = 0.025e27 m^-3.
             At 1 Torr, number density = 3.3e22 m^-3.
@@ -51,7 +52,7 @@ class PLASMA2D(object):
         self._press = press # pressure in Torr
         self._Me = EON_MASS # eon mass in kg
         self._Mi = Mi*AMU # ion mass in kg
-        self._wrf = wrf # rf frequency in angular frequency,  rad/s
+        self._wrf = 2.0*PI*freq # rf frequency in angular frequency,  rad/s
         # public attributes
         x = self.mesh.x
         self.ne = np.ones_like(x)*ne  # init uniform ne on 1d mesh
