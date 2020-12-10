@@ -55,16 +55,11 @@ ICP2d.add_shape(coil5)
 coil6 = Rectangle('Coil', (0.06, 0.34), (0.08, 0.36))
 ICP2d.add_shape(coil6)
  
-ICP2d.plot(figsize=(10, 4), ihoriz=1)
+ICP2d.plot(figsize=(10, 4))
 print(ICP2d)
 
 # generate mesh to imported geometry
 mesh2d = Mesh2D(import_geom=ICP2d)
-mesh2d.gen_mesh(ngrid=(50, 40))
-mesh2d.plot(figsize=(10, 4), ihoriz=1)
-
-import numpy as np
-np.savez(mesh2d.name, x=mesh2d.x, z=mesh2d.z,
-         mat=mesh2d.mat, res=mesh2d.res, ngrid=mesh2d.ngrid,
-         bl=mesh2d.geom.domain.bl, tr=mesh2d.geom.domain.tr,
-         mat_dict=mesh2d.mat_dict)
+mesh2d.gen_mesh(ngrid=(100, 80))
+mesh2d.plot(figsize=(10, 4))
+mesh2d.save_npz()
