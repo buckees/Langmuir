@@ -38,9 +38,6 @@ class TRANSP2D(object):
         self.ni = deepcopy(PLA.ni)
         self.pot = deepcopy(PLA.pot)
         self.Ex, self.Ez = deepcopy(PLA.Ex), deepcopy(PLA.Ez)
-        self.dnex, self.dnez = deepcopy(PLA.dnex), deepcopy(PLA.dnez)
-        self.dnix, self.dniz = deepcopy(PLA.dnix), deepcopy(PLA.dniz)
-        self.d2ne, self.d2ni = deepcopy(PLA.d2ne), deepcopy(PLA.d2ni)
         self.fluxex = np.zeros_like(PLA.ne)
         self.fluxez = np.zeros_like(PLA.ne)
         self.fluxix = np.zeros_like(PLA.ne)
@@ -49,7 +46,7 @@ class TRANSP2D(object):
         self.dfluxi = np.zeros_like(PLA.ne)
         self.Se = np.zeros_like(PLA.ne)
         self.Si = np.zeros_like(PLA.ne)
-        self._calc_transp_coeff(PLA)
+        self._calc_txp_coeff(PLA)
     
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -63,7 +60,7 @@ class TRANSP2D(object):
         PLA.dfluxe = deepcopy(self.dfluxe)
         PLA.dfluxi = deepcopy(self.dfluxi)
 
-    def _calc_transp_coeff(self, PLA):
+    def _calc_txp_coeff(self, PLA):
         """
         Calc diffusion coefficient and mobility.
 
@@ -73,8 +70,8 @@ class TRANSP2D(object):
         D and Mu depend only on PLA.
         """
         # calc diff coeff: D = k*T/(m*coll_m)
-        self.De = np.divide(KB_EV*PLA.Te, EON_MASS*PLA.coll_em)  
-        self.Di = np.divide(KB_EV*PLA.Ti, PLA.Mi*PLA.coll_im)  
+        self.De = np.divide(KB_EV*PLA.Te, PLA._Me*PLA.coll_em)  
+        self.Di = np.divide(KB_EV*PLA.Ti, PLA._Mi*PLA.coll_im)  
         # calc mobility: Mu = q/(m*coll_m)
         self.Mue = UNIT_CHARGE/PLA._Me/PLA.coll_em
         self.Mui = UNIT_CHARGE/PLA._Mi/PLA.coll_im
@@ -241,7 +238,7 @@ class AMBI2D(TRANSP2D):
         Da = Di(1 + Te/Ti).
         """
         # Calc transp coeff first
-        self.calc_txp_coeff(PLA)
+        self._calc_txp_coeff(PLA)
         # Calc ambi coeff
         self.Da = self.Di*(1.0 + np.divide(PLA.Te, PLA.Ti))
         dnix, dniz = PLA.mesh.cnt_diff(self.ni)
