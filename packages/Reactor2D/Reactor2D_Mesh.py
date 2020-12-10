@@ -75,60 +75,6 @@ class MESH2D():
             if not _mat:
                 self.area += self.dx * self.dz
 
-    def plot(self, fname='Mesh.png', figsize=(8, 8), dpi=600, ihoriz=1):
-        """Plot mesh."""
-        colMap = plt.get_cmap('Set1')
-        
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        ax = axes[0]
-        ax.scatter(self.x, self.z, c=self.mat, s=10, cmap=colMap)
-        ax = axes[1]
-        ax.scatter(self.x, self.z, c=self.bndy, s=10, cmap=colMap)
-        fig.savefig(fname, dpi=dpi)
-        plt.close()
-        
-    def plot_var(self, var, var_name,
-                 fname='Plasma.png',figsize=(8, 8), ihoriz=1, dpi=300, 
-                 imode='Contour', iplot_geom=0):
-        """
-        Plot plasma variables vs. position.
-            
-        var: list of var, such as [ne, ni]
-        var_name: list of str, such as ['E Density', 'Ion Density']
-        fname: str, var, name of png file to save
-        figsize: a.u., (2, ) tuple, size of fig
-        ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
-        dpi: a.u., dots per inch
-        imode: str, var, ['Contour', 'Scatter']
-        iplot_geom: int, var, control whether to plot geom
-        """
-        nvar = len(var)
-        if ihoriz:
-            fig, axes = plt.subplots(1, nvar, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(nvar, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot var
-        for ax, den, title in zip(axes, var, var_name):
-            if imode == 'Contour':
-                cs = ax.contourf(self.x, self.z, den, cmap=colMap)
-            elif imode == 'Scatter':
-                cs = ax.scatter(self.x, self.z, c=den, cmap=colMap)
-            ax.set_title(title)
-            fig.colorbar(cs, ax=ax, shrink=0.9)
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        # save and close()
-        fig.savefig(fname, dpi=dpi)
-        plt.close()
-
     def cnt_diff(self, f):
         """
         Caculate dy/dx using central differencing.
@@ -173,3 +119,61 @@ class MESH2D():
         d2fz[0, :], d2fz[-1, :] = deepcopy(d2fz[1, :]), deepcopy(d2fz[-2, :])
         d2f = d2fx + d2fz
         return d2f
+
+    def plot(self, figsize=(8, 8), dpi=600, ihoriz=1):
+        """Plot mesh."""
+        colMap = plt.get_cmap('Set1')
+        
+        if ihoriz:
+            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
+                                     constrained_layout=True)
+        else:
+            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
+                                     constrained_layout=True)
+        # plot mesh
+        for ax, den, title in zip(axes, (self.mat, self.bndy), 
+                                  ('Material', 'Boundary')):
+            ax.scatter(self.x, self.z, c=den, s=10, cmap=colMap)
+            ax.set_xlabel('Position (m)')
+            ax.set_ylabel('Height (m)')
+            ax.set_aspect('equal')
+        # save and close()
+        fig.savefig(self.name, dpi=dpi)
+        plt.close()
+        
+    def plot_var(self, var, var_name,
+                 fname='Plasma.png',figsize=(8, 8), ihoriz=1, dpi=300, 
+                 imode='Contour', iplot_geom=0):
+        """
+        Plot plasma variables vs. position.
+            
+        var: list of var, such as [ne, ni]
+        var_name: list of str, such as ['E Density', 'Ion Density']
+        fname: str, var, name of png file to save
+        figsize: a.u., (2, ) tuple, size of fig
+        ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
+        dpi: a.u., dots per inch
+        imode: str, var, ['Contour', 'Scatter']
+        iplot_geom: int, var, control whether to plot geom
+        """
+        nvar = len(var)
+        if ihoriz:
+            fig, axes = plt.subplots(1, nvar, figsize=figsize, dpi=dpi,
+                                     constrained_layout=True)
+        else:
+            fig, axes = plt.subplots(nvar, 1, figsize=figsize, dpi=dpi,
+                                     constrained_layout=True)
+        # plot var
+        for ax, den, title in zip(axes, var, var_name):
+            if imode == 'Contour':
+                cs = ax.contourf(self.x, self.z, den, cmap=colMap)
+            elif imode == 'Scatter':
+                cs = ax.scatter(self.x, self.z, c=den, cmap=colMap)
+            ax.set_title(title)
+            fig.colorbar(cs, ax=ax, shrink=0.9)
+            ax.set_xlabel('Position (m)')
+            ax.set_ylabel('Height (m)')
+            ax.set_aspect('equal')
+        # save and close()
+        fig.savefig(fname, dpi=dpi)
+        plt.close()
