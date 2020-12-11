@@ -7,51 +7,18 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 colMap = copy.copy(cm.get_cmap("Accent"))
 colMap.set_under(color='white')
-from scipy.optimize import minimize, least_squares
+from scipy.optimize import minimize
 
-class MESHGRID(object):
+class MESH2D(object):
     """Mesh object."""
 
-    def __init__(self, width=100.0e-9, height=100.0e-9, 
-                 res_x=1.0e-9, res_z=1.0e-9):
-        self.width = width  # domain width in x direction
-        self.height = height  # domain height in z direction
-        self.res_x = res_x  # resolution in x direction
-        self.res_z = res_z  # resolution in z direction
-        # array of resolution
-        self.res = np.array([self.res_x, self.res_z])
-#        <--------------------- width --------------------->
-#        0.0 ---- 1.0 ---- 2.0 ---- ... ---- 99.0 ---- 100.0
-#        --- cell --- cell --- cell ... cell ---- cell -----
-#        -- center - center - center . center -- center ----
-#        --- 0.5 ---- 1.5 ---- 2.5  ... 98.5 ---- 99.5 -----
-#        --(0, nj)--(1, nj)--(2, nj)...(98, nj)--(99, nj)---
-        self.nx = int(np.ceil(width/res_x))  # num of cells in x
-        self.nz = int(np.ceil(height/res_z))  # num of cels iin z
-        # init x, z coordinates, which represent the cell center 
-        tempx = np.linspace(0.0 + 0.5*self.res_x, 
-                            self.width - 0.5*self.res_x, self.nx)
-        tempz = np.linspace(0.0 + 0.5*self.res_z, 
-                            self.height - 0.5*self.res_z, self.nz)
-        self.x, self.z = np.meshgrid(tempx, tempz)
-        # mesh materials is assigned to self.mat matrix
-        # note that the shape of self.mat is (nz, nx)
-        self.mat = np.zeros_like(self.x).astype(int)
-        # construct a mat-like matrix for surface
-        # surf = 1 if a surface node; 0 if not.
-        self.surf = np.zeros_like(self.mat).astype(int)
-        self.mater = []  # materials name <--> materails No.
-
-    def __str__(self):
-        """Print out mesh information."""
-        return """
-               This mesh with domain of %.1f nm (width) x %.1f nm (height)
-               and resolution in (x, z) = (%.2f nm, %.2f nm)
-               and number of cells in (x, z) = (%d, %d)
-               """ \
-                % (self.width, self.height,
-                   self.res_x, self.res_z,
-                   self.nx, self.nz)
+    def __init__(self, name='Mesh2d'):
+        """
+        Init the MESH2D.
+        
+        name: str, var, name of the MESH2D.
+        """
+        self.name = name
    
     def readin_mesh(self, fname='restart'):
         """Read in mat, x and z from npy files."""
