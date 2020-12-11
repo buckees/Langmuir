@@ -39,7 +39,6 @@ class MESH2D(object):
         self.height = self.top - self.bottom
         # find the surf nodes and surf_vac nodes
         self._find_surf()
-        self._find_surf_set()
 
     def _check_surf(self, idx):
         j, i = idx
@@ -82,7 +81,7 @@ class MESH2D(object):
             for i in range(self.nx):
                 self._check_surf((j, i))
 
-    def _find_surf_set(self):
+    def _track_surf(self):
         # construct the surf set
         self.surf_set = set()
         # find the beginning node, search starting from the top left corner
@@ -143,23 +142,24 @@ class MESH2D(object):
                                          lb=lb, rb=rb, tb=tb, bb=bb)
 
     
-    def update_surf(self, idx, radius=2):
+    def update_surf(self, idx, radius=2, itrack_surf=False):
         """
         Search for the surface nodes.
         
         Using find_surf() results in high computational cost.
         Therefore, only the neighbors of the changed node is re-searched.
         """
-        _j, _i = idx
+        idx_j, idx_i = idx
         # update the surf nodes within a box of 2*radius+1
-        for j in range(_j-radius, _j+radius+1):
-            for i in range(_i-radius, _i+radius+1):
+        for j in range(idx_j-radius, idx_j+radius+1):
+            for i in range(idx_i-radius, idx_i+radius+1):
                 self.surf[j, i] = 0
                 self._check_surf((j, i))
         
-        # redo _find_surf_set() globally
-        # cannot find a way to update it locally
-        self._find_surf_set()
+        if itrack_surf:
+            # redo _find_surf_set() globally
+            # cannot find a way to update it locally
+            self._track_surf()
                     
 
     def plot(self, figsize=(8, 8), dpi=600, fname='Mesh.png'):
