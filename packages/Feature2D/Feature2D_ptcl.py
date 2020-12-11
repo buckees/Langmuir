@@ -9,8 +9,24 @@ from scipy.stats import cosine
 class PARTICLE(object):
     """Create particle object."""
 
-    def __init__(self, name, ptype, mass, charge, dead=0):
-        self.name = name  # str
+    def __init__(self, name='Particle'):
+        """
+        Init the PARTICLE.
+        
+        name: str, var, name of the PARTICLE.
+        """
+        self.name = name
+    
+    def readin_species(self, fname):
+        """
+        Read in species database.
+        
+        All launched particles must be selected from the database.
+        Customized species are not allowed.
+        """
+        pass
+    
+    def init_particle(self, ptype, mass, charge, isAlive=False):
         self.ptype = ptype  # str, 'E','Ion','Neut' or 'Bkg'
         self.mass = mass  # unit in AMU
         self.charge = charge  # unit in Unit Charge of Electron
@@ -18,7 +34,7 @@ class PARTICLE(object):
         self.enrg = 0.025  # unit in eV, initial as room temperature
         self.uvec = np.zeros(2)
         self.accl = np.zeros(2)
-        self.dead = dead  # indicator for ptcl alive or dead
+        self.isAlive = False  # indicator for ptcl alive or dead
 
     def __str__(self):
         """Print out the particle informaiton."""
