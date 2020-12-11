@@ -49,14 +49,14 @@ class EERGY2D(object):
         th_cond_e: W/m/K, (nz, nx) matrix, heat conductivity for eon
         """
         # calc thermal conductivity for eon
-        self.th_cond_e = np.ones_like(PLA.ne)*1e-2
+        self.th_cond_e = np.ones_like(PLA.ne)*1e-3
         self._set_nonPlasma(PLA)
 
     def _set_nonPlasma(self, PLA):
         """Impose fixed th_cond_coeff on the non-PLAsma materials."""
         for idx, mat in np.ndenumerate(PLA.mesh.mat):
             if mat:
-                self.th_cond_e[idx] = 1e-2
+                self.th_cond_e[idx] = 1e-3
                 self.Te[idx] = 0.1
     
     def _calc_th_flux(self, PLA):
@@ -70,7 +70,8 @@ class EERGY2D(object):
         # calc convection term
         self.Qex = 2.5*KB_EV*np.multiply(self.Te, self.fluxex)
         self.Qez = 2.5*KB_EV*np.multiply(self.Te, self.fluxez)
-        self.dQe = PLA.mesh.cnt_diff((self.Qex, self.Qez), imode='Vector')
+        self.dQe = 0.0
+        # self.dQe = PLA.mesh.cnt_diff((self.Qex, self.Qez), imode='Vector')
         # self.dQe = 2.5*KB_EV*np.multiply(self.Te, self.dfluxe)
         # calc conduction term
         self.dTex, self.dTez = PLA.mesh.cnt_diff(self.Te)
