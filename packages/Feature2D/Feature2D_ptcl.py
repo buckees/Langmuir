@@ -17,7 +17,7 @@ class PARTICLE(object):
         """
         self.name = name
     
-    def readin_species(self, fname):
+    def readin_sp_database(self, fname):
         """
         Read in species database.
         
