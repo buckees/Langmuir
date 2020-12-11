@@ -26,7 +26,8 @@ class PARTICLE(object):
         """
         pass
     
-    def init_particle(self, ptype, mass, charge, isAlive=False):
+    def init_ptcl(self, ptype, mass, charge, isAlive=False):
+        """Init particle."""
         self.ptype = ptype  # str, 'E','Ion','Neut' or 'Bkg'
         self.mass = mass  # unit in AMU
         self.charge = charge  # unit in Unit Charge of Electron
