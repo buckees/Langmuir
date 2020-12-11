@@ -38,5 +38,5 @@ class FIELD2D(object):
     
     def create_Ey(self):
         """Create Ey for play."""
-        self.Ey = self.z/self.z.sum()*1.0
+        self.Ey = self.z/self.z.sum()*1.0e4
         
