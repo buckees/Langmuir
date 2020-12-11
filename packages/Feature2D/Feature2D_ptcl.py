@@ -5,10 +5,9 @@ from math import cos, sin, sqrt, acos
 import matplotlib.pyplot as plt
 from scipy.stats import cosine
 
-
-class PARTICLE(object):
-    """Create particle object."""
-
+class LAUNCH(object):
+    """Create LAUNCH action."""
+    
     def __init__(self, name='Particle'):
         """
         Init the PARTICLE.
@@ -27,8 +26,18 @@ class PARTICLE(object):
         self.sp_set = set(['H', 'Ar+'])
         pass
     
-    
-    
+
+class PARTICLE(object):
+    """Create particle object."""
+
+    def __init__(self, name='Particle'):
+        """
+        Init the PARTICLE.
+        
+        name: str, var, name of the PARTICLE.
+        """
+        self.name = name
+      
     def init_ptcl(self, ptype, mass, charge, isAlive=False):
         """Init particle."""
         self.ptype = ptype  # str, 'E','Ion','Neut' or 'Bkg'
