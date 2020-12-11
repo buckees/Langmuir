@@ -2,7 +2,8 @@
 
 import numpy as np
 from math import cos, sin
-import copy
+
+from copy import copy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 colMap = copy.copy(cm.get_cmap("Accent"))
@@ -256,7 +257,7 @@ class MESH2D(object):
             temp_sub_surf = np.where(sub_surf == -1, 0, sub_surf)
             def cost_func_surf_norm(theta):
                 """Construct the cost func for surface fitting."""
-                A, B = -np.sin(theta), np.cos(theta)
+                A, B = -sin(theta), cos(theta)
                 C = A*self.x[idx] + B*self.z[idx]
                 Q = A*sub_x + B*sub_z - C
                 Q = np.multiply(Q, temp_sub_surf)
