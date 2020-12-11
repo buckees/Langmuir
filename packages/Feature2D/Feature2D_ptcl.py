@@ -89,22 +89,11 @@ class PARTICLE(object):
 
         self.enrg = enrg
 
-    def init_plot(self):
-        """Plot the initialized positions and velocities."""
-        fig, axes = plt.subplots(1, 2, figsize=(10, 4),
-                                 constrained_layout=True)
-        axes[0].plot(self.uvec[0], self.uvec[1], 'o')
-        axes[0].set_xlim(-1.0, 1.0)
-        axes[0].set_ylim(-1.0, 0.0)
-        axes[1].quiver(self.posn[0], self.posn[1],
-                       self.uvec[0], self.uvec[1])
-        plt.show()
-
     def move_ptcl(self, delta_L):
         """Move each partile in a length of delta_L along its v-vector."""
         self.posn += self.uvec*delta_L
 
-    def bdry_check(self, left, right, top, imode='lost'):
+    def bndy_check(self, left, right, top, imode='lost'):
         """
         Check the b.c. for moving ptcl.
 
