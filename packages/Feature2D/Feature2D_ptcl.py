@@ -36,15 +36,6 @@ class PARTICLE(object):
         self.accl = np.zeros(2)
         self.isAlive = False  # indicator for ptcl alive or dead
 
-    def __str__(self):
-        """Print out the particle informaiton."""
-        return """
-               The launched particle is '%s' with mass of %.1f AMU
-               it belongs to '%s', with charge of %+d
-               """ \
-               % (self.name, self.mass,
-                  self.ptype, self.charge)
-
     def init_posn(self, left, right, top):
         """Initialize the position at the top boundary."""
         init_posx = np.random.uniform(left, right)
