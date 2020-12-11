@@ -24,7 +24,10 @@ class PARTICLE(object):
         All launched particles must be selected from the database.
         Customized species are not allowed.
         """
+        self.sp_set = set(['H', 'Ar+'])
         pass
+    
+    
     
     def init_ptcl(self, ptype, mass, charge, isAlive=False):
         """Init particle."""
