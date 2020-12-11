@@ -8,13 +8,15 @@ from scipy.stats import cosine
 class LAUNCH(object):
     """Create LAUNCH action."""
     
-    def __init__(self, name='Particle'):
+    def __init__(self, name='Launch'):
         """
         Init the PARTICLE.
         
         name: str, var, name of the PARTICLE.
         """
         self.name = name
+        self.sp_name_set = set()
+        self.ptcl_list = list()
     
     def readin_sp_database(self, fname):
         """
@@ -23,9 +25,22 @@ class LAUNCH(object):
         All launched particles must be selected from the database.
         Customized species are not allowed.
         """
-        self.sp_set = set(['H', 'Ar+'])
+        self.sp_name_set = set(['H', 'Ar+'])
+        self.sp_set = set()
         pass
     
+    def add_ptcl(self, sp_name, flux):
+        """Check and add sp to ptcl_list."""
+        if sp_name in self.sp_set:
+            # find sp in sp_set
+            # self.ptcl_list.append(sp)
+            pass
+        else:
+            return f'Error: {sp_name} is not found in the database.'
+    
+    def pick_ptcl(self):
+        """Pick a ptcl to launch."""
+        return None
 
 class PARTICLE(object):
     """Create particle object."""
