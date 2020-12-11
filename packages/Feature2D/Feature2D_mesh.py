@@ -141,7 +141,29 @@ class MESH2D(object):
                     self._find_next_node(_idx_down,
                                          lb=lb, rb=rb, tb=tb, bb=bb)
 
-    
+    def hit_check(self, posn):
+        """
+        Check wether a particle hits a material.
+
+        All posn needs to be rounded to 0.5*nx (cell center).
+        posn needs to be shifted by half res_x.
+        """
+        idx = np.rint((posn - self.res*0.5) / self.res).astype(int)
+        # reverse idx in order to accomplish self.mat order
+        idx = np.flipud(idx)
+        # convert idx to index format
+        idx = tuple(idx)
+        return self.mat[idx], idx
+
+    def change_mat(self, idx, mat=0):
+        """
+        Update materials due to etching.
+
+        idx: a.u., (i, j) tuple, the index of materails to be changed
+        mat: int, var, material
+        """
+        self.mat[idx] = mat
+
     def update_surf(self, idx, radius=2, itrack_surf=False):
         """
         Search for the surface nodes.
@@ -161,29 +183,6 @@ class MESH2D(object):
             # cannot find a way to update it locally
             self._track_surf()
         
-    def hit_check(self, posn):
-        """
-        Check wether a particle hits a material.
-
-        All posn needs to be rounded to 0.5*nx (cell center).
-        posn needs to be shifted by half res_x.
-        """
-        idx = np.rint((posn - self.res*0.5) / self.res).astype(int)
-        # reverse idx in order to accomplish self.mat order
-        idx = np.flipud(idx)
-        # convert idx to index format
-        idx = tuple(idx)
-        return self.mat[idx], idx
-
-    def change_mat(self, idx, mat_name='Vac'):
-        """
-        Update materials due to etching.
-
-        idx: a.u., (i, j) tuple, the index of materails to be changed
-        mat_name: str, material name
-        """
-        self.mat[idx] = mat_name
-
     def calc_surf_norm(self, idx, radius=1, imode="Fit Plane", bc='Periodic'):
         """
         Caculate surface normal.
