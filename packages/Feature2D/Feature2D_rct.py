@@ -44,11 +44,6 @@ class React():
                 print(temp_sum)
                 self.df.loc[temp_df.index]['prob'].apply(lambda x:x/temp_sum)
                 print(self.df.loc[temp_df.index]['prob'])
-                
 
-if __name__ == '__main__':
-    react = React(sp_name=sp_name, mat_name=mat_name)
-    react.readin('Chem.csv')
-    print(react.df)
     
     
