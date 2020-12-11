@@ -160,18 +160,6 @@ class MESH2D(object):
             # redo _find_surf_set() globally
             # cannot find a way to update it locally
             self._track_surf()
-                    
-
-    def plot(self, figsize=(8, 8), dpi=600, fname='Mesh.png'):
-        """Plot mesh and surface."""
-        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                 constrained_layout=True)
-        ax = axes[0]
-        ax.scatter(self.x, self.z, c=self.mat, s=1, cmap=colMap, vmin=0.2)
-        ax = axes[1]
-        ax.scatter(self.x, self.z, c=self.surf, s=1)
-        fig.savefig(fname, dpi=dpi)
-        plt.close()
         
     def hit_check(self, posn):
         """
@@ -405,5 +393,16 @@ class MESH2D(object):
             imode = 'Drop', drop the floating cells/clusthers downwards.
         """
         if imode == 'Remove':
-            _idx_arr = np.where(self.surf == 1)
+            idx_arr = np.where(self.surf == 1)
             pass
+
+    def plot(self, figsize=(8, 8), dpi=600, fname='Mesh.png'):
+        """Plot mesh and surface."""
+        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
+                                 constrained_layout=True)
+        ax = axes[0]
+        ax.scatter(self.x, self.z, c=self.mat, s=1, cmap=colMap, vmin=0.2)
+        ax = axes[1]
+        ax.scatter(self.x, self.z, c=self.surf, s=1)
+        fig.savefig(fname, dpi=dpi)
+        plt.close()
