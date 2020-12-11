@@ -47,7 +47,7 @@ class TRANSP2D(object):
         """Copy var to PLASMA2D."""
         PLA.ne, PLA.ni = deepcopy(self.ne), deepcopy(self.ni)
         PLA.pot = deepcopy(self.pot)
-        PLA.Ex, PLA.Ez = deepcopy(self.Ex), deepcopy(self.Ez)
+        # PLA.Ex, PLA.Ez = deepcopy(self.Ex), deepcopy(self.Ez)
         PLA.fluxex = deepcopy(self.fluxex)
         PLA.fluxez = deepcopy(self.fluxez)
         PLA.fluxix = deepcopy(self.fluxix)
