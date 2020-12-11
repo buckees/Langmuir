@@ -309,27 +309,6 @@ class MESH2D(object):
         
         return surf_norm, theta
 
-    def plot_surf(self, figsize=(8, 8), dpi=600, fname='demo_surf.png',
-                  surf_norm_range=2, surf_norm_mode='Fit Plane'):
-        """Plot surf norm for all surf nodes."""
-        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                 constrained_layout=True)
-        ax = axes[0]
-        ax.scatter(self.x, self.z, c=self.mat, s=1, cmap=colMap, vmin=0.2)
-        ax = axes[1]
-        ax.scatter(self.x, self.z, c=self.surf, s=1)
-        
-        surf_list = np.transpose(np.nonzero(self.surf == 1))
-        
-        for surf_idx in surf_list:
-            surf_idx = tuple(surf_idx)
-            svec, sth = self.calc_surf_norm(surf_idx, radius=surf_norm_range, 
-                                    imode=surf_norm_mode)        
-            ax.quiver(self.x[surf_idx], self.z[surf_idx],
-                          svec[0], svec[1], width=0.001)
-           
-        fig.savefig(fname, dpi=dpi)
-
     def find_float_cell(self, imode='Direct', idiag=0):
         """
         Search for the floating cells.
@@ -366,24 +345,8 @@ class MESH2D(object):
                         cmap=colMap, vmin=0.2)
             fig.savefig('float_cells.png', dpi=300)
             plt.show()
-
-    def drop_cell(self, idx):
-        """
-        Drop the cells at idx.
-        
-        Drop the cell by 1 cell down until it hit bottom materials.
-        """
-        idx_j, idx_i = idx
-        # remove the cell at idx
-        temp_mat = self.mat[idx]
-        self.mat[idx] = 0
-        bottom = self.mat[idx_j-1, idx_i]
-        while bottom == 0:
-            idx_j -= 1
-            bottom = self.mat[idx_j-1, idx_i]
-        self.mat[idx_j, idx_i] = temp_mat
     
-    def drop_floating_cell(self, imode='Remove'):
+    def drop_floating_cell(self, idx, imode='Remove'):
         """
         Drop the floating cells/clusters.
         
@@ -392,8 +355,17 @@ class MESH2D(object):
             imode = 'Drop', drop the floating cells/clusthers downwards.
         """
         if imode == 'Remove':
-            idx_arr = np.where(self.surf == 1)
-            pass
+            self.change_mat(idx, 0)
+        elif imode == 'Drop':
+            idx_j, idx_i = idx
+            # remove the cell at idx
+            temp_mat = self.mat[idx]
+            self.mat[idx] = 0
+            bottom = self.mat[idx_j-1, idx_i]
+            while bottom == 0:
+                idx_j -= 1
+                bottom = self.mat[idx_j-1, idx_i]
+            self.mat[idx_j, idx_i] = temp_mat
 
     def plot(self, figsize=(8, 8), dpi=600, fname='Mesh.png'):
         """Plot mesh and surface."""
@@ -405,3 +377,24 @@ class MESH2D(object):
         ax.scatter(self.x, self.z, c=self.surf, s=1)
         fig.savefig(fname, dpi=dpi)
         plt.close()
+    
+    def plot_surf_norm(self, figsize=(8, 8), dpi=600, fname='surf_norm.png',
+                  surf_norm_range=2, surf_norm_mode='Fit Plane'):
+        """Plot surf norm for all surf nodes."""
+        fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
+                                 constrained_layout=True)
+        ax = axes[0]
+        ax.scatter(self.x, self.z, c=self.mat, s=1, cmap=colMap, vmin=0.2)
+        ax = axes[1]
+        ax.scatter(self.x, self.z, c=self.surf, s=1)
+        
+        surf_list = np.transpose(np.nonzero(self.surf == 1))
+        
+        for surf_idx in surf_list:
+            surf_idx = tuple(surf_idx)
+            svec, sth = self.calc_surf_norm(surf_idx, radius=surf_norm_range, 
+                                    imode=surf_norm_mode)        
+            ax.quiver(self.x[surf_idx], self.z[surf_idx],
+                          svec[0], svec[1], width=0.001)
+           
+        fig.savefig(fname, dpi=dpi)
