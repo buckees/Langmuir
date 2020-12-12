@@ -1,0 +1,1963 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+The Langmuir Model
+\end_layout
+
+\begin_layout Author
+\noindent
+Wei Tian
+\end_layout
+
+\begin_layout Address
+\noindent
+TSMC
+\end_layout
+
+\begin_layout Abstract
+\noindent
+In this document, a feature scale model is developed and used for recipe
+ tuning.
+ The detailed physical mechanisms and numerical algorithms are introduced
+ and discussed.
+\end_layout
+
+\begin_layout Section
+Introduction - Langmuir Model
+\end_layout
+
+\begin_layout Standard
+Langmuir model is a comprehensive model simulating the plasma etching processes.
+ It consists of three sub-models, reactor model, sheath model and feature
+ model.
+ Reactor model simulates the plasma in the reactor scale, which is typically
+ 30 to 50 cm.
+ 
+\end_layout
+
+\begin_layout Section
+File Structure
+\end_layout
+
+\begin_layout Standard
+Langmuir model is organized as a collection of three sub-models and designed
+ to use solvers as shared as possible.
+ The file structure is shown in the figure below, 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Dir_Tree.png
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The directory/file tree structure for Langmuir model.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Within the root directory, there are 
+\begin_inset Formula $packages$
+\end_inset
+
+, where all the model are placed, 
+\begin_inset Formula $run$
+\end_inset
+
+, where applications/cases are run, and 
+\begin_inset Formula $tests$
+\end_inset
+
+, where model tests are tested and stored.
+ License and Readme files are placed in the root directory.
+ Within the 
+\begin_inset Formula $packages$
+\end_inset
+
+, 
+\begin_inset Formula $Reactor2D$
+\end_inset
+
+, 
+\begin_inset Formula $Sheath2D$
+\end_inset
+
+ and 
+\begin_inset Formula $Feature2D$
+\end_inset
+
+ directories contains model files for each model, respectively.
+ File naming follows the convention, 
+\begin_inset Formula $model\:name+2D+module\:name$
+\end_inset
+
+.
+ 
+\begin_inset Formula $Constants.py$
+\end_inset
+
+ and 
+\begin_inset Formula $Species.py$
+\end_inset
+
+ are shared with all the three models, so they are placed in the 
+\begin_inset Formula $packages$
+\end_inset
+
+ level.
+ As for its name, 
+\begin_inset Formula $Constants.py$
+\end_inset
+
+ defines all constats, while 
+\begin_inset Formula $Species.py$
+\end_inset
+
+ defines all species and their properties.
+ These are predefined varables, which are not supposed to be changed or
+ edited by users.
+ 
+\begin_inset Formula $Mesh$
+\end_inset
+
+ directory contains 
+\begin_inset Formula $Geom.py$
+\end_inset
+
+ and 
+\begin_inset Formula $Mesh.py$
+\end_inset
+
+ to create structured mesh, which in principle can be used for any model
+ requiring structured mesh, not limited to Langmuir model.
+ The 
+\begin_inset Formula $Mesh$
+\end_inset
+
+ module can be either imported to each model or used as a standalone one.
+ When using as a standalone module, 
+\begin_inset Formula $Mesh$
+\end_inset
+
+ saves all the information as 
+\begin_inset Formula $mesh.npz$
+\end_inset
+
+ file.
+ In reactor model, both field module and transport module require a solver
+ of Poisson-like equation, therefore 
+\begin_inset Formula $Poisson2D$
+\end_inset
+
+ is created at this level and works as a general equation solver.
+ The Poisson solver is also not limited to Langmuir model.
+ Within the 
+\begin_inset Formula $run$
+\end_inset
+
+ directory, model run files are placed.
+ 
+\begin_inset Formula $Langmuir.yaml$
+\end_inset
+
+ file serves as input file as all-in-one for all three models.
+ Within 
+\begin_inset Formula $tests$
+\end_inset
+
+ directory, test are used by developers and stored as benchmarks for the
+ Langmuir model.
+\end_layout
+
+\begin_layout Section
+Geometry and Mesh
+\end_layout
+
+\begin_layout Subsection
+Geometry
+\end_layout
+
+\begin_layout Subsection
+Mesh
+\end_layout
+
+\begin_layout Section
+Poisson Equation
+\end_layout
+
+\begin_layout Subsection
+Explicit Poisson's equation
+\end_layout
+
+\begin_layout Standard
+With explict method, the potenital in the Poisson's equation is determined
+ by the current charge density, which is impacted by the prevous potential.
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{ion}n_{i}(t)-n_{e}(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=e(\sum_{ion}n_{i}(t+\Delta t)-n_{e}(t+\Delta t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dfrac{\partial n_{e,i}}{\partial t}=D_{e,i}\nabla^{2}n_{e,i}(t)\pm\nabla\cdot(\mu_{e,i}n_{e,i}(t)\nabla\phi(t))+S_{e}(t)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+n_{e,i}(t+\Delta t)=n_{e,i}(t)+\Delta t\times f_{e,i}(\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=F(\phi(t))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where
+\begin_inset Formula 
+\[
+\phi=potenital
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\varepsilon=permittivity
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e=elementary\:charge
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+n_{e,i}=electron,ion\:density
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mu_{e,i}=electron,ion\:mobility
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with the derivation above, the future potential is determined by the current
+ potenital.
+\end_layout
+
+\begin_layout Subsection
+Semi-implicit electron with predictor-corrector ions
+\end_layout
+
+\begin_layout Standard
+The timestep is limited to as small as a few picoseconds, which is not practical
+ for any useful simulations.
+ Implicit method can theoretically remove the limit of the timestep, with
+ the cost of solving for the reversed matrix.
+ The matrix solver could be much expensive as well.
+ A semi-implict method is, therefore, proposed to increase the timestep
+ and meanwhile reduce the cost of matrix solver.
+ The principal is shown as below, 
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=e(\sum_{ion}n_{i}(t+\Delta t)-n_{e}(t+\Delta t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dfrac{\partial n_{e}}{\partial t}=D_{e}\nabla^{2}n_{e}(t)-\nabla\cdot(\mu_{e}n_{e}(t)\nabla\phi(t+\Delta t))+S_{e}(t)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n_{e}(t+\Delta t)=n_{e}(t)+\Delta t\times f_{e}(\phi(t+\Delta t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\dfrac{\partial n_{i}}{\partial t}=D_{i}\nabla^{2}n_{i}(t)+\nabla\cdot(\mu_{i}n_{i}(t)\nabla\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n_{i}(t+\Delta t)=n_{i}(t)+\Delta t\times f_{i}(\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=e(\sum_{ion}[n_{i}(t)+f_{i}(\phi(t))]-[n_{e}(t)+f_{e}(\phi(t+\Delta t))])
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e(\sum_{ion}[\underline{n_{i}(t)+\Delta t\times f_{i}(\phi(t))}]-\Big[\underline{n_{e}(t)+\Delta t\times S_{e}(t)+\Delta t\times D_{e}\nabla^{2}n_{e}(t)-\Delta t\times\nabla\cdot(\mu_{e}n_{e}(t)\nabla\phi(t+\Delta t))}\Big])
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)+e\times\Delta t\times\nabla\cdot(\mu_{e}n_{e}(t)\nabla\phi(t+\Delta t))=F(n_{e,i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Big[\underline{-\nabla\varepsilon\cdot\nabla\phi(t+\Delta t)-\varepsilon\nabla^{2}\phi(t+\Delta t)}\Big]+\Big[\underline{(e\mu_{e}\Delta t)\nabla n_{e}(t)\cdot\nabla\phi(t+\Delta t)+(e\mu_{e}\Delta t)n_{e}(t)\nabla^{2}\phi(t+\Delta t)}\Big]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+=F(n_{e,i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+[\underline{(e\mu_{e}\Delta t)n_{e}(t)-\varepsilon}]\nabla^{2}\phi(t+\Delta t)+[\underline{(e\mu_{e}\Delta t)\nabla n_{e}(t)-\nabla\varepsilon}]\cdot\nabla\phi(t+\Delta t)=F(n_{e,i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\underline{A(n_{e}(t))}\nabla^{2}\phi(t+\Delta t)+\underline{\nabla B(n_{e}(t))}\cdot\nabla\phi(t+\Delta t)=F(n_{e,i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+underline-emphasis
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The electron density is solved using implicit method, where the future electron
+ density is determined by the future potential, while the ion density is
+ still solved using explicit method, where the future ion density is determined
+ by the current potential.
+ In this scenario, electron denisty and potential get quickly convergent
+ with large timestep.
+ A further attension needs to be payed to the ion density, which could oscillate.
+ The predictor-corrector method is used for ion density.
+\begin_inset Formula 
+\[
+\tilde{n}_{i}(t+\Delta t)=n_{i}(t)+\Delta t\times f_{i}(n_{i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n_{i}(t+\Delta t)=n_{i}(t)+\Delta t\times\dfrac{1}{2}(f_{i}(n_{i}(t),\phi(t))+f_{i}(\tilde{n}_{i}(t+\Delta t),\phi(t+\Delta t)))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Semi-implicit Poisson's equation
+\end_layout
+
+\begin_layout Standard
+The ion density can use implicit method as well.
+ In this case, 
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=e(\sum_{ion}[\underline{n_{i}(t)+f_{i}(\phi(t+\Delta t))}]-[\underline{n_{e}(t)+f_{e}(\phi(t+\Delta t))}])
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=e(\sum_{e,i}[\underline{n_{e,i}(t)+f_{e,i}(\phi(t+\Delta t))}]
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)=
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e(\sum_{e,i}\Big[\underline{n_{e,i}(t)+\Delta t\times S_{e,i}(t)+\Delta t\times D_{e,i}\nabla^{2}n_{e,i}(t)+\Delta t\times\nabla\cdot(q\mu_{e,i}n_{e,i}(t)\nabla\phi(t+\Delta t))}\Big])
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t+\Delta t)-\sum_{e,i}\Delta t\times\nabla\cdot(eq\mu_{e,i}n_{e,i}(t)\nabla\phi(t+\Delta t))=F(n_{e,i}(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+[\underline{\sum_{e,i}(eq\mu_{e,i}\Delta t)n_{e,i}(t)-\varepsilon}]\nabla^{2}\phi(t+\Delta t)+[\underline{(e\Delta t)\sum_{e,i}\mu_{e,i}\nabla n_{e,i}(t)-\nabla\varepsilon}]\cdot\nabla\phi(t+\Delta t)=F(n_{e,i}(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\underline{A(n_{e,i}(t))}\nabla^{2}\phi(t+\Delta t)+\underline{\nabla B(n_{e,i}(t))}\cdot\nabla\phi(t+\Delta t)=F(n_{e,i}(t))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The future potential is solved directly, which means that the future potential
+ does not depends on the current potential anymore.
+ All coefficients in this equation are densities at current time.
+ The second term in the LHS is probably (not sure, need addtional check)
+ not easy to deal with.
+ It could be rewritten in explicit form and moved to the RHS.
+\begin_inset Formula 
+\[
+\underline{A(n_{e,i}(t))}\nabla^{2}\phi(t+\Delta t)+\underline{\nabla B(n_{e,i}(t))}\cdot\nabla\phi(t+\Delta t)=F(n_{e,i}(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\underline{A(n_{e,i}(t))}\nabla^{2}\phi(t+\Delta t)=F(n_{e,i}(t))+\underline{\nabla B(n_{e,i}(t))}\cdot\nabla\phi(t)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\underline{A(n_{e,i}(t))}\nabla^{2}\phi(t+\Delta t)=F(n_{e,i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the Poisson's equation retains its Lapalacian form, with the source
+ term depending on current potential.
+ The same technique can be applied to Sec.
+ 3.2 as well.
+\end_layout
+
+\begin_layout Section
+Reactor Model
+\end_layout
+
+\begin_layout Subsection
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Chemistry
+\end_layout
+
+\begin_layout Subsubsection
+Electron Impact Reaction
+\end_layout
+
+\begin_layout Standard
+Assuming electron follows the Maxwellian distribution, reaction rate coefficient
+s are modeled using Arrenhius form, which is 
+\begin_inset Formula 
+\[
+Rate\:coeff=A\times T_{e}^{n}\times exp(-\frac{E_{act}}{T_{e}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A-Arrenhius\:coefficient,1st\:order:\:in\:1/s;\:2nd\:order:\:in\:m^{3}/s
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T_{e}-electron\:temperature,\:in\:eV
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+E_{act}-activation\:energy,\:in\:eV
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When electron energy distribution cannot be assumed Maxwellian distribution,
+ reaction rate coefficients have to be computed by electron energy module.
+\end_layout
+
+\begin_layout Subsubsection
+Heavy Particle Reaction
+\end_layout
+
+\begin_layout Standard
+For heavy particle reactions with no electron in reactants, the Arrenhius
+ form can also be used for rate coefficients.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Rate\:coeff=A\times(\frac{T}{298})^{n}\times exp(-\frac{E_{ref}}{T})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A-Arrenhius\:coefficient,1st\:order:\:in\:1/s;\:2nd\:order:\:in\:m^{3}/s
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+T-gas\:temperature,\:in\:K
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+E_{ref}-reference\:energy,\:in\:K
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\noindent
+Sheath Model
+\end_layout
+
+\begin_layout Subsection
+Introduction
+\end_layout
+
+\begin_layout Standard
+When plasmas with quasi-neutrality (
+\begin_inset Formula $n_{e}\approx n_{i}$
+\end_inset
+
+) are joined to wall surfaces, a positively charged layer called 
+\begin_inset Formula $sheath$
+\end_inset
+
+ is required in physics to maintain the balance of electrons and ions.
+ The electron thermal velcocity 
+\begin_inset Formula $(eT_{e}/m_{e})^{1/2}$
+\end_inset
+
+ is at least 100 times the ion thermal velocity 
+\begin_inset Formula $(eT_{i}/m_{i})^{1/2}$
+\end_inset
+
+, as 
+\begin_inset Formula $T_{e}\ge T_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $m_{e}\ll m_{i}$
+\end_inset
+
+ .
+ Let us assume an initial plasma with zero electric potenital and E-field
+ everywhere, since 
+\begin_inset Formula $n_{e}=n_{i}$
+\end_inset
+
+at 
+\begin_inset Formula $t=0$
+\end_inset
+
+.
+ The electrons are not confined by any field or potential and hence move
+ faster to the walls than ions.
+ On a short timescale, some electrons near the walls are lost, leading to
+ net positive space charges near the walls.
+ This positively charged space, which is SHEATH, creates an E-field pointing
+ to the walls, reducing the electron speed and increasing the ion speed
+ to the walls.
+ Eventually, the loss of electrons and ions balance each other and plasma
+ remains quasi-neutral.
+ Sheath plays an important role in the plasma etching.
+ As positive ions flowing out of the bulk plasma enter the sheath, they
+ get accelerated by the sheath fields and pick up high energies as they
+ traverse across the sheath.
+ The ions carry these high energies and delivers to the materials surface,
+ such as Si surface.
+ The ion etch rates, selectivity and damage are also impacted by the energies,
+ which are determiend by the sheath.
+ A diagram of sheath can be seen in the figure below.
+\end_layout
+
+\begin_layout Standard
+Within the Langmuir model, Sheath model serves as a connector between Reactor
+ model and Feature model.
+ It takes the E-filed and species from the Reactor model and compute the
+ angular and energy distribution of electrons and ions, which is fed into
+ the Feature model as input.
+ Sheath model uses particle tracing algorithm and basically traces particles
+ under varying E-field.
+ Particle collisions are taken into account and they widen the distribution
+ of angle.
+ In the code structure, modules from Feature model, such as particle and
+ move, can be shared with Sheath model.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/The-plasma-sheath.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The plasma sheath.
+ Ions in the plasma happen upon the sheath, where they are accelerated to
+ the wall.
+ At the wall, ions are neutralized by electrons from the ground and return
+ to the bulk.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Collisionless Sheath
+\end_layout
+
+\begin_layout Subsubsection
+What is collisionless sheath
+\end_layout
+
+\begin_layout Standard
+When the ion mean free path is much larger than the sheath thinkness, the
+ sheath is called a collisionless sheath.
+ Within a collisionless sheath, the velocites of ions are only determined
+ by the sheath field and ions are continuously accelerated by the sheath
+ field.
+ Ions pick up energies as they enter the plasma-sheath edge and exit the
+ sheath with an energy distribution of a bimodal shape, seen the figure
+ below.
+ At low frequencies (
+\begin_inset Formula $\tau_{ion}/\tau_{rf}\ll1$
+\end_inset
+
+, transverse time of ion is much smaller than the RF period), the ions traverse
+ the sheath within a small fraction of an RF cycle.
+ The phase of the RF cycle at which ions enter the sheath determines their
+ energies at the exit.
+ In this case, the IED (Ion Energy Distribution) is broad and bimodal, with
+ the two peaks corresponding to the minimum and maximum of the sheath drops.
+ At high frequency (
+\begin_inset Formula $\tau_{ion}/\tau_{rf}\gg1$
+\end_inset
+
+, transverse time of ion is much larger than the RF period), it takes the
+ ions many RF cycles to cross the sheath.
+ In such a scenario, the net energy gained by the ions is determined by
+ the DC component, which is the time-averaged sheath voltage.
+ The effect of phase at which they enter the sheath is significantly reduced.
+ The IED is still bimodal, but much narrower.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Bimodal-IED.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+A bimodal ion energy distribution.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Analytic Collisionless Sheath Model
+\end_layout
+
+\begin_layout Standard
+Benoit-Cattin et al[] obtained an analytic solution for IED at the high-frequenc
+y regime (
+\begin_inset Formula $\tau_{ion}/\tau_{rf}\gg1$
+\end_inset
+
+, transverse time of ion is much larger than the RF period), assuming 
+\end_layout
+
+\begin_layout Enumerate
+a constant sheath thickness, 
+\begin_inset Formula $\bar{s}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+a uniform sheath electric field, 
+\begin_inset Formula $\vec{E}$
+\end_inset
+
+is independent of position 
+\begin_inset Formula $x$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+a sinusoidal sheath voltage 
+\begin_inset Formula $V_{sh}(t)=V_{dc}+V_{s}sin(\omega t)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+zero initial ion velocity at the plasma-sheath boundary, 
+\begin_inset Formula $v_{ion}(x=\bar{s})=0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The resulting expressions for 
+\begin_inset Formula $\Delta E_{i}$
+\end_inset
+
+and the IED are
+\begin_inset Formula 
+\[
+\Delta E_{i}=\frac{2eV_{s}}{\bar{s}\omega}(\frac{2eV_{dc}}{m_{i}})^{1/2}=\frac{3eV_{s}}{\pi}(\frac{\tau_{rf}}{\tau_{ion}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f(E)=\frac{dn}{dE}=\frac{2n_{t}}{\omega\Delta E_{i}}[1-\frac{4}{\Delta E_{i}^{2}}(E-eV_{dc})^{2}]^{-1/2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $n_{t}$
+\end_inset
+
+is the number of ions entering the sheath per unit time.
+\end_layout
+
+\begin_layout Standard
+The calculations yield a bimodal IED with two peaks symmetric about 
+\begin_inset Formula $eV_{dc}$
+\end_inset
+
+and 
+\begin_inset Formula $\Delta E_{i}$
+\end_inset
+
+proportional to 
+\begin_inset Formula $\frac{\tau_{rf}}{\tau_{ion}}$
+\end_inset
+
+, seen the figure below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Bimodal-IED-Analytic.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The plot of analytic solution for IED at the regime of high frequency (
+\begin_inset Formula $\tau_{ion}/\tau_{rf}\gg1$
+\end_inset
+
+) .
+ The singular peaks are due to the assumption of a mono-energetic initial
+ ion velocity distribution.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Collisionless Sheath Model
+\end_layout
+
+\begin_layout Standard
+In the collisionless sheath model, we only need to solve the Newton's euqation,
+ 
+\begin_inset Formula 
+\[
+\frac{d}{dt}\vec{x}=\vec{v}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{d}{dt}\vec{v}=\frac{eq}{m_{i}}\vec{E}(t)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{E}(\vec{x},t)=f(V_{sh}(x,t),s(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{x},\vec{v}-position,velocity
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e-elementary\:charge
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+q-\#\:of\:charges\:carried\:by\:ion
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{E}(\vec{x},t)-electric\:field\:within\:sheath
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+V_{sh}(\vec{x},t)-sheath\:potential
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+s(t)-sheath\:thickness
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Collisional Sheath
+\end_layout
+
+\begin_layout Standard
+When the mean free path of ions, 
+\begin_inset Formula $\lambda_{ion}$
+\end_inset
+
+, is much smaller than the sheath thickness, the ions entering the sheath
+ will experience collisions before exit.
+ Collisions can alter the velocity, both speed and angle.
+ The probability of a collision event occurring depends on the ion-neutral
+ collision frequency, 
+\begin_inset Formula $v_{in}$
+\end_inset
+
+, which is defined as:
+\begin_inset Formula 
+\[
+v_{in}=N_{d}\sigma|\vec{v}_{i}-\vec{v}_{g}|
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+N_{d}-backgroud\:number\:density
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sigma-ion-neutral\:charge\:exchange\:collision\:cross\:section
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{v}_{i},\vec{v}_{g}-ion\:velocity,\:background\:gas\:velocity
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The collision probability defined as 
+\begin_inset Formula 
+\[
+P=1-exp(-v_{in}\Delta t)=1-exp(-\frac{\Delta x}{\lambda_{ion}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Analytic Sheath Model
+\end_layout
+
+\begin_layout Section
+\noindent
+Feature Model
+\end_layout
+
+\begin_layout Subsection
+\noindent
+Introduction
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing onehalf
+\noindent
+The Langmuir Feature Model uses particle-based Monte Carlo methods to simulate
+ the evolution of etch features when exposed to plasma discharges.
+ The model uses pseudo-particles to represent the incoming species, including
+ electron, ions and neutral particles.
+ All these pseudo-particles are tracked for their trajectories and interactions
+ with materials.
+ The materials in the model are represented by a structured mesh of voxels
+ or cubes.
+ Each voxel or cube represents a macro solid material, which consists of
+ hundreds of atoms or molecules.
+ The mesh can be initialized in an arbitrary shape with surface conditions,
+ which may include multiple materials and features within the each domain.
+ This allows the simulation of complex structures and steps in the fabrication
+ process, such as finFET structure.
+ 
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing onehalf
+\noindent
+A pseudo-particle is also a macro particle, which consists of atoms or molecules
+ with the same number as in the materials.
+ The pseudo-particles are launched with specified flux, angle and energy,
+ which are often derived from a reactor scale model, which is, within the
+ Langmuir Model, the Langmuir Reactor Model.
+ Without the reactor model, the Langmuir Feature Model can also self generate
+ generic functions of flux, angle and energy.
+ The coupling of feature scale model to reactor scale model allows the Langmuir
+ Model to explore the process recipe with the etch result, or to be used
+ to study fundamental physics.
+ This versatility makes the Langmuir Model a strong tool for recipe tuning
+ and optimization, as well as new physics investigation.
+\end_layout
+
+\begin_layout Subsection
+\noindent
+Mesh - 2D
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing onehalf
+\noindent
+The mesh in Langmuir Feature Model is constructed in 2D space, in which
+ 
+\begin_inset Formula $(x,z)$
+\end_inset
+
+ are used to represent the 2D coordinates and infinity is assumed in 
+\begin_inset Formula $y$
+\end_inset
+
+ direction.
+ The model discretizes the 2D space into a rectangular computational cells.
+ The cell center is marked as a node, which determines the location 
+\begin_inset Formula $(x,z)$
+\end_inset
+
+ of the cell.
+ Each cell has a volume of 
+\begin_inset Formula $\Delta x\times\Delta z$
+\end_inset
+
+, where 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ and 
+\begin_inset Formula $\Delta z$
+\end_inset
+
+ are the resolutions in 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $z$
+\end_inset
+
+ directions, respectively.
+ Usually, square cells, where 
+\begin_inset Formula $\Delta x=\Delta z$
+\end_inset
+
+, are used.
+ Non-square cells, which are used for high aspect ratio domain for memory
+ saving, need future test and validation.
+ The computational complexity increases with reducing resolution as approximatel
+y 
+\begin_inset Formula $O(n^{3})$
+\end_inset
+
+, where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of cells per side in the simulation domain.
+ The choice of resolution also affects the time weighting of each pseudo-particl
+e, which will be described later.
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing onehalf
+\noindent
+Each cell, representing a solid material, is assigned a material property.
+ The most commonly used materials, Such as 
+\begin_inset Formula $Si$
+\end_inset
+
+ and 
+\begin_inset Formula $SiO_{2}$
+\end_inset
+
+, in the Langmuir Feature Model are pre-defined in the database coming along
+ with the model.
+ If not found in the database, the materials can be defined by the user.
+ The materials are used for the chemical reactions.
+ It is important to respect stoichiometry, and most materials are defined
+ as elements or compounds to facilitate this, but there is no inherent limitatio
+n on the material properties in the model.
+ It means that arbitrary materials can be built upon simulation request.
+ In that case, the user is responsible for the validity of the physics and
+ chemistry represented by the model.
+ An example of an arbitrary material definition is 
+\begin_inset Quotes eld
+\end_inset
+
+
+\shape italic
+Photo Resist
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+, which is commonly used as a etching mask.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+
+\shape italic
+Photo Resist
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+ is a polymer with multiple elements and complicated structures, where a
+ long chain of molecules could surpass the cell size.
+ It is okay for these resists to have varying chemistries and properties,
+ and it is not always possible or necessary to capture their stoichiometry
+ accurately.
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing onehalf
+\noindent
+The basic element in the mesh is a cell, which is assigned a single material
+ and not dividable.
+ Each solid cell in the mesh is assumed to have the same atomic denisty,
+ 
+\begin_inset Formula $\rho\;cm^{-3}$
+\end_inset
+
+, which is typically 
+\begin_inset Formula $5.0\times10^{22}\;cm^{-3}$
+\end_inset
+
+ for 
+\begin_inset Formula $Si$
+\end_inset
+
+ and 
+\begin_inset Formula $2.3\times10^{22}\;cm^{-3}$
+\end_inset
+
+ for 
+\begin_inset Formula $SiO_{2}$
+\end_inset
+
+.
+ This density is a user input and used to calculate number of atoms per
+ cell, 
+\begin_inset Formula 
+\[
+N_{cell}=\Delta x\times\Delta z\times\rho
+\]
+
+\end_inset
+
+ Because all cells contain a single (usually stoichiometric) material, but
+ are represented as having the same volume and denisty, it is important
+ to keep in mind that all materails in the Langmuir Feature Model represent
+ average behaviors of their respective coupounds.
+ The Langmuir Feature Model is designed to address the nano-scale feature
+ during the fabrication process, but not able to resolve the inter-atomic
+ interactions.
+ To apply the model within the valid window, the user should make sure that
+ 
+\begin_inset Formula $N_{cell}\gg1$
+\end_inset
+
+, which will not be automatically checked in the model.
+ 
+\end_layout
+
+\begin_layout Subsection
+Pseudo-Particle
+\end_layout
+
+\begin_layout Subsubsection
+Definition of the pseudo-particle
+\end_layout
+
+\begin_layout Standard
+Simulating a single ion or radical coming to the feature is not practical
+ due to the huge computational cost.
+ During a typical etching process, the ion flux coming to the wafer is of
+ 
+\begin_inset Formula $10^{16}\;cm^{-2}s^{-1}$
+\end_inset
+
+, while radical flux of 
+\begin_inset Formula $10^{18}\;cm^{-2}s^{-1}$
+\end_inset
+
+.
+ In a feature domain of 
+\begin_inset Formula $100nm\times100nm$
+\end_inset
+
+ for a process of 
+\begin_inset Formula $10s$
+\end_inset
+
+, there are
+\begin_inset Formula $10^{7}$
+\end_inset
+
+ ions and 
+\begin_inset Formula $10^{9}$
+\end_inset
+
+ radicas needed to be launched and tracked, which is clearly beyond the
+ capability of any existing computer or cluster.
+ Instead of a single particle, a macro-particle called pseudo-particle and
+ designed like the material cell, is used in the Langmuir Feature Model.
+ A pseudo-particle consists of 
+\begin_inset Formula $N_{cell}$
+\end_inset
+
+ identical particles, which could be electorn, ions, neutals or even photons.
+ Each pseudo-particle is assigned the properties of a single species and
+ not dividable.
+ The number density of a pseudo-particle matches the material cell so that
+ any reactions occur between them are balanced and act as single-particle
+ reactions.
+\end_layout
+
+\begin_layout Subsubsection
+Particle Launch
+\end_layout
+
+\begin_layout Standard
+In a time period 
+\begin_inset Formula $T$
+\end_inset
+
+, the total launched pseudo-particles, 
+\begin_inset Formula $N_{particle}\times N_{cell}$
+\end_inset
+
+, needs to match the total fluence, 
+\begin_inset Formula $Flux\times Aera\times T$
+\end_inset
+
+, into the domain.
+ In average, each pseudo-particle occupies a time duration of 
+\begin_inset Formula 
+\[
+\Delta t=\dfrac{N_{cell}}{Flux\times Area}
+\]
+
+\end_inset
+
+By considering the average velocity of the pseudo-particle and the domain
+ of the feature, the life time of a pseudo-particle is about 
+\begin_inset Formula 
+\[
+t_{life}=\dfrac{L\times N_{reflect}}{V_{particle}}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $L$
+\end_inset
+
+ is the characterstic length of the domain, 
+\begin_inset Formula $L<\sqrt{width^{2}+height^{2}}$
+\end_inset
+
+, 
+\begin_inset Formula $N_{reflect}$
+\end_inset
+
+ is the number of reflections experienced by the pseudo-particle, 
+\begin_inset Formula $N_{reflect}<10$
+\end_inset
+
+ for most scenarios, 
+\begin_inset Formula $V_{particle}$
+\end_inset
+
+ is the average speed of the pseudo-particle, 
+\begin_inset Formula $t_{life}$
+\end_inset
+
+ is the lifetime of a pseudo-particle.
+ Let us put those numbers into an example case.
+ 
+\begin_inset Formula $L=100\:nm$
+\end_inset
+
+ for a domain of 
+\begin_inset Formula $100\:nm\times100\:nm$
+\end_inset
+
+, 
+\begin_inset Formula $N_{reflect}=10$
+\end_inset
+
+, and 
+\begin_inset Formula $V_{particle}=500\:m/s=500\:nm/ns$
+\end_inset
+
+ at room temperature.
+ The resulting 
+\begin_inset Formula $t_{life}=2\:ns$
+\end_inset
+
+ is far smaller than typical 
+\begin_inset Formula $\Delta t=100\:ns$
+\end_inset
+
+.
+ It means that a pseudo-particle is lauched and gets dead before next pseudo-par
+ticle is launched, which indicates that no interaction of pseudo-particles
+ is necessary to be taken into account.
+ The only interacting object of a pseudo-particle is the material cell.
+ The summary of the important assumptions can be seen as below:
+\end_layout
+
+\begin_layout Itemize
+Pseudo-particles uniformly enter the feature.
+ This indicates that each pseudo-particle occupies exact 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+, defined as above.
+\end_layout
+
+\begin_layout Itemize
+A pseudo-particle entering the feature is a rare event.
+ This implies that each pseudo-particle event is instantaneous compared
+ to the time between incoming pseudo-particle.
+ Pseudo-particles do not interact with each other.
+\end_layout
+
+\begin_layout Itemize
+The number of total pseudo-particle entering the feature per area and per
+ time is exactly the same as the flux.
+ This ensures that the overall effects of total pseudo-particles well align
+ with the physics requirements.
+\end_layout
+
+\begin_layout Standard
+The first assumption can be argued as the real entering events could follow
+ Poisson's distribution more than uniform distribution.
+ Even under the assumption of Poisson's distribution, you could find the
+ event of two pseudo-particles entering the feature with overlap in time
+ is rare.
+ Compared to millions of pseudo-particles launched in a simulation, the
+ first two assumptions together still hold.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Particle Tracking without E-field
+\end_layout
+
+\begin_layout Standard
+In the serial version of Langmuir Feature Model, all pseudo-particles are
+ launched in sequence and particle tracking is only applied to a single
+ particle each time.
+ In the terms of memory management, a memory space is created initially
+ for a single pseudo-particle.
+ When a pseudo-particle dies, a new pseudo-particle can reuse the memory
+ space by updating the particle properties, such as position and velocity.
+ The pseudo-particles are by default launched from the top boundary fo the
+ domain.
+ The initial position of pseudo-particle is randomly picked.
+ The velocity vector, consisting of speed and angle w.r.t.
+ 
+\begin_inset Formula $x=0^{+}$
+\end_inset
+
+, is chosen randomly from the given distribution.
+ The given distribution could be either generated from the feature model
+ itself, or from the IAEDF generated from the Langmuir Reactor Model.
+ 
+\end_layout
+
+\begin_layout Standard
+Without E-field, a pseudo-particle is not accelerated during the flight.
+ It means that the pseudo-particle follows the line–of-sight trajectory.
+ Although the geometry is meshed to grids, the pseudo-particle advances
+ in continous space.
+ Newton's equations are solved for the trajectory,
+\begin_inset Formula 
+\[
+\vec{r}=\vec{r}+\vec{v}\times dt
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\vec{v}$
+\end_inset
+
+ and 
+\begin_inset Formula $\vec{r}$
+\end_inset
+
+ are the velocity and position of the pseudo-particle, respectively.
+ 
+\begin_inset Formula $dt$
+\end_inset
+
+ is the flight timestep, which is far smaller than the simulation timestep.
+ Instead of integrating over flight timestep 
+\begin_inset Formula $dt$
+\end_inset
+
+, a advancing step, 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ , is used in Langmuir Feature Model,
+\begin_inset Formula 
+\[
+\vec{r}=\vec{r}+\vec{v}_{unit}\times\Delta L
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\vec{v}_{unit}$
+\end_inset
+
+ is the normalized unit vector of the velocity and 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ is the advance step.
+ Typical 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ is constant and set to be about the resolution of the mesh.
+ Larger 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ definitely reduces the computing time.
+ A varying 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+, which is determined by the position, can be used and will be discussed
+ separately.
+  
+\end_layout
+
+\begin_layout Subsubsection
+Particle Tracking with E-field
+\end_layout
+
+\begin_layout Standard
+When E-field is taken into account, velocity for charged particles is not
+ constant anymore.
+ Full Newton's equations need to be solved,
+\begin_inset Formula 
+\[
+\vec{v}(t+dt)=\vec{v}(t)+\dfrac{q\vec{E}}{m}dt
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{r}=\vec{r}+\vec{v}\times dt
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\vec{E}$
+\end_inset
+
+ is the E-field, 
+\begin_inset Formula $q$
+\end_inset
+
+ is the particle charge, and 
+\begin_inset Formula $m$
+\end_inset
+
+ is the particle mass.
+ In the feature model, E-field is a function of position and changes with
+ deposited surface charges.
+ Within the tracking of a single particle, E-field does not change with
+ time.
+ Therefore, Newton's equations can be solved using spacestep instead of
+ timestep,
+\begin_inset Formula 
+\[
+\vec{v}(\vec{r}+d\vec{r})=\vec{v}(\vec{r})+\dfrac{q\vec{E}}{m}\times\dfrac{\Delta L}{abs(\vec{v})}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{r}=\vec{r}+d\vec{r}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+d\vec{r}=\vec{v}_{unit}\times\Delta L
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The chosen of 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ depends on the spatial variation of E-field.
+ In general, if the gradient of E-field is small, 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ can be increased; vice versa.
+ In most cases, 
+\begin_inset Formula $\Delta L$
+\end_inset
+
+ should not be larger than the resolution of the mesh.
+\end_layout
+
+\begin_layout Subsubsection
+Ray Tracing
+\end_layout
+
+\begin_layout Standard
+To be added.
+\end_layout
+
+\begin_layout Subsection
+Particle-Materials Interactions
+\end_layout
+
+\begin_layout Subsubsection
+Hit Check
+\end_layout
+
+\begin_layout Standard
+When the particle is tracked by step advance algorithm, particle-materail
+ collision needs to be checked.
+ In Langmuir Feature Model, there is no volume assinged to the pseudo-particle,
+ which means that particle trajectory is an 1D line.
+ At a fixed time, the pseudo-particle is a point without any dimemsions.
+ When the pseudo-particle gets inside a material cell, the model flags a
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Hit
+\begin_inset Quotes erd
+\end_inset
+
+.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Inside a cell
+\begin_inset Quotes erd
+\end_inset
+
+ means that the position 
+\begin_inset Formula $(x,z)$
+\end_inset
+
+ of the particle lies within the boundary of the cell,
+\begin_inset Formula 
+\[
+C_{left}<x<C_{right}
+\]
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+C_{bottom}<z<C_{top}
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $C_{left}$
+\end_inset
+
+, 
+\begin_inset Formula $C_{right}$
+\end_inset
+
+, 
+\begin_inset Formula $C_{bottom}$
+\end_inset
+
+ and 
+\begin_inset Formula $C_{top}$
+\end_inset
+
+ are the four boundaries for a cell.
+ In the program, in stead of checking the four boundaries, the particle
+ is mapped onto the computational mesh of materials using, 
+\begin_inset Formula 
+\[
+i=int(x-0.5\Delta x)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+j=int(z-0.5\Delta z)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It means that the particle is now within the cell 
+\begin_inset Formula $C(i,j)$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $C(i,j)$
+\end_inset
+
+ is vacuum, then the particles continues to advance.
+ Otherwise, the particle is considered to hit the material cell, 
+\begin_inset Formula $C(i,j)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\end_body
+\end_document
