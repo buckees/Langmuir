@@ -138,6 +138,3 @@ class PARTICLE(object):
             self.posn[0] = left + ((self.posn[0] - left) % (right - left))
         elif imode == 'reflective':
             pass
-
-        
-    
