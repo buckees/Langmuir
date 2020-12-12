@@ -3,4 +3,6 @@
 .spyproject\*.bak
 .spyproject\*.ini
 *.png
+doc/Langmuir-Doc.lyx~
+doc/#Langmuir-Doc.lyx#
 .spyproject/config/workspace.ini
