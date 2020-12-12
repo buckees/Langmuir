@@ -4,3 +4,4 @@
 .spyproject\*.ini
 *.png
 doc/Langmuir-Doc.lyx~
+doc/#Langmuir-Doc.lyx#
