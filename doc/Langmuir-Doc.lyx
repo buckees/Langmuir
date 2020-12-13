@@ -661,6 +661,63 @@ Introduction
 \end_layout
 
 \begin_layout Subsection
+Electon Energy Equation
+\end_layout
+
+\begin_layout Standard
+The energy conservation equation is obtained by multiplying the Boltzmann
+ equation by kinectiv energy, 
+\begin_inset Formula $\frac{1}{2}mv^{2}$
+\end_inset
+
+, and integrating over velocity,
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial t}(\frac{3}{2}n_{e}kT_{e})+\nabla\cdot Q_{e}=P_{in}-P_{loss}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{3}{2}n_{e}kT_{e}-thermal\:energy\:density\:(J/m^{3})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+k-Boltzmann\:Constant
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Q_{e}-energy\:flux\:(W/m^{2}),\:Q_{e}=\frac{5}{2}kT_{e}\Gamma_{e}-k_{e}\nabla T_{e}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+P_{in}-Power\:Input,\:P_{loss}-Power\:Loss
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Subsection
 Chemistry
 \end_layout
 
