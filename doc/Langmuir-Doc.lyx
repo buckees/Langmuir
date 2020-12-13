@@ -714,6 +714,53 @@ P_{in}-Power\:Input,\:P_{loss}-Power\:Loss
 \end_layout
 
 \begin_layout Standard
+The form of energy equation, where energy density is solved, is similar
+ to that of continuity equation, where species density is solved.
+ Energy flux, 
+\begin_inset Formula $Q_{e},$
+\end_inset
+
+consists of two terms, in which 
+\begin_inset Formula $\frac{5}{2}kT_{e}\Gamma_{e}$
+\end_inset
+
+ represents the themal convection and 
+\begin_inset Formula $k_{e}\nabla T_{e}$
+\end_inset
+
+ represents the themeral conduction.
+ The input power includes both external and internal energy flowing into
+ the electrons.
+ The source can come from electric field, electron beam, or photons.
+ Under the assumption of resistive plasma where Ohm heating (also called
+ Joule heating/resistive heating) dominates, 
+\begin_inset Formula 
+\[
+P_{in}=\sigma E^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sigma-Plasma\:Conductivity,\:(S/m)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+E-Electric\:Field,\:including\:both\:external\:and\:internal\:field
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
