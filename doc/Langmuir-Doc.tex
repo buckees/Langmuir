@@ -244,6 +244,80 @@ to Sec. 3.2 as well.
 
 \subsection{Introduction}
 
+\subsection{Electon Energy Equation}
+
+The energy conservation equation is obtained by multiplying the Boltzmann
+equation by kinectiv energy, $\frac{1}{2}mv^{2}$, and integrating
+over velocity,
+\[
+\frac{\partial}{\partial t}(\frac{3}{2}n_{e}kT_{e})+\nabla\cdot Q_{e}=P_{in}-P_{loss}
+\]
+\[
+\frac{3}{2}n_{e}kT_{e}-thermal\:energy\:density\:(J/m^{3})
+\]
+\[
+k-Boltzmann\:Constant
+\]
+\[
+Q_{e}-energy\:flux\:(W/m^{2}),\:Q_{e}=\frac{5}{2}kT_{e}\Gamma_{e}-k_{e}\nabla T_{e}
+\]
+\[
+k_{e}-thermal\:conductivity,\:k_{e}=3kD_{e}n_{e}/2
+\]
+\[
+D_{e}-electron\:diffusion\:coefficient
+\]
+\[
+P_{in}-Power\:Input,\:P_{loss}-Power\:Loss
+\]
+
+The form of energy equation, where energy density is solved, is similar
+to that of continuity equation, where species density is solved. Energy
+flux, $Q_{e},$consists of two terms, in which $\frac{5}{2}kT_{e}\Gamma_{e}$
+represents the themal convection and $k_{e}\nabla T_{e}$ represents
+the themeral conduction. The input power includes both external and
+internal energy flowing into the electrons. The source can come from
+electric field, electron beam, or photons. Under the assumption of
+resistive plasma where Ohm heating (also called Joule heating/resistive
+heating) dominates, 
+\[
+P_{in}=\sigma E^{2}
+\]
+\[
+\sigma-Plasma\:Conductivity,\:(S/m)
+\]
+\[
+E-Electric\:Field,\:including\:both\:external\:and\:internal\:field
+\]
+
+External electric field is obtained from the the Field Solver and
+interal electric field is obtained from the Transport Solver. In plasma,
+power gets lost mainly through energy flow to the walls and electron-impact
+collisions. The former loss is included in the $\nabla\cdot Q_{e}$
+term. The collision loss can be seen as below, 
+\[
+P_{loss}=3\frac{m_{e}}{M}n_{e}kv_{coll\_em}(T_{e}-T_{g)+n_{e}N\sum_{j}k_{j}(T_{e})\Delta\varepsilon_{j}}
+\]
+The first term, $3\frac{m_{e}}{M}n_{e}kv_{coll\_em}(T_{e}-T_{g})$,
+is due to electron elastic collision (also called momentum collision),
+in which no reaction occurs. For elastic collsion, the electron energy
+loss can be derived from momentum and energy conservation equations
+for 2-body collision. The second term, $n_{e}N\sum_{j}k_{j}(T_{e})\Delta\varepsilon_{j}$,
+counts for the inelastic collisions, in which reactions, such as excitation
+and ionization, occur. 
+
+The boundary conditions of the electron energy towards the wall were
+taken as
+\[
+Q_{e}(at\:b.c.)=\frac{5}{2}kT_{e}\Gamma_{e}(at\:b.c.)\cdot\hat{n}
+\]
+\[
+\text{\ensuremath{\hat{n}-surface\:normal\:vector}}
+\]
+
+At the wall surface, energy which is normal with respect to the surface
+is lost completely.
+
 \subsection{Chemistry}
 
 \subsubsection{Electron Impact Reaction}
@@ -324,7 +398,7 @@ with Sheath model.
 
 \begin{figure}
 \begin{centering}
-\includegraphics[scale=0.5]{Figures/The-plasma-sheath}
+\includegraphics{Figures/The-plasma-sheath}
 \par\end{centering}
 \caption{The plasma sheath. Ions in the plasma happen upon the sheath, where
 they are accelerated to the wall. At the wall, ions are neutralized
