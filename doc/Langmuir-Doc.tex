@@ -5,6 +5,7 @@
 \usepackage[latin9]{inputenc}
 \setlength{\parskip}{\smallskipamount}
 \setlength{\parindent}{0pt}
+\usepackage{float}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{setspace}
@@ -48,7 +49,7 @@ Langmuir model is organized as a collection of three sub-models and
 designed to use solvers as shared as possible. The file structure
 is shown in the figure below, 
 
-\begin{figure}
+\begin{figure}[H]
 \begin{centering}
 \includegraphics[scale=0.8]{Figures/Dir_Tree}
 \par\end{centering}
@@ -318,6 +319,81 @@ Q_{e}(at\:b.c.)=\frac{5}{2}kT_{e}\Gamma_{e}(at\:b.c.)\cdot\hat{n}
 At the wall surface, energy which is normal with respect to the surface
 is lost completely.
 
+\subsection{Electron Energy Distribution Function}
+
+\subsubsection{Null-collision technique}
+
+The electron energy and collision frequency can change during the
+free flight between collisions. There is an ambiguity in choosing
+the time between collisions, seen in the figure below. 
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.2]{Figures/Null-Collision}
+\par\end{centering}
+\caption{Free flight time changes during the flight.}
+
+\end{figure}
+
+The ambiguity is eliminated by the \textquotedblleft null collision
+frequency\textquotedblright{} (NCF). The null-collision concept is
+introduced into the direct-simulation Monte Carlo method in the rarefied
+gas dynamics. The null-collision technique overcomes the principle
+fault in the time-counter technique and the difficulties in the collision-frequency
+technique. The computation time required for the null-collision technique
+is comparable to that for the time-counter technique. Therefore, it
+is concluded that the null-collision technique is superior to any
+other existing techniques in the direct-simulation Monte Carlo method.
+
+The NCF is a fictitious process used to make it appear that all energies
+have the same collision frequency.
+\[
+v_{null}(\varepsilon)=max_{\varepsilon}[v_{total(\varepsilon)}]-v_{total}(\varepsilon)
+\]
+\[
+xs_{null}(\varepsilon)=max_{\varepsilon}[xs_{total}(\varepsilon)]-xs_{total}(\varepsilon)
+\]
+\[
+v-collision\:frequency
+\]
+\[
+xs-cross\:section
+\]
+
+When collision falls to the ``Null Collision'', there is no impact
+on the electron, which proceeds to the next free flight time without
+changing its velocity. The ``Null Collision'' frequency and cross
+section can be seen as below,
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.3]{Figures/Null-Collision-frequency}
+\par\end{centering}
+\caption{The collision frequency and cross section of ``Null Collision''.}
+
+\end{figure}
+
+The free flight time between collisions is determined by the maximum
+total collision frequency. 
+\[
+\Delta t=\frac{-1}{max_{\varepsilon}[v_{total}(\varepsilon)]}log(1-r_{1})
+\]
+
+The collision which occurs is that which satisfies
+\[
+p_{j-1}(\varepsilon)<r_{2}\le p_{j}(\varepsilon)
+\]
+\[
+p_{j}-the\:pth\:collision\:process
+\]
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[scale=0.5]{Figures/Null-Collision-choose}
+\par\end{centering}
+\caption{Collision process chosen according to the cumulative probability.}
+
+\end{figure}
+
+
 \subsection{Chemistry}
 
 \subsubsection{Electron Impact Reaction}
@@ -396,9 +472,9 @@ account and they widen the distribution of angle. In the code structure,
 modules from Feature model, such as particle and move, can be shared
 with Sheath model.
 
-\begin{figure}
+\begin{figure}[H]
 \begin{centering}
-\includegraphics{Figures/The-plasma-sheath}
+\includegraphics[scale=0.5]{Figures/The-plasma-sheath}
 \par\end{centering}
 \caption{The plasma sheath. Ions in the plasma happen upon the sheath, where
 they are accelerated to the wall. At the wall, ions are neutralized
@@ -431,7 +507,7 @@ time-averaged sheath voltage. The effect of phase at which they enter
 the sheath is significantly reduced. The IED is still bimodal, but
 much narrower. 
 
-\begin{figure}
+\begin{figure}[H]
 \begin{centering}
 \includegraphics[scale=0.5]{Figures/Bimodal-IED}
 \par\end{centering}
@@ -466,7 +542,7 @@ The calculations yield a bimodal IED with two peaks symmetric about
 $eV_{dc}$and $\Delta E_{i}$proportional to $\frac{\tau_{rf}}{\tau_{ion}}$,
 seen the figure below.
 
-\begin{figure}
+\begin{figure}[H]
 \begin{centering}
 \includegraphics[scale=0.5]{Figures/Bimodal-IED-Analytic}
 \par\end{centering}

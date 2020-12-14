@@ -28,6 +28,7 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement H
 \paperfontsize default
 \spacing onehalf
 \use_hyperref false
@@ -861,6 +862,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Null-Collision.png
+	lyxscale 40
 	scale 20
 
 \end_inset
@@ -920,6 +922,22 @@ xs_{null}(\varepsilon)=max_{\varepsilon}[xs_{total}(\varepsilon)]-xs_{total}(\va
 \end_inset
 
 
+\begin_inset Formula 
+\[
+v-collision\:frequency
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+xs-cross\:section
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -931,7 +949,8 @@ Null Collision
 \begin_inset Quotes erd
 \end_inset
 
-, there is no impact on the electron.
+, there is no impact on the electron, which proceeds to the next free flight
+ time without changing its velocity.
  The 
 \begin_inset Quotes eld
 \end_inset
@@ -951,6 +970,8 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Null-Collision-frequency.png
+	lyxscale 75
+	scale 30
 
 \end_inset
 
@@ -987,6 +1008,75 @@ Null Collision
 \end_layout
 
 \begin_layout Standard
+The free flight time between collisions is determined by the maximum total
+ collision frequency.
+ 
+\begin_inset Formula 
+\[
+\Delta t=\frac{-1}{max_{\varepsilon}[v_{total}(\varepsilon)]}log(1-r_{1})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The collision which occurs is that which satisfies
+\begin_inset Formula 
+\[
+p_{j-1}(\varepsilon)<r_{2}\le p_{j}(\varepsilon)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+p_{j}-the\:pth\:collision\:process
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Null-Collision-choose.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Collision process chosen according to the cumulative probability.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1259,6 +1349,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Bimodal-IED.png
+	lyxscale 75
 	scale 50
 
 \end_inset
@@ -1395,6 +1486,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Bimodal-IED-Analytic.png
+	lyxscale 75
 	scale 50
 
 \end_inset
