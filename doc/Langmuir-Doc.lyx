@@ -99,6 +99,23 @@ In this document, a feature scale model is developed and used for recipe
  tuning.
  The detailed physical mechanisms and numerical algorithms are introduced
  and discussed.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1085,6 +1102,209 @@ Chemistry
 \end_layout
 
 \begin_layout Subsubsection
+Introduction
+\end_layout
+
+\begin_layout Standard
+In the continuity equation, there is a source term in the right hand side,
+\begin_inset Formula 
+\[
+\frac{\partial n}{\partial t}+\nabla\cdot\Gamma=S
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n-density\:of\:any\:species,\:such\:as\:electron,\:ion\:and\:neutrals
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Gamma-flux\:of\:any\:species,\:such\:as\:electron,\:ion\:and\:neutrals
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+S-source\:term\:of\:species\:due\:to\:reactions
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The flux term has been discussed in the previous section.
+ The source term, 
+\begin_inset Formula $S$
+\end_inset
+
+, here refers to the volume production and sink of a given species.
+ The source term due to surface reaction will be discussed later.
+ 
+\end_layout
+
+\begin_layout Standard
+Usually, reactions can be written as following form,
+\begin_inset Formula 
+\[
+A+B+C+...\rightarrow a+b+c+...
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+left-reactants,\:right-products
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For any species appeared in the left hand side, the reaction serves as a
+ sink for that species; for any species appeared in the right hand side,
+ the reaction serves as a production for that species.
+ The reaction rate can be calculated as,
+\begin_inset Formula 
+\[
+R=k\times n_{A}\times n_{B}\times n_{C}\times...
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+R-reaction\:rate
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+k-reaction\:rate\:coefficient
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n_{A}-density\:of\:species\:A
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us take an example.
+ In Ar discharge, a basic reactions set includes electron-impact excitation,
+ ionization and Penning ionization,
+\begin_inset Formula 
+\[
+Electron-Impact\:Ionization:\;e+Ar\rightarrow Ar^{+}+e+e
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Electron-Impact\:Excitation:\;e+Ar\rightarrow Ar^{*}+e
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Penning\:Ionization:\;Ar^{*}+Ar^{*}\rightarrow Ar+Ar^{+}+e
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Ar^{*}-excited\:Ar\:state
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For electron, the source term will include first and third reactions.
+ The second reaction loses an electron in the left side and produce one
+ in the right side, resulting net gain or loss.
+ In the electron-impact ionization, one electron is consumed while two electrons
+ are produced, resulting in net gain of one electron.
+ Penning ionization produces one electron.
+ The source term for electron is 
+\begin_inset Formula 
+\[
+S_{e}=k_{ioniz}\times n_{e}\times n_{Ar}+k_{pen}\times n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similarly, the source terms for ion, 
+\begin_inset Formula $S_{Ar^{+}}$
+\end_inset
+
+, and for excited state, 
+\begin_inset Formula $S_{Ar^{*}}$
+\end_inset
+
+, can be calculated as
+\begin_inset Formula 
+\[
+S_{Ar^{+}}=k_{ioniz}\times n_{e}\times n_{Ar}+k_{pen}\times n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+S_{Ar^{*}}=k_{exc}\times n_{e}\times n_{Ar}-2\times k_{pen}\times n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this simple reaction set, electron-ion pair is always created simultaneously
+ so that 
+\begin_inset Formula $S_{Ar^{+}}=S_{e}$
+\end_inset
+
+ everywhere.
+\end_layout
+
+\begin_layout Subsubsection
 Electron Impact Reaction
 \end_layout
 
@@ -1093,7 +1313,15 @@ Assuming electron follows the Maxwellian distribution, reaction rate coefficient
 s are modeled using Arrenhius form, which is 
 \begin_inset Formula 
 \[
-Rate\:coeff=A\times T_{e}^{n}\times exp(-\frac{E_{act}}{T_{e}})
+k_{e}(T_{e})=A\times T_{e}^{n}\times exp(-\frac{E_{act}}{T_{e}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+k_{e}-rate\:coefficient
 \]
 
 \end_inset

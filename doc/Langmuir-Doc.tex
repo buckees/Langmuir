@@ -33,8 +33,9 @@
 \begin{abstract}
 \noindent In this document, a feature scale model is developed and
 used for recipe tuning. The detailed physical mechanisms and numerical
-algorithms are introduced and discussed.
+algorithms are introduced and discussed.\pagebreak{}
 \end{abstract}
+\tableofcontents{}\pagebreak{}
 
 \section{Introduction - Langmuir Model}
 
@@ -396,12 +397,99 @@ p_{j}-the\:pth\:collision\:process
 
 \subsection{Chemistry}
 
+\subsubsection{Introduction}
+
+In the continuity equation, there is a source term in the right hand
+side,
+\[
+\frac{\partial n}{\partial t}+\nabla\cdot\Gamma=S
+\]
+\[
+n-density\:of\:any\:species,\:such\:as\:electron,\:ion\:and\:neutrals
+\]
+\[
+\Gamma-flux\:of\:any\:species,\:such\:as\:electron,\:ion\:and\:neutrals
+\]
+\[
+S-source\:term\:of\:species\:due\:to\:reactions
+\]
+
+The flux term has been discussed in the previous section. The source
+term, $S$, here refers to the volume production and sink of a given
+species. The source term due to surface reaction will be discussed
+later. 
+
+Usually, reactions can be written as following form,
+\[
+A+B+C+...\rightarrow a+b+c+...
+\]
+\[
+left-reactants,\:right-products
+\]
+
+For any species appeared in the left hand side, the reaction serves
+as a sink for that species; for any species appeared in the right
+hand side, the reaction serves as a production for that species. The
+reaction rate can be calculated as,
+\[
+R=k\times n_{A}\times n_{B}\times n_{C}\times...
+\]
+\[
+R-reaction\:rate
+\]
+\[
+k-reaction\:rate\:coefficient
+\]
+\[
+n_{A}-density\:of\:species\:A
+\]
+
+Let us take an example. In Ar discharge, a basic reactions set includes
+electron-impact excitation, ionization and Penning ionization,
+\[
+Electron-Impact\:Ionization:\;e+Ar\rightarrow Ar^{+}+e+e
+\]
+\[
+Electron-Impact\:Excitation:\;e+Ar\rightarrow Ar^{*}+e
+\]
+\[
+Penning\:Ionization:\;Ar^{*}+Ar^{*}\rightarrow Ar+Ar^{+}+e
+\]
+\[
+Ar^{*}-excited\:Ar\:state
+\]
+
+For electron, the source term will include first and third reactions.
+The second reaction loses an electron in the left side and produce
+one in the right side, resulting net gain or loss. In the electron-impact
+ionization, one electron is consumed while two electrons are produced,
+resulting in net gain of one electron. Penning ionization produces
+one electron. The source term for electron is 
+\[
+S_{e}=k_{ioniz}\times n_{e}\times n_{Ar}+k_{pen}\times n_{Ar^{*}}^{2}
+\]
+
+Similarly, the source terms for ion, $S_{Ar^{+}}$, and for excited
+state, $S_{Ar^{*}}$, can be calculated as
+\[
+S_{Ar^{+}}=k_{ioniz}\times n_{e}\times n_{Ar}+k_{pen}\times n_{Ar^{*}}^{2}
+\]
+\[
+S_{Ar^{*}}=k_{exc}\times n_{e}\times n_{Ar}-2\times k_{pen}\times n_{Ar^{*}}^{2}
+\]
+
+In this simple reaction set, electron-ion pair is always created simultaneously
+so that $S_{Ar^{+}}=S_{e}$ everywhere.
+
 \subsubsection{Electron Impact Reaction}
 
 Assuming electron follows the Maxwellian distribution, reaction rate
 coefficients are modeled using Arrenhius form, which is 
 \[
-Rate\:coeff=A\times T_{e}^{n}\times exp(-\frac{E_{act}}{T_{e}})
+k_{e}(T_{e})=A\times T_{e}^{n}\times exp(-\frac{E_{act}}{T_{e}})
+\]
+\[
+k_{e}-rate\:coefficient
 \]
 \[
 A-Arrenhius\:coefficient,1st\:order:\:in\:1/s;\:2nd\:order:\:in\:m^{3}/s
