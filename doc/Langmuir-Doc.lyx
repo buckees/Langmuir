@@ -901,6 +901,95 @@ The ambiguity is eliminated by the “null collision frequency” (NCF).
  to any other existing techniques in the direct‐simulation Monte Carlo method.
 \end_layout
 
+\begin_layout Standard
+The NCF is a fictitious process used to make it appear that all energies
+ have the same collision frequency.
+\begin_inset Formula 
+\[
+v_{null}(\varepsilon)=max_{\varepsilon}[v_{total(\varepsilon)}]-v_{total}(\varepsilon)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+xs_{null}(\varepsilon)=max_{\varepsilon}[xs_{total}(\varepsilon)]-xs_{total}(\varepsilon)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When collision falls to the 
+\begin_inset Quotes eld
+\end_inset
+
+Null Collision
+\begin_inset Quotes erd
+\end_inset
+
+, there is no impact on the electron.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+Null Collision
+\begin_inset Quotes erd
+\end_inset
+
+ frequency and cross section can be seen as below,
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Null-Collision-frequency.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The collision frequency and cross section of 
+\begin_inset Quotes eld
+\end_inset
+
+Null Collision
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \begin_layout Subsection
 Chemistry
 \end_layout
