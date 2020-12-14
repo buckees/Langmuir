@@ -838,6 +838,70 @@ At the wall surface, energy which is normal with respect to the surface
 \end_layout
 
 \begin_layout Subsection
+Electron Energy Distribution Function
+\end_layout
+
+\begin_layout Subsubsection
+Null‐collision technique
+\end_layout
+
+\begin_layout Standard
+The electron energy and collision frequency can change during the free flight
+ between collisions.
+ There is an ambiguity in choosing the time between collisions, seen in
+ the figure below.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Null-Collision.png
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Free flight time changes during the flight.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The ambiguity is eliminated by the “null collision frequency” (NCF).
+ The null‐collision concept is introduced into the direct‐simulation Monte
+ Carlo method in the rarefied gas dynamics.
+ The null‐collision technique overcomes the principle fault in the time‐counter
+ technique and the difficulties in the collision‐frequency technique.
+ The computation time required for the null‐collision technique is comparable
+ to that for the time‐counter technique.
+ Therefore, it is concluded that the null‐collision technique is superior
+ to any other existing techniques in the direct‐simulation Monte Carlo method.
+\end_layout
+
+\begin_layout Subsection
 Chemistry
 \end_layout
 
@@ -1023,6 +1087,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/The-plasma-sheath.png
+	scale 50
 
 \end_inset
 
