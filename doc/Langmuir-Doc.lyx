@@ -1302,6 +1302,136 @@ In this simple reaction set, electron-ion pair is always created simultaneously
 \end_inset
 
  everywhere.
+ 
+\end_layout
+
+\begin_layout Standard
+When the source term is added to plasma transport equation, it could result
+ in different coupling depending on the way to process it.
+ For example, using the Ar discharge defined above, 
+\begin_inset Formula 
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=S_{e}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the first equation, 
+\begin_inset Formula $S_{e}$
+\end_inset
+
+can be used as a constant source which is computed from a fixed electron
+ density.
+ In the second equation, 
+\begin_inset Formula $S_{e}$
+\end_inset
+
+is treated as a function of 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+, which means that 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+ is needed to be solved at the same time as left-hand side.
+ Since the source term, 
+\begin_inset Formula $S_{e}$
+\end_inset
+
+, is a linear function of 
+\begin_inset Formula $n_{e},$
+\end_inset
+
+the complexity does not increase much.
+ However, when it comes to the transport equation for ions, coupling effect
+ has to be counted.
+ 
+\begin_inset Formula 
+\[
+\frac{\partial n_{i}}{\partial t}+\nabla\cdot\Gamma_{i}(n_{i})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The left-hand side is a function of 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+ while the right-hand side if a function of 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+.
+ It means that 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+ need to be solved simultaneously.
+ Furthermore, all species, 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+, 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+and 
+\begin_inset Formula $n_{Ar^{*}}$
+\end_inset
+
+ need to be solved at the same time.
+ 
+\begin_inset Formula 
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial n_{i}}{\partial t}+\nabla\cdot\Gamma_{i}(n_{i})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial n_{Ar^{*}}}{\partial t}+\nabla\cdot\Gamma_{Ar^{*}}(n_{Ar^{*}})=k_{exc}n_{e}n_{Ar}-2k_{pen}n_{Ar^{*}}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The three equations are coupled together and all densities need to be solved
+ simultaneously.
+ 
 \end_layout
 
 \begin_layout Subsubsection

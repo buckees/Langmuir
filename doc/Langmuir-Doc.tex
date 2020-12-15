@@ -479,7 +479,45 @@ S_{Ar^{*}}=k_{exc}\times n_{e}\times n_{Ar}-2\times k_{pen}\times n_{Ar^{*}}^{2}
 \]
 
 In this simple reaction set, electron-ion pair is always created simultaneously
-so that $S_{Ar^{+}}=S_{e}$ everywhere.
+so that $S_{Ar^{+}}=S_{e}$ everywhere. 
+
+When the source term is added to plasma transport equation, it could
+result in different coupling depending on the way to process it. For
+example, using the Ar discharge defined above, 
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=S_{e}
+\]
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+In the first equation, $S_{e}$can be used as a constant source which
+is computed from a fixed electron density. In the second equation,
+$S_{e}$is treated as a function of $n_{e}$, which means that $n_{e}$
+is needed to be solved at the same time as left-hand side. Since the
+source term, $S_{e}$, is a linear function of $n_{e},$the complexity
+does not increase much. However, when it comes to the transport equation
+for ions, coupling effect has to be counted. 
+\[
+\frac{\partial n_{i}}{\partial t}+\nabla\cdot\Gamma_{i}(n_{i})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+
+The left-hand side is a function of $n_{i}$ while the right-hand
+side if a function of $n_{e}$. It means that $n_{e}$ and $n_{i}$
+need to be solved simultaneously. Furthermore, all species, $n_{e}$,
+$n_{i}$and $n_{Ar^{*}}$ need to be solved at the same time. 
+\[
+\frac{\partial n_{e}}{\partial t}+\nabla\cdot\Gamma_{e}(n_{e})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+\[
+\frac{\partial n_{i}}{\partial t}+\nabla\cdot\Gamma_{i}(n_{i})=k_{ioniz}n_{e}n_{Ar}+k_{pen}n_{Ar^{*}}^{2}
+\]
+\[
+\frac{\partial n_{Ar^{*}}}{\partial t}+\nabla\cdot\Gamma_{Ar^{*}}(n_{Ar^{*}})=k_{exc}n_{e}n_{Ar}-2k_{pen}n_{Ar^{*}}^{2}
+\]
+
+The three equations are coupled together and all densities need to
+be solved simultaneously. 
 
 \subsubsection{Electron Impact Reaction}
 
