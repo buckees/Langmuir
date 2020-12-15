@@ -52,10 +52,11 @@ class PARTICLE(object):
         temp = radians(self.ang)
         self.uvec = np.array([sin(temp), -cos(temp)])
 
-    def init_posn(self, left, right, top):
+    def init_posn(self, domain):
         """Initialize the position at the top boundary."""
-        init_posx = np.random.uniform(left, right)
-        self.posn = np.array([init_posx, top])
+        bottom, top, left, right = domain
+        temp = np.random.uniform(left, right)
+        self.posn = np.array([temp, top])
 
     def init_uvec(self, idstrb=None):
         """
@@ -66,7 +67,7 @@ class PARTICLE(object):
         itype = idstrb[0]
         if itype == 'Uniform2D':
             left, right = idstrb[1]/180.0*np.pi, idstrb[2]/180.0*np.pi
-            theta = np.random.uniform(left, right)
+            self.ang = np.random.uniform(left, right)
         elif itype == 'Uniform3D':
             left, right = idstrb[1]/180.0*np.pi, idstrb[2]/180.0*np.pi
             temp_th = np.random.uniform(left, right)
@@ -76,18 +77,18 @@ class PARTICLE(object):
             # temp_vy = sin(temp_th)*sin(temp_phi)
             temp_v = sqrt(temp_vz**2 + temp_vx**2)
             temp_vz = temp_vz/temp_v
-            theta = acos(temp_vz)*np.sign(sin(temp_phi))
+            self.ang = acos(temp_vz)*np.sign(sin(temp_phi))
         elif itype == 'Normal':
             mu, sigma = 0.0, 0.1  # default mean and standard deviation
             mu, sigma = idstrb[1], idstrb[2]
-            theta = np.random.normal(mu, sigma)
+            self.ang = np.random.normal(mu, sigma)
         elif itype == 'Cosine':
             scale = idstrb[1]/180.0*np.pi
-            theta = cosine.rvs(scale=scale, size=1)
+            self.ang = cosine.rvs(scale=scale, size=1)
         elif itype == 'Mono':
-            theta = idstrb[1]/180.0*np.pi
+            self.ang = idstrb[1]/180.0*np.pi
 
-        self.uvec = np.array([sin(theta), -cos(theta)])
+        self._ang2uvec()
 
     def init_erg(self, idstrb=None):
         """Initialize the particle energy."""
