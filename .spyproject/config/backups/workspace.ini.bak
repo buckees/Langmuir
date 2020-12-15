@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['run\\Reactor2D_run.py', 'packages\\Reactor2D\\Reactor2D_Mesh.py', 'packages\\Reactor2D\\Reactor2D_Eergy.py', 'packages\\Reactor2D\\Reactor2D_Transp.py', 'packages\\Reactor2D\\Reactor2D_Plasma.py', 'packages\\Reactor2D\\Reactor2D_React.py', 'packages\\Mesh\\Mesh.py', 'run\\mesh\\ICP2D.py']
+recent_files = ['packages\\Feature2D\\Feature2D_main.py', 'packages\\Feature2D\\Feature2D_mesh.py', 'packages\\Feature2D\\Feature2D_ptcl.py', 'packages\\Feature2D\\Feature2D_rct.py', 'packages\\Feature2D\\Feature2D_readin.py', 'packages\\Feature2D\\Feature2D_rflct.py', 'packages\\Reactor2D\\Reactor2D_Plasma.py']
 
