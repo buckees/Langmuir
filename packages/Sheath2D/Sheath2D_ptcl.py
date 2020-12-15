@@ -65,7 +65,9 @@ class PARTICLE(object):
         in (x, -z) (half-down quadrant).
         """
         itype = idstrb[0]
-        if itype == 'Uniform2D':
+        if itype == 'Zero':
+            self.ang = 0.0
+        elif itype == 'Uniform2D':
             left, right = idstrb[1]/180.0*np.pi, idstrb[2]/180.0*np.pi
             self.ang = np.random.uniform(left, right)
         elif itype == 'Uniform3D':
