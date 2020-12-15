@@ -94,9 +94,11 @@ class PARTICLE(object):
         """Initialize the particle energy."""
         itype = idstrb[0]
         
-        if itype == 'Uniform':
+        if itype == 'Zero':
+            self.erg = 0.0
+        elif itype == 'Uniform':
             erg_min, erg_max = idstrb[1:]
-            erg = np.random.uniform(erg_min, erg_max)
+            self.erg = np.random.uniform(erg_min, erg_max)
 
         elif itype == 'Normal':
             pass
@@ -105,7 +107,6 @@ class PARTICLE(object):
             mu, sigma = 0, 0.1  # mean and standard deviation
             pass
 
-        self.erg = erg
         self._erg2speed()
 
     def move_ptcl(self, dt, EF):
