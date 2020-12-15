@@ -1,9 +1,10 @@
 """Feature Model 2D. Partile file."""
 
 import numpy as np
-from math import cos, sin, sqrt, acos, copysign, radians, degrees
+from math import cos, sin, sqrt, asin, acos, copysign, radians, degrees
 from scipy.stats import cosine
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
 
@@ -44,7 +45,7 @@ class PARTICLE(object):
     
     def _uvec2ang(self):
         """Convert uvec to ang (in degree) w.r.t. (0, -1)."""
-        temp = copysign(1.0, self.uvec[0])*acos(self.uvec[1])
+        temp = asin(self.uvec[0])
         self.ang = degrees(temp)
     
     def _ang2uvec(self):
@@ -57,6 +58,8 @@ class PARTICLE(object):
         bottom, top, left, right = domain
         temp = np.random.uniform(left, right)
         self.posn = np.array([temp, top])
+        self.step = 0  # count the computing step
+        self.isAlive = True
 
     def init_uvec(self, idstrb=None):
         """
@@ -148,4 +151,4 @@ class PARTICLE(object):
         x, z = self.posn
         if z <= wafer_loc:
             self.isAlive = False
-            self.cllct.append([self.erg, self.ang])
+            self.cllct.append([deepcopy(self.erg), deepcopy(self.ang)])
