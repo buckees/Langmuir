@@ -114,11 +114,12 @@ class PARTICLE(object):
 
         self._erg2speed()
 
-    def move_ptcl(self, dt, EF):
+    def move_ptcl(self, dt, E, E1):
         """Move each partile in a length of delta_L along its v-vector."""
-        self.posn += self.uvec*self.speed*dt
-        self.accl = EF*(self.charge*UNIT_CHARGE)/(self.mass*AMU)
-        self.vel += self.accl*dt
+        self.accl = E*(self.charge*UNIT_CHARGE)/(self.mass*AMU)
+        temp_accl = E1*(self.charge*UNIT_CHARGE)/(self.mass*AMU)
+        self.posn += self.uvec*self.speed*dt + 0.5*self.accl*dt**2
+        self.vel += 0.5*(self.accl + temp_accl)*dt
         self.speed = sqrt(self.vel[0]**2 + self.vel[1]**2)
         self.uvec = self.vel/self.speed
         self._speed2erg()
