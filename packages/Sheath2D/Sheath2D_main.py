@@ -12,13 +12,17 @@ domain = (0.0, 0.01, -0.025, 0.025)
 ptcl = PARTICLE('Ar+')
 ptcl.init_ptcl('Ion', 40, +1)
 
-dt = 1e-6
-EF0 = (0.0, -1e4)
-EF0 = np.asarray(EF0)
-w_loc = 0.001
-freq = 13.56e5
+dt = 1e-8
+Edc = (0.0, -1e4)
+# Erf = (0.0, -1e3)
+Erf = (0.0, -5e3)
+Edc = np.asarray(Edc)
+Erf = np.asarray(Erf)
+w_loc = 0.00
+# freq = 13.56e6 # T = 70 ns
+freq = 1
 
-num_ptcl = 10000
+num_ptcl = 3000
 max_step = 10000
 
 for i in range(num_ptcl):
@@ -29,8 +33,9 @@ for i in range(num_ptcl):
     t = np.random.uniform(0.0, 2*PI)
     while ptcl.isAlive:
         # move
-        EF = EF0 + EF0*sin(2*PI*freq*t)
-        ptcl.move_ptcl(dt, EF)
+        E = Edc + Erf*sin(2*PI*freq*t)
+        E1 = Edc + Erf*sin(2*PI*freq*(t+dt))
+        ptcl.move_ptcl(dt, E, E1)
         t += dt
         EF = sin(t)
         ptcl.check_bndy(domain, 'Periodic')
@@ -38,5 +43,7 @@ for i in range(num_ptcl):
         if ptcl.step > max_step:
             ptcl.isAlive=False
 
+
 erg = [item[0] for item in ptcl.cllct]
-plt.hist(erg, 100)
+print(len(erg))
+plt.hist(erg, 50)
