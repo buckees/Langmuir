@@ -13,7 +13,7 @@ ptcl.init_ptcl('Ion', 40, +1)
 
 dt = 1e-8
 Vdc=100
-Vrf=50
+Vrf=10
 Edc = (0.0, -Vdc/0.01)
 # Erf = (0.0, -1e3)
 Erf = (0.0, -Vrf/0.01)
@@ -31,21 +31,21 @@ for i in range(num_ptcl):
     ptcl.init_posn(domain)
     ptcl.init_uvec(['Zero'])
     ptcl.init_erg(['Zero'])
-    t = np.random.uniform(0.0, 2*PI)
+    phi0 = np.random.uniform(0.0, 2*PI)
+    t = 0
     dt = 1e-8
     
     while ptcl.isAlive:
-        
+        # make sure not over shoot
         if ptcl.speed:
             dt1 = abs(ptcl.posn[1] - w_loc)/ptcl.speed
             if dt1 < dt:
                 dt = dt1*1.01
         # move
-        E = Edc + Erf*sin(2*PI*freq*t)
-        E1 = Edc + Erf*sin(2*PI*freq*(t+dt))
+        E = Edc + Erf*sin(2*PI*freq*t + phi0)
+        E1 = Edc + Erf*sin(2*PI*freq*(t+dt) + phi0)
         ptcl.move_ptcl(dt, E, E1)
         t += dt
-        EF = sin(t)
         ptcl.check_bndy(domain, 'Periodic')
         ptcl.check_wafer(w_loc)
         if ptcl.step > max_step:
