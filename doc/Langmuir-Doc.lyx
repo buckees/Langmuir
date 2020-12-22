@@ -679,6 +679,381 @@ Introduction
 \end_layout
 
 \begin_layout Subsection
+Boltzmann Equation
+\end_layout
+
+\begin_layout Subsection
+Fluid Equation
+\end_layout
+
+\begin_layout Standard
+The fluid equation for plasma model is 
+\begin_inset Formula 
+\[
+\frac{\partial n}{\partial t}+\nabla\cdot\vec{\Gamma}=S
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n-denisty
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}=n\vec{u}-flux
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+S-Source\:and\:loss\:term\:due\:to\:collisions
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The countinuity euqation is used for electron, ion and neutral spcies.
+ In order to solve for density 
+\begin_inset Formula $n$
+\end_inset
+
+, two unknown terms are needed, 
+\begin_inset Formula $\vec{\Gamma}$
+\end_inset
+
+and 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ Source term, 
+\begin_inset Formula $S$
+\end_inset
+
+, is discussed in Sec.
+ Chemistry.
+ Flux term, 
+\begin_inset Formula $\vec{\Gamma}$
+\end_inset
+
+, can be solved by momentum equation,
+\begin_inset Formula 
+\[
+mn\frac{\text{\ensuremath{\partial}}}{\partial t}\vec{u}=eqn\vec{E}-\nabla p-mnv_{coll\_em}\vec{u}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{u}-fluid\:velocity
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+m-mass
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e-elementary\:charge
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+q-charge\:carried\:by\:species
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{E}-electric\:field
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+p-pressure
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+v_{coll\_em}-momentum\:collision\:frequency
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The magnetic field is ignored for most applications of low-temperature plasmas
+ and will addressed separately in another section.
+ In the right-hand side, the first term, 
+\begin_inset Formula $eqn\vec{E}$
+\end_inset
+
+, represents the electric force.
+ The sencond term, 
+\begin_inset Formula $\nabla p$
+\end_inset
+
+, represents.
+ The thrid term, 
+\begin_inset Formula $mnv_{coll\_em}\vec{u}$
+\end_inset
+
+, is the momentum loss due to momentum collision.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Drift-Diffusion Appoximation
+\end_layout
+
+\begin_layout Standard
+The momentum equation is usually difficult to solve directly.
+ A drift-diffusion appoximation is widely used in plasma model.
+ In we are only intersted in steady-state plasmas, which results in 
+\begin_inset Formula $mn\frac{\text{\ensuremath{\partial}}}{\partial t}\vec{u}=0$
+\end_inset
+
+, the momentum equation can be writen as
+\begin_inset Formula 
+\[
+eqn\vec{E}-\nabla p-mnv_{coll\_em}\vec{u}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we assume that the background species is at rest and that the momentum
+ collision frequency, 
+\begin_inset Formula $v_{coll\_em}$
+\end_inset
+
+, is a constant, independent of velocity.
+ Taking an isothermal plasma, such that 
+\begin_inset Formula $\nabla p=kT\nabla n$
+\end_inset
+
+, the momentume equation is writen as
+\begin_inset Formula 
+\[
+eqn\vec{E}-kT\nabla n-mnv_{coll\_em}\vec{u}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+now velocity, 
+\begin_inset Formula $\vec{u}$
+\end_inset
+
+, is solvable,
+\begin_inset Formula 
+\[
+\vec{u}=\frac{eq\vec{E}}{mv_{coll\_em}}-\frac{kT}{mv_{coll\_em}}(\frac{\nabla n}{n})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}=n\vec{u}=\frac{eqn\vec{E}}{mv_{coll\_em}}-\frac{kT\nabla n}{mv_{coll\_em}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}=\frac{q}{|q|}\mu n\vec{E}-D\nabla n
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mu=\frac{e|q|}{mv_{coll\_em}}\;-\;mobility
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+D=\frac{kT}{mv_{coll\_em}}\;-\;diffusivity,\:diffusion\:coefficient
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first term, 
+\begin_inset Formula $e\mu n\vec{E}$
+\end_inset
+
+, represents the drift term; the sencond term, 
+\begin_inset Formula $D\nabla n$
+\end_inset
+
+, represents the diffusion term.
+ That is where the name of appoximation comes from.
+\end_layout
+
+\begin_layout Subsubsection
+Ambipolar Appoximation
+\end_layout
+
+\begin_layout Standard
+In the steady state, we make the congruence assumption that the flux of
+ electrons and ions out of any region must be equal, 
+\begin_inset Formula $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$
+\end_inset
+
+, such that charge does not build up.
+ This is still true in the presence of ionizing collisions, which create
+ equal numbers of both negative and positive species.
+ Since the electrons are ligher, and would tend to flow out faster (in an
+ unmagnetized plasma), an electric field must spring up to maintain the
+ local flux balance.
+ That is, a few more electrons than ions initially leave the plasma region
+ to set up a charge imbalance and consequently an electric field.
+ Let's expand the flux balance, 
+\begin_inset Formula $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$
+\end_inset
+
+,
+\begin_inset Formula 
+\[
+-\mu_{e}n_{e}\vec{E}-D_{e}\nabla n_{e}=\mu_{i}n_{i}\vec{E}-D_{i}\nabla n_{i}
+\]
+
+\end_inset
+
+Note that the drift term is negative for electrons and positive for ions,
+ where E-field drags electrons down and speed ions up to balance the fluxes.
+ Assume charge neutrality in space, 
+\begin_inset Formula $n_{e}=n_{i}$
+\end_inset
+
+, E-field can be solved as
+\begin_inset Formula 
+\[
+\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This E-field is called ambipolar E-field and substituted to the flux,
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{e}-D_{i}\nabla n_{e}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{e}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can see the coefficient is symmetric, and equal to electron and ion.
+ A new diffusion coefficient can be defined as
+\begin_inset Formula 
+\[
+D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{e}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mu_{e}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{e}})\gg\mu_{i}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{i}}),\:since\:m_{e}\ll m_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+D_{ambi}\approx D_{i}+\frac{\mu_{i}}{\mu_{e}}D_{e}=D_{i}(1+\frac{T_{e}}{T_{i}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+put it back to the continuity equation,
+\begin_inset Formula 
+\[
+\frac{\partial n}{\partial t}+D_{ambi}\nabla^{2}n=S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the continuity becomes a standard DIFFUSION equation with source term,
+ and much easier to solve.
+\end_layout
+
+\begin_layout Subsection
 Electon Energy Equation
 \end_layout
 
