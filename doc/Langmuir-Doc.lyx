@@ -945,8 +945,9 @@ Ambipolar Appoximation
 \end_layout
 
 \begin_layout Standard
-In the steady state, we make the congruence assumption that the flux of
- electrons and ions out of any region must be equal, 
+In the steady state where the background gas is dominant, we make the congruence
+ assumption that the flux of electrons and ions out of any region must be
+ equal, 
 \begin_inset Formula $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$
 \end_inset
 
@@ -1051,6 +1052,22 @@ put it back to the continuity equation,
 \begin_layout Standard
 Now the continuity becomes a standard DIFFUSION equation with source term,
  and much easier to solve.
+ When using ambipolar diffusion appoximation, we only calculate ion density
+ 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+, and enforce charge neutrality, 
+\begin_inset Formula $n_{e}=n_{i}$
+\end_inset
+
+.
+ Ambipolar E-field, 
+\begin_inset Formula $E_{ambi}$
+\end_inset
+
+, can be used for electron energy equation.
+ In this way, Poisson's equation is avoided.
 \end_layout
 
 \begin_layout Subsection
