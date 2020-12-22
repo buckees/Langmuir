@@ -316,7 +316,7 @@ Boltzmann Equation
 \end_layout
 
 \begin_layout Subsection
-Fluid Equation
+Continuity Equation
 \end_layout
 
 \begin_layout Standard
@@ -1151,6 +1151,168 @@ Now the Poisson's equation retains its Lapalacian form, with the source
  term depending on current potential.
  The same technique can be applied to Sec.
  3.2 as well.
+\end_layout
+
+\begin_layout Subsection
+Momentum Equation
+\end_layout
+
+\begin_layout Subsubsection
+Plasma Conductivity
+\end_layout
+
+\begin_layout Standard
+Consider a small-amplitude perturbation of electromagnetic field, having
+ an electric field in the x-direction of an infinite plasma.
+ The electric field may be defined using complex numbers: 
+\begin_inset Formula $E=E_{0}cos(iωt)$
+\end_inset
+
+.
+ In a typical plasma etching application, 
+\begin_inset Formula $\omega=2\pi f$
+\end_inset
+
+, where 
+\begin_inset Formula $f=13.56$
+\end_inset
+
+ MHz.
+ Let's look at the electron momentum equation,
+\begin_inset Formula 
+\[
+m_{e}n_{e}\frac{\text{\ensuremath{\partial}}}{\partial t}u_{e}=-en_{e}E_{0}cos(i\omega t)-\nabla p_{e}-m_{e}n_{e}v_{coll\_em}u_{e}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With the assumption that :
+\end_layout
+
+\begin_layout Enumerate
+the ions do not respond to this high-frequency perturbation
+\end_layout
+
+\begin_layout Enumerate
+the electron pressure gradient is not significant, effectively ignoring
+ electron thermal energy 
+\end_layout
+
+\begin_layout Enumerate
+there is no steady current in the plasma so the drift speed is zero 
+\end_layout
+
+\begin_layout Enumerate
+electron velocity follows the same oscillation, 
+\begin_inset Formula $u=u_{0}cos(iωt)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The electron momentum equation linearizes to
+\begin_inset Formula 
+\[
+(n_{e}m_{e}iω)u_{0}cos(iωt)=\text{−}n_{e}eE_{0}cos(iωt)\text{−}(n_{e}m_{e}v_{coll\_em})u_{0}cos(iωt)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The magnitudes of the perturbations in velocity and electric field amplitude
+ are therefore related by 
+\begin_inset Formula 
+\[
+u_{0}=\text{−}\frac{e}{m_{e}(iω+v_{coll\_em})}E_{0}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+current is determined by
+\begin_inset Formula 
+\[
+J_{0}=\text{−}en_{e}u_{0}=\frac{e^{2}n_{e}}{m_{e}(iω+v_{coll\_em})}E_{0}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The electron conductivity 
+\begin_inset Formula $σ_{e}$
+\end_inset
+
+ is, 
+\begin_inset Formula 
+\[
+σ_{e}=\frac{e^{2}n_{e}}{m_{e}(iω+v_{coll\_em})}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Plasma conductivity 
+\begin_inset Formula $σ_{plasma}=σ_{e}+σ_{ion}≈σ_{e}$
+\end_inset
+
+, since 
+\begin_inset Formula $σ_{e}≫σ_{ion}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Notice that when collision dominates the plasma, 
+\begin_inset Formula $v_{coll\_em}≫ω$
+\end_inset
+
+, 
+\begin_inset Formula $σ_{e}=\frac{e^{2}n_{e}}{m_{e}v_{coll\_em}}$
+\end_inset
+
+, 
+\begin_inset Formula $σ_{e}$
+\end_inset
+
+ is real.
+ Current is synchronized in phase with E-field and power is absoped by the
+ electron.
+ When oscillation dominates the plasma, 
+\begin_inset Formula $ω≫v_{coll\_em}$
+\end_inset
+
+, 
+\begin_inset Formula $σ_{e}=-i\frac{e^{2}n_{e}}{m_{e}\omega}$
+\end_inset
+
+, 
+\begin_inset Formula $σ_{e}$
+\end_inset
+
+ is imaginary.
+ Current is 
+\begin_inset Formula $90^{\circ}$
+\end_inset
+
+ lagged in phase with E-field so that power is reflected by the electron.
 \end_layout
 
 \begin_layout Subsection
