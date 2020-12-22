@@ -581,7 +581,7 @@ E-field in the continuity equation is derived by potential,
 , continuity equation can be written in terms of density and potential,
 \begin_inset Formula 
 \[
-\frac{\partial n_{e}}{\partial t}=-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e}+S_{e}=f_{e}(n_{e}(t),\phi(t))
+\frac{\partial n_{e}}{\partial t}=-\nabla\cdot(-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e})+S_{e}=f_{e}(n_{e}(t),\phi(t))
 \]
 
 \end_inset
@@ -589,7 +589,7 @@ E-field in the continuity equation is derived by potential,
 
 \begin_inset Formula 
 \[
-\frac{\partial n_{i}}{\partial t}=q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i}+S_{i}=f_{i}(n_{i}(t),\phi(t))
+\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
 \]
 
 \end_inset
@@ -1165,7 +1165,7 @@ Plasma Conductivity
 Consider a small-amplitude perturbation of electromagnetic field, having
  an electric field in the x-direction of an infinite plasma.
  The electric field may be defined using complex numbers: 
-\begin_inset Formula $E=E_{0}cos(iωt)$
+\begin_inset Formula $E=E_{0}exp(iωt)$
 \end_inset
 
 .
@@ -1181,7 +1181,7 @@ Consider a small-amplitude perturbation of electromagnetic field, having
  Let's look at the electron momentum equation,
 \begin_inset Formula 
 \[
-m_{e}n_{e}\frac{\text{\ensuremath{\partial}}}{\partial t}u_{e}=-en_{e}E_{0}cos(i\omega t)-\nabla p_{e}-m_{e}n_{e}v_{coll\_em}u_{e}
+m_{e}n_{e}\frac{\text{\ensuremath{\partial}}}{\partial t}u_{e}=-en_{e}E_{0}exp(i\omega t)-\nabla p_{e}-m_{e}n_{e}v_{coll\_em}u_{e}
 \]
 
 \end_inset
@@ -1208,7 +1208,7 @@ there is no steady current in the plasma so the drift speed is zero
 
 \begin_layout Enumerate
 electron velocity follows the same oscillation, 
-\begin_inset Formula $u=u_{0}cos(iωt)$
+\begin_inset Formula $u=u_{0}exp(iωt)$
 \end_inset
 
 .
@@ -1218,7 +1218,7 @@ electron velocity follows the same oscillation,
 The electron momentum equation linearizes to
 \begin_inset Formula 
 \[
-(n_{e}m_{e}iω)u_{0}cos(iωt)=\text{−}n_{e}eE_{0}cos(iωt)\text{−}(n_{e}m_{e}v_{coll\_em})u_{0}cos(iωt)
+(n_{e}m_{e}iω)u_{0}exp(iωt)=\text{−}n_{e}eE_{0}exp(iωt)\text{−}(n_{e}m_{e}v_{coll\_em})u_{0}exp(iωt)
 \]
 
 \end_inset
