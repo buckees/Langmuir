@@ -573,6 +573,89 @@ The first term,
  That is where the name of appoximation comes from.
 \end_layout
 
+\begin_layout Standard
+E-field in the continuity equation is derived by potential, 
+\begin_inset Formula $\vec{E}=-\nabla\phi$
+\end_inset
+
+, continuity equation can be written in terms of density and potential,
+\begin_inset Formula 
+\[
+\frac{\partial n_{e}}{\partial t}=-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e}+S_{e}=f_{e}(n_{e}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial n_{i}}{\partial t}=q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i}+S_{i}=f_{i}(n_{i}(t),\phi(t))
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}n_{i}(t)-n_{e}(t))
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this form, the future density 
+\begin_inset Formula $n_{e}(t1)$
+\end_inset
+
+ is determined by current density, 
+\begin_inset Formula $n_{e}(t0)$
+\end_inset
+
+ , and current potential, 
+\begin_inset Formula $\phi(t0)$
+\end_inset
+
+.
+ The current potential, 
+\begin_inset Formula $\phi(t0)$
+\end_inset
+
+, is determined by the toall charge density, 
+\begin_inset Formula $\sum_{i}n_{i}(t)-n_{e}(t)$
+\end_inset
+
+.
+ Explicitly, the equations above can be solved through iterative method.
+ Given initial densities, 
+\begin_inset Formula $n_{e}(t0)$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{i}(t0)$
+\end_inset
+
+, initial potnetial 
+\begin_inset Formula $\phi(t0)$
+\end_inset
+
+can be solved.
+ By putting densities and potential into continuity equation, the densities
+ 
+\begin_inset Formula $n_{e,i}(t1)$
+\end_inset
+
+ at next time, 
+\begin_inset Formula $t1$
+\end_inset
+
+, can be obtained.
+ The more detailed discussion can be found in the sec.
+ Poisson's Equation.
+\end_layout
+
 \begin_layout Subsubsection
 Ambipolar Appoximation
 \end_layout
