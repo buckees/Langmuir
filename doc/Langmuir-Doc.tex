@@ -187,10 +187,10 @@ name of appoximation comes from.
 E-field in the continuity equation is derived by potential, $\vec{E}=-\nabla\phi$,
 continuity equation can be written in terms of density and potential,
 \[
-\frac{\partial n_{e}}{\partial t}=-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e}+S_{e}=f_{e}(n_{e}(t),\phi(t))
+\frac{\partial n_{e}}{\partial t}=-\nabla\cdot(-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e})+S_{e}=f_{e}(n_{e}(t),\phi(t))
 \]
 \[
-\frac{\partial n_{i}}{\partial t}=q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i}+S_{i}=f_{i}(n_{i}(t),\phi(t))
+\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
 \]
 \[
 -\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}n_{i}(t)-n_{e}(t))
@@ -422,11 +422,11 @@ to Sec. 3.2 as well.
 
 Consider a small-amplitude perturbation of electromagnetic field,
 having an electric field in the x-direction of an infinite plasma.
-The electric field may be defined using complex numbers: $E=E_{0}cos(i\omega t)$.
+The electric field may be defined using complex numbers: $E=E_{0}exp(i\omega t)$.
 In a typical plasma etching application, $\omega=2\pi f$, where $f=13.56$
 MHz. Let's look at the electron momentum equation,
 \[
-m_{e}n_{e}\frac{\text{\ensuremath{\partial}}}{\partial t}u_{e}=-en_{e}E_{0}cos(i\omega t)-\nabla p_{e}-m_{e}n_{e}v_{coll\_em}u_{e}
+m_{e}n_{e}\frac{\text{\ensuremath{\partial}}}{\partial t}u_{e}=-en_{e}E_{0}exp(i\omega t)-\nabla p_{e}-m_{e}n_{e}v_{coll\_em}u_{e}
 \]
 
 With the assumption that :
@@ -435,11 +435,11 @@ With the assumption that :
 \item the electron pressure gradient is not significant, effectively ignoring
 electron thermal energy 
 \item there is no steady current in the plasma so the drift speed is zero 
-\item electron velocity follows the same oscillation, $u=u_{0}cos(i\omega t)$.
+\item electron velocity follows the same oscillation, $u=u_{0}exp(i\omega t)$.
 \end{enumerate}
 The electron momentum equation linearizes to
 \[
-(n_{e}m_{e}i\omega)u_{0}cos(i\omega t)=\text{\textminus}n_{e}eE_{0}cos(i\omega t)\text{\textminus}(n_{e}m_{e}v_{coll\_em})u_{0}cos(i\omega t)
+(n_{e}m_{e}i\omega)u_{0}exp(i\omega t)=\text{\textminus}n_{e}eE_{0}exp(i\omega t)\text{\textminus}(n_{e}m_{e}v_{coll\_em})u_{0}exp(i\omega t)
 \]
 
 The magnitudes of the perturbations in velocity and electric field
