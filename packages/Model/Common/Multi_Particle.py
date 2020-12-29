@@ -37,7 +37,8 @@ class MULTI_PARTICLE(object):
         vel: numpy array, (num, 3), velocity of all particles
         """
         self.num = num
-        self.ptype = prop['ptype']
+        self.pname = [prop['name'] for i in range(num)]
+        self.ptype = [prop['type'] for i in range(num)]
         self.mass = np.ones(num)*prop['mass']
         self.charge = np.ones(num)*prop['charge']
         self.isAlive = np.ones(num, dtype=bool)
@@ -60,7 +61,7 @@ class MULTI_PARTICLE(object):
 if __name__ == '__main__':
     mp = MULTI_PARTICLE()
     num = 100
-    Arp = {'ptype':'Ion', 'mass':40.0, 'charge':1.0}
+    Arp = {'name':'Ar+','type':'Ion', 'mass':40.0, 'charge':1.0}
     posn = np.random.rand(num, 3)
     vel = np.random.rand(num, 3)
     mp.gen_particles(num=100, prop=Arp, posn=posn, vel=vel)
