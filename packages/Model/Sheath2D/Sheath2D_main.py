@@ -4,8 +4,8 @@ import numpy as np
 from math import sin
 import matplotlib.pyplot as plt
 
-from packages.Sheath2D.Sheath2D_ptcl import PARTICLE
-from packages.Constants import PI
+from packages.Model.Common.Multi_Particle import MULTI_PARTICLE
+from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
 
 domain = (0.0, 0.01, -0.025, 0.025)
 ptcl = PARTICLE('Ar+')
@@ -26,35 +26,38 @@ freq = 1
 num_ptcl = 10000
 max_step = 10000
 
-for i in range(num_ptcl):
+mp = MULTI_PARTICLE('IEDF')
+num_per_launch = 100
+Arp = {'name':'Ar+','type':'Ion', 'mass':40.0, 'charge':1.0}
+posn = np.random.rand(num_per_launch, 3)
+vel = np.random.rand(num_per_launch, 3)
+mp.gen_particles(num=num_per_launch, prop=Arp, posn=posn, vel=vel)
+
+cllct = list()
+step = 0
+for i in range(num_ptcl/num_per_launch):
     # init
-    ptcl.init_posn(domain)
-    ptcl.init_uvec(['Zero'])
-    ptcl.init_erg(['Zero'])
-    phi0 = np.random.uniform(0.0, 2*PI)
+    posn = np.zeros((num_per_launch, 3))
+    vel = np.zeros((num_per_launch, 3))
+    mp.update_posn(posn)
+    mp.update_vel(vel)
+    phi0 = np.random.rand(num_per_launch)*2.0*PI
     t = 0
     dt = 1e-8
     
-    while ptcl.isAlive:
-        # make sure not over shoot
-        if ptcl.speed:
-            dt1 = abs(ptcl.posn[1] - w_loc)/ptcl.speed
-            if dt1 < dt:
-                dt = dt1*1.01
+    while ptcl.isAlive.any():
+        
         # move
         E = Edc + Erf*sin(2*PI*freq*t + phi0)
-        E1 = Edc + Erf*sin(2*PI*freq*(t+dt) + phi0)
-        ptcl.move_ptcl(dt, E, E1)
         t += dt
-        ptcl.check_bndy(domain, 'Periodic')
-        ptcl.check_wafer(w_loc)
-        if ptcl.step > max_step:
-            ptcl.isAlive=False
-
-
-erg = [item[0] for item in ptcl.cllct]
-print(len(erg))
-
+        mp.posn += mp.vel*dt*mp.isAlive
+        mp.vel[:, 0] += E*(mp.charge*UNIT_CHARGE)/(mp.mass*AMU)*dt*mp.isAlive
+        step += 1
+        if step > max_step:
+            break
+    
+    cllct += mp.vel.T.tolist()[0]
+    
 
 fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
                        constrained_layout=True)
