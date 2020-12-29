@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
+
 class MULTI_PARTICLE(object):
     """Create MULTI_PARTICLE() object."""
 
@@ -23,8 +25,9 @@ class MULTI_PARTICLE(object):
         mass: arr of float, mass of particle, unit in AMU
         charge: arr of float, charge of particle
         isAlive: arr of bool, state of particle
-        posn: arr of float, position of particle, shape=(num, 3)
-        vel: arr of float, velocity of particle, shape=(num, 3)
+        posn: arr of float, position of particle, unit in m, shape=(num, 3)
+        vel: arr of float, velocity of particle, unit in m/s, shape=(num, 3)
+        erg: arr of float, energy of particle, unit in eV
         """
         self.name = name
         self.pname = list()
@@ -34,6 +37,7 @@ class MULTI_PARTICLE(object):
         self.isAlive = np.array(list())
         self.posn = np.array(list())
         self.vel = np.array(list())
+        self.erg = np.array(list())
         
     def add_PARTICLE(self, PARTICLE):
         """Add PARTICLE() object to MULTI_PARTICLE()."""
@@ -69,6 +73,13 @@ class MULTI_PARTICLE(object):
     def update_vel(self, vel):
         """Update velocities for all particles."""
         self.vel = vel
+    
+    def vel2erg(self):
+        """Convert velocity to energy."""
+        temp = np.power(self.vel, 2)
+        temp = np.sum(temp, axis=1)
+        temp = np.sqrt(temp)
+        self.erg = 0.5*(self.mass*AMU)*temp*J2EV
     
     def plot(self):
         """Plot basic statics."""
