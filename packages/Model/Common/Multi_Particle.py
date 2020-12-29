@@ -22,7 +22,7 @@ class MULTI_PARTICLE(object):
         """
         self.name = name
         
-    def add_ptcl(self):
+    def add_PARTICLE(self):
         """Add PARTICLE() object to MULTI_PARTICLE()."""
         pass
     
