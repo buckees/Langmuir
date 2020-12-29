@@ -73,7 +73,11 @@ class MULTI_PARTICLE(object):
     def update_vel(self, vel):
         """Update velocities for all particles."""
         self.vel = vel
-        
+    
+    def update_state(self, state):
+        """Update states for all particles."""
+        self.isAlive = state
+    
     def plot(self):
         """Plot basic statics."""
         fig, axes = plt.subplots(2, 3, figsize=(12, 8), dpi=600,
