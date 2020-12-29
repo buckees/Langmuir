@@ -19,15 +19,11 @@ class MULTI_PARTICLE(object):
         """
         self.name = name
         
-    def add_PARTICLE(self):
+    def add_PARTICLE(self, PARTICLE):
         """Add PARTICLE() object to MULTI_PARTICLE()."""
         pass
     
-    def to_DataFrame(self):
-        """Convert data to DataFrame type."""
-        pass
-    
-    def to_array(self):
+    def to_array(self, weight):
         """Convert data to Numpy array type."""
         pass
     
@@ -38,3 +34,8 @@ class MULTI_PARTICLE(object):
     def reinit_vel(self):
         """Re-init velocities for all particles."""
         pass
+    
+    def to_DataFrame(self):
+        """Convert data to DataFrame type."""
+        pass
+    
