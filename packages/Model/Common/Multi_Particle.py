@@ -101,7 +101,6 @@ class MULTI_PARTICLE(object):
         """Convert velocity to energy."""
         temp = np.power(self.vel, 2)
         temp = np.sum(temp, axis=1)
-        temp = np.sqrt(temp)
         self.erg = 0.5*(self.mass*AMU)*temp*J2EV
 
     def plot_erg(self):
