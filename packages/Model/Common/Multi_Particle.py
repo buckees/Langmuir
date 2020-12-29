@@ -27,6 +27,24 @@ class MULTI_PARTICLE(object):
         """Convert data to Numpy array type."""
         pass
     
+    def gen_particles(self, num, prop, posn, vel):
+        """
+        Generate multi particles of a single species directly.
+        
+        num: int, num of particles.
+        prop: dict, properties of the particle.
+        posn: numpy array, (num, 3), position of all particles.
+        vel: numpy array, (num, 3), velocity of all particles
+        """
+        self.num = num
+        self.ptype = prop['ptype']
+        self.mass = np.ones(num)*prop['mass']
+        self.charge = np.ones(num)*prop['charge']
+        self.isAlive = np.ones(num, dtype=bool)
+        self.posn = posn
+        self.vel = vel
+        return print(f'{num} of particles are generated!')
+    
     def reinit_posn(self):
         """Re-init positions for all particles."""
         pass
@@ -38,4 +56,11 @@ class MULTI_PARTICLE(object):
     def to_DataFrame(self):
         """Convert data to DataFrame type."""
         pass
-    
+
+if __name__ == '__main__':
+    mp = MULTI_PARTICLE()
+    num = 100
+    Arp = {'ptype':'Ion', 'mass':40.0, 'charge':1.0}
+    posn = np.random.rand(num, 3)
+    vel = np.random.rand(num, 3)
+    mp.gen_particles(num=100, prop=Arp, posn=posn, vel=vel)
