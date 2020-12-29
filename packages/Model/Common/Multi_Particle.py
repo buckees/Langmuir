@@ -46,12 +46,12 @@ class MULTI_PARTICLE(object):
         self.vel = vel
         return print(f'{num} of particles are generated!')
     
-    def reinit_posn(self):
-        """Re-init positions for all particles."""
+    def update_posn(self, posn):
+        """Update positions for all particles."""
         pass
     
-    def reinit_vel(self):
-        """Re-init velocities for all particles."""
+    def update_vel(self, vel):
+        """Update velocities for all particles."""
         pass
     
     def to_DataFrame(self):
