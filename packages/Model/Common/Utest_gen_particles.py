@@ -1,6 +1,4 @@
-"""
-Test the gen_particles() in the Multi_Particles().
-"""
+"""Test the gen_particles() in the Multi_Particles()."""
 
 import numpy as np
 
