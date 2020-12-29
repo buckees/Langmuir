@@ -73,14 +73,7 @@ class MULTI_PARTICLE(object):
     def update_vel(self, vel):
         """Update velocities for all particles."""
         self.vel = vel
-    
-    def vel2erg(self):
-        """Convert velocity to energy."""
-        temp = np.power(self.vel, 2)
-        temp = np.sum(temp, axis=1)
-        temp = np.sqrt(temp)
-        self.erg = 0.5*(self.mass*AMU)*temp*J2EV
-    
+        
     def plot(self):
         """Plot basic statics."""
         fig, axes = plt.subplots(2, 3, figsize=(12, 8), dpi=600,
@@ -98,6 +91,25 @@ class MULTI_PARTICLE(object):
             ax.set_xlabel(xlabel)
             ax.set_ylabel('Probability')
         fig.savefig(f'{self.name}.png', dpi=600)
+        plt.close()
+
+    def vel2erg(self):
+        """Convert velocity to energy."""
+        temp = np.power(self.vel, 2)
+        temp = np.sum(temp, axis=1)
+        temp = np.sqrt(temp)
+        self.erg = 0.5*(self.mass*AMU)*temp*J2EV
+
+    def plot_erg(self):
+        """Plot basic statics in energy."""
+        self.vel2erg()
+        fig, ax = plt.subplots(1, 1, figsize=(12, 8), dpi=600,
+                       constrained_layout=True)
+        ax.hist(self.erg, density=True)
+        ax.set_title('Energy Distribution')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('Probability')
+        fig.savefig(f'{self.name}_erg.png', dpi=600)
         plt.close()
     
     def to_DataFrame(self):
