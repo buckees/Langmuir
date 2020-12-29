@@ -7,9 +7,6 @@ Multi_Particle.py serves as a data center/hub,
 
 import numpy as np
 import pandas as pd
-from math import cos, sin, sqrt, acos
-import matplotlib.pyplot as plt
-from scipy.stats import cosine
 
 class MULTI_PARTICLE(object):
     """Create MULTI_PARTICLE() object."""
