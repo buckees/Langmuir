@@ -15,9 +15,24 @@ class MULTI_PARTICLE(object):
         """
         Init the MULTI_PARTICLE().
         
-        name: str, var, name of the MULTI_PARTICLE.
+        name: str, name of the MULTI_PARTICLE.
+        num: int, num of particles
+        pname: list of str, name of particle
+        ptype: list of str, type of particle, ['Eon', 'Ion', 'Neut']
+        mass: arr of float, mass of particle, unit in AMU
+        charge: arr of float, charge of particle
+        isAlive: arr of bool, state of particle
+        posn: arr of float, position of particle, shape=(num, 3)
+        vel: arr of float, velocity of particle, shape=(num, 3)
         """
         self.name = name
+        self.pname = list()
+        self.ptype = list()
+        self.mass = np.array(list())
+        self.charge = np.array(list())
+        self.isAlive = np.array(list())
+        self.posn = np.array(list())
+        self.vel = np.array(list())
         
     def add_PARTICLE(self, PARTICLE):
         """Add PARTICLE() object to MULTI_PARTICLE()."""
