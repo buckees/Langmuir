@@ -7,6 +7,7 @@ Multi_Particle.py serves as a data center/hub,
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class MULTI_PARTICLE(object):
     """Create MULTI_PARTICLE() object."""
@@ -69,6 +70,25 @@ class MULTI_PARTICLE(object):
         """Update velocities for all particles."""
         pass
     
+    def plot(self):
+        """Plot basic statics."""
+        fig, axes = plt.subplots(2, 3, figsize=(12, 8), dpi=600,
+                       constrained_layout=True)
+        variables = self.posn.T.tolist()
+        variables += self.vel.T.tolist()
+        titles = ['Position in X', 'Position in Z', 'Position in Y',
+                  'Velocity in X', 'Velocity in Z', 'Velocity in Y']
+        xlabels = ['Position (m)', 'Position (m)', 'Position (m)',
+                  'Velocity (m/s)', 'Velocity (m/s)', 'Velocity (m/s)']
+        for ax, var, title, xlabel in zip(axes.flatten(), 
+                                          variables, titles, xlabels):
+            ax.hist(var, density=True)
+            ax.set_title(title)
+            ax.set_xlabel(xlabel)
+            ax.set_ylabel('Probability')
+        fig.savefig(f'{self.name}.png', dpi=600)
+        plt.close()
+    
     def to_DataFrame(self):
         """Convert data to DataFrame type."""
         pass
@@ -80,3 +100,4 @@ if __name__ == '__main__':
     posn = np.random.rand(num, 3)
     vel = np.random.rand(num, 3)
     mp.gen_particles(num=100, prop=Arp, posn=posn, vel=vel)
+    mp.plot()
