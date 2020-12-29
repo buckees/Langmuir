@@ -64,11 +64,11 @@ class MULTI_PARTICLE(object):
     
     def update_posn(self, posn):
         """Update positions for all particles."""
-        pass
+        self.posn = posn
     
     def update_vel(self, vel):
         """Update velocities for all particles."""
-        pass
+        self.vel = vel
     
     def plot(self):
         """Plot basic statics."""
