@@ -6,7 +6,7 @@ Particle_Mover.py solves the Newton's equation of motion,
 
 import numpy as np
 
-from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
+from packages.Constants import (AMU, UNIT_CHARGE)
 
 def EULER_MOVE(ptcl, field, dt):
     """
