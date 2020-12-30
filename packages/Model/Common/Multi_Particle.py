@@ -30,6 +30,7 @@ class MULTI_PARTICLE(object):
         erg: arr of float, energy of particle, unit in eV
         """
         self.name = name
+        self.num = 1
         self.pname = list()
         self.ptype = list()
         self.mass = np.array(list())
