@@ -51,11 +51,14 @@ class PARTICLE(object):
         self.posn = np.zeros(3)
         self.vel = np.zeros(3)
         
-
-    def init_posn(self, posn):
-        """Init position."""
+    def update_posn(self, posn):
+        """Update position."""
         self.posn = posn
-
-    def init_vel(self, vel):
-        """Init velocity."""
-        self.vel = self.vel
+    
+    def update_vel(self, vel):
+        """Update velocity."""
+        self.vel = vel
+    
+    def update_state(self, state):
+        """Update state."""
+        self.isAlive = state
