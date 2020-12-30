@@ -41,9 +41,8 @@ class PARTICLE(object):
         """Select particle from the database and assign the info."""
         pass
     
-    def customize_ptcl(self, pname, ptype, mass, charge, isAlive=True):
+    def customize_ptcl(self, ptype, mass, charge, isAlive=True):
         """Customize a particle."""
-        self.pname = pname
         self.ptype = ptype
         self.mass = mass
         self.charge = charge
