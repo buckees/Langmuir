@@ -41,16 +41,16 @@ class PARTICLE(object):
         """Select particle from the database and assign the info."""
         pass
     
-    def init_ptcl(self, ptype, mass, charge, isAlive=False):
-        """Init particle."""
-        self.ptype = ptype  # str, 'E','Ion','Neut' or 'Bkg'
-        self.mass = mass  # unit in AMU
-        self.charge = charge  # unit in Unit Charge of Electron
-        self.posn = np.zeros(2)
-        self.enrg = 0.025  # unit in eV, initial as room temperature
-        self.uvec = np.zeros(2)
-        self.accl = np.zeros(2)
-        self.isAlive = False  # indicator for ptcl alive or dead
+    def customize_ptcl(self, pname, ptype, mass, charge, isAlive=True):
+        """Customize a particle."""
+        self.pname = pname
+        self.ptype = ptype
+        self.mass = mass
+        self.charge = charge
+        self.isAlive = isAlive
+        self.posn = np.zeros(3)
+        self.vel = np.zeros(3)
+        
 
     def init_posn(self, posn):
         """Init position."""
