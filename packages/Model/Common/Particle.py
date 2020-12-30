@@ -62,3 +62,9 @@ class PARTICLE(object):
     def update_state(self, state):
         """Update state."""
         self.isAlive = state
+    
+    def vel2erg(self):
+        """Convert velocity to energy."""
+        temp = np.power(self.vel, 2)
+        temp = np.sum(temp)
+        self.erg = 0.5*(self.mass*AMU)*temp*J2EV
