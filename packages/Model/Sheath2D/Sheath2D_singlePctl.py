@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Common.Field import FIELD
+from packages.Model.Common.Particle_Mover import EULER_MOVE
 from packages.Constants import (PI, AMU, UNIT_CHARGE)
 
 # Physics parameters
@@ -14,7 +15,7 @@ w_loc = 0.0 # by default
 dsh = 0.01
 dt = 1e-8
 Vdc, Vrf = np.zeros(3), np.zeros(3)
-Vdc[1], Vrf[1] = 100.0, 30.0
+Vdc[1], Vrf[1] = 100, 20
 # freq = 13.56e6 # T = 70 ns
 freq = 1
 
@@ -52,9 +53,9 @@ for i in range(num_ptcl):
                 dt = dt1*1.001
         # move
         field.update_E(field.Efunc(Vdc, Vrf, dsh, freq, phi0, t))
-        ptcl.update_posn(ptcl.posn + ptcl.vel*dt)
-        ptcl.update_vel(ptcl.vel + 
-                        field.E*(ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)*dt)
+        posn_next, vel_next = EULER_MOVE(ptcl, field, dt)
+        ptcl.update_posn(posn_next)
+        ptcl.update_vel(vel_next)
         t += dt
         step += 1
         if ptcl.posn[1] < w_loc:
