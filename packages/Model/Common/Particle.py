@@ -6,6 +6,8 @@ Particle.py serves as a data center/hub,
 
 import numpy as np
 
+from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
+
 class PARTICLE(object):
     """Create PARTICLE() object."""
 
@@ -13,8 +15,7 @@ class PARTICLE(object):
         """
         Init the PARTICLE().
         
-        name: str, name of the PARTICLE.
-        pname: str, name of particle
+        name: str, name of the particle.
         ptype: str, type of particle, ['Eon', 'Ion', 'Neut']
         mass: float, mass of particle, unit in AMU
         charge: float, charge of particle
@@ -24,7 +25,6 @@ class PARTICLE(object):
         erg: float, energy of particle, unit in eV
         """
         self.name = name
-        self.pname = list()
         self.ptype = list()
         self.mass = np.array(list())
         self.charge = np.array(list())
