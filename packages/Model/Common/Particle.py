@@ -20,8 +20,8 @@ class PARTICLE(object):
         mass: float, mass of particle, unit in AMU
         charge: float, charge of particle
         isAlive: bool, state of particle
-        posn: arr(3) of float, position of particle, unit in m
-        vel: arr(3) of float, velocity of particle, unit in m/s
+        posn: arr(3) of float, position in (x, z, y), unit in m
+        vel: arr(3) of float, velocity in (x, z, y), unit in m/s
         erg: float, energy of particle, unit in eV
         """
         self.name = name
