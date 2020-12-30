@@ -51,7 +51,7 @@ for i in range(num_ptcl):
             if dt1 < dt:
                 dt = dt1*1.001
         # move
-        field.E = field.Efunc(Vdc, Vrf, dsh, freq, phi0, t)
+        field.update_E(field.Efunc(Vdc, Vrf, dsh, freq, phi0, t))
         ptcl.update_posn(ptcl.posn + ptcl.vel*dt)
         ptcl.update_vel(ptcl.vel + 
                         field.E*(ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)*dt)
