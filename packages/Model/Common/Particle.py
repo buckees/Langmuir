@@ -22,7 +22,6 @@ class PARTICLE(object):
         isAlive: bool, state of particle
         posn: arr(3) of float, position in (x, z, y), unit in m
         vel: arr(3) of float, velocity in (x, z, y), unit in m/s
-        erg: float, energy of particle, unit in eV
         """
         self.name = name
         self.ptype = list()
@@ -31,7 +30,6 @@ class PARTICLE(object):
         self.isAlive = np.array(list())
         self.posn = np.array(list())
         self.vel = np.array(list())
-        self.erg = np.array(list())
      
     def read_species(self, fname):
         """Read in species info from a database (Species.csv)."""
@@ -66,4 +64,4 @@ class PARTICLE(object):
         """Convert velocity to energy."""
         temp = np.power(self.vel, 2)
         temp = np.sum(temp)
-        self.erg = 0.5*(self.mass*AMU)*temp*J2EV
+        return 0.5*(self.mass*AMU)*temp*J2EV
