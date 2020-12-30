@@ -24,11 +24,17 @@ class FIELD(object):
         self.name = name
         self.E = np.zeros(3)
         self.B = np.zeros(3)
-     
+    
+    def update_E(self, E):
+        """Update E-field."""
+        self.E = E
+    
     def add_Efunc(self, Efunc):
         """
         Add function for E-field.
         
-        Efunc: function which determines E-field
+        Efunc: function which determines E-field.
+            Efunc is defined or given by the end user.
+            or Efunc can be imported from reactor model.
         """
         self.Efunc = Efunc
