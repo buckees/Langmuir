@@ -68,12 +68,14 @@ class PARTICLE(object):
         return 0.5*(self.mass*AMU)*temp*J2EV
     
     def _norm_vel(self):
-        """Convert velocity to speed and uvec."""
+        """Convert velocity to and return speed and uvec."""
         speed = sqrt(np.sum(self.vel**2))
         uvec = self.vel/self.speed
         return speed, uvec
     
     def space_move(self, dL):
         """Move the particle by a spacial step, dL, regardless of speed."""
+        speed, uvec = self._norm_vel()
+        self.posn += uvec*dL
         
         
