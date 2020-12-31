@@ -6,7 +6,7 @@ Particle.py serves as a data center/hub,
 
 import numpy as np
 
-from packages.Constants import (PI, AMU, UNIT_CHARGE, EV2J, J2EV)
+from packages.Constants import (AMU, J2EV)
 
 class PARTICLE(object):
     """Create PARTICLE() object."""
