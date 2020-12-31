@@ -74,7 +74,12 @@ class PARTICLE(object):
         return speed, uvec
     
     def space_move(self, dL):
-        """Move the particle by a spacial step, dL, regardless of speed."""
+        """
+        Move the particle by a spacial step, dL, regardless of speed.
+        
+        Assume no field at all.
+        dL: float, space step, unit in m.
+        """
         speed, uvec = self._norm_vel()
         self.posn += uvec*dL
         
