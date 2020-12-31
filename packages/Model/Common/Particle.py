@@ -5,6 +5,7 @@ Particle.py serves as a data center/hub,
 """
 
 import numpy as np
+from math import sqrt
 
 from packages.Constants import (AMU, J2EV)
 
@@ -65,3 +66,13 @@ class PARTICLE(object):
         temp = np.power(self.vel, 2)
         temp = np.sum(temp)
         return 0.5*(self.mass*AMU)*temp*J2EV
+    
+    def _norm_vel(self):
+        """Convert velocity to speed and uvec."""
+        self.speed = sqrt(np.sum(self.vel**2))
+        self.uvec = self.vel/self.speed
+    
+    def space_move(self, dL):
+        """Move the particle by a spacial step, dL, regardless of speed."""
+        
+        
