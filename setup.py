@@ -13,8 +13,8 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=None,
-    packages=['packages',],
-    # packages=setuptools.find_packages(),
+    # packages=['packages',],
+    packages=setuptools.find_packages(),
     # the package version is specified here
     # if unsolvable errors occur, try rolling back to older versions
     install_requires=['numpy==1.19.3', 'matplotlib==3.3.0', 
