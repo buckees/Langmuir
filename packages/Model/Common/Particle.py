@@ -83,4 +83,12 @@ class PARTICLE(object):
         speed, uvec = self._norm_vel()
         self.posn += uvec*dL
         
+    def time_move(self, dt):
+        """
+        Move the particle by a time step, dt.
+        
+        Assume no field at all.
+        dt: float, time step, unit in s.
+        """
+        self.posn += self.vel*dt
         
