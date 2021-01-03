@@ -73,7 +73,7 @@ class PARTICLE(object):
         uvec = self.vel/self.speed
         return speed, uvec
     
-    def space_move(self, dL):
+    def move_in_space(self, dL):
         """
         Move the particle by a spacial step, dL, regardless of speed.
         
@@ -83,7 +83,7 @@ class PARTICLE(object):
         speed, uvec = self._norm_vel()
         self.posn += uvec*dL
         
-    def time_move(self, dt):
+    def move_in_time(self, dt):
         """
         Move the particle by a time step, dt.
         
