@@ -70,7 +70,7 @@ class PARTICLE(object):
     def _norm_vel(self):
         """Convert velocity to and return speed and uvec."""
         speed = sqrt(np.sum(self.vel**2))
-        uvec = self.vel/self.speed
+        uvec = self.vel/speed
         return speed, uvec
     
     def move_in_space(self, dL):
