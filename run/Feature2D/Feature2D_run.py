@@ -6,17 +6,16 @@ import matplotlib.cm as cm
 from copy import copy
 
 
-from packages.Feature2D.Feature2D_ops import (width, height, 
+from packages.Model.Feature2D.Feature2D_ops import (width, height, 
                                                 res_x, res_z, num_ptcl, ibc, 
                           threshold, max_rflct, idstrb, step_fac, max_step,
                           num_plot, surf_norm_range, surf_norm_mode)
-from packages.Feature2D.Feature2D_mesh import MESHGRID
-from packages.Feature2D.Feature2D_ptcl import PARTICLE
-from packages.Species import Arp
-from packages.Feature2D.Feature2D_rflct import REFLECT
+from packages.Model.Common.Particle import PARTICLE
+from packages.Model.Feature2D.Feature2D_mesh import MESH2D
+from packages.Model.Feature2D.Feature2D_rflct import REFLECT
 
 # init MESHGRID obj
-mesh = MESHGRID()
+mesh = MESH2D()
 # readin mesh
 fname = 'SiEtch_Base_Mesh'
 mesh.readin_mesh(fname)
@@ -25,7 +24,8 @@ delta_L = (mesh.res*step_fac).min()
 
 # species information is imported from species
 # Initialize the PARTICLE() object
-ptcl = PARTICLE(**Arp)
+ptcl = PARTICLE('Ar+')
+ptcl.customize_ptcl('Ion', 40, 1)
 ptcl_rflct = REFLECT()
 
 # init diagnostics
