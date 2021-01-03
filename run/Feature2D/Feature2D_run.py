@@ -1,9 +1,10 @@
 """Feature Model 2D. Main program."""
 
 import numpy as np
+from math import sin, cos
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from copy import copy
+from copy import copy, deepcopy
 
 
 from packages.Model.Feature2D.Feature2D_ops import (width, height, 
@@ -31,37 +32,55 @@ ptcl_rflct = REFLECT()
 # init diagnostics
 rec_traj, rec_surf, rec_mesh = [], [], []
 
+num_ptcl = 10000
 for k in range(num_ptcl):
     if (k + 1) % int(num_ptcl/num_plot) == 0:
         print('%d particles are launched!' % (k+1))
         mesh.plot(dpi=300, fname='nptcl=%d.png' % (k+1))
         # rec_mesh.append(deepcopy(mesh.mat))
-    ptcl.dead = 0
-    ptcl.init_posn(mesh.left, mesh.right, mesh.top)
+    ptcl.isAlive = True
+    # gen rand position at the top, in (x, z, y)
+    posn = mesh.init_ptcl_posn()
+    # pass posn to ptcl
+    ptcl.update_posn(posn)
     # record initial position
     if k > num_ptcl - 20:
         rec_traj.append([])
         rec_traj[-1].append(ptcl.posn.copy())
-    ptcl.init_uvec(idstrb)
+    
+    # gen rand velocity
+    vel = np.zeros(3)
+    mu, sigma = 0.0, 0.1  # default mean and standard deviation
+    theta = np.random.normal(mu, sigma)
+    vel[0], vel[1] = sin(theta), -cos(theta)
+    # pass vel to ptcl
+    ptcl.update_vel(vel)
 
     num_rflct = 0
 #    while imove_ptcl == 1 and num_rflct < 5:
     for i in range(max_step):
-        # advance the ptcl by delta_L
-        ptcl.move_ptcl(delta_L)
-        # periodic b.c. at left and right bdry
-        ptcl.bdry_check(mesh.left, mesh.right, mesh.top, ibc)
+        # move the ptcl in space by delta_L
+        ptcl.move_in_space(delta_L)
+        # periodic b.c. at left and right bdry, make it a func?
+        if ptcl.posn[1] >= (mesh.top - mesh.dz*0.5):
+            ptcl.update_state(False)
+        if not (mesh.left < ptcl.posn[0] < mesh.right):
+            posn = deepcopy(ptcl.posn)
+            posn[0]= mesh.left + ((posn[0] - mesh.left) % mesh.width)
+            ptcl.update_posn(posn)
+        
         # check if the ptcl is dead
-        if ptcl.dead:
+        if not ptcl.isAlive:
             # record ptcl posn when dead
             if k > num_ptcl - 20:
-                rec_traj[-1].append(ptcl.posn.copy())
+                rec_traj[-1].append(deepcopy(ptcl.posn))
             break
-        hit_mat, hit_idx = mesh.hit_check(ptcl.posn)
+        
+        hit_mat, hit_idx = mesh.check_hit(ptcl.posn[0:2])
         if hit_mat:
             # record the hit point
             if k > num_ptcl - 20:
-                rec_traj[-1].append(ptcl.posn.copy())
+                rec_traj[-1].append(deepcopy(ptcl.posn))
             # at this position, th ptcl hits a mat
             mat_name = mesh.mat_dict[hit_mat]
             # calc surf norm
@@ -69,27 +88,31 @@ for k in range(num_ptcl):
                 mesh.calc_surf_norm(hit_idx, radius=surf_norm_range, 
                                     imode=surf_norm_mode)
             # decide wehter a reflection or reaction
-            rnd = np.random.uniform(0.0, 1.0)
+            rand = np.random.uniform(0.0, 1.0)
             rflct = REFLECT(ptcl.name, mat_name, 1.0)
             prob = rflct.calc_prob()
-            if rnd < prob:
+            if rand < prob:
                 # check max rflct
                 if num_rflct > max_rflct:
-                    ptcl.dead = 1
+                    ptcl.update_state(False)
                     break
                 
-                ptcl.uvec = ptcl_rflct.rflct(ptcl.uvec)
+                vel = deepcopy(ptcl.vel)
+                temp_vel = ptcl_rflct.rflct(vel[0:2])
+                vel[0] = temp_vel[0]
+                vel[1] = temp_vel[1]
+                ptcl.update_vel(vel)
                 num_rflct += 1
             else:
                 # now ireact = 1
                 mesh.update_mat(hit_idx, threshold)
-                mesh.find_float_cell()
-                ptcl.dead = 1
+                # mesh.find_float_cell()
+                ptcl.update_state(False)
         # check if the ptcl is dead
-        if ptcl.dead:
+        if not ptcl.isAlive:
             # record ptcl posn when dead
             if k > num_ptcl - 20:
-                rec_traj[-1].append(ptcl.posn.copy())
+                rec_traj[-1].append(deepcopy(ptcl.posn))
             break
 
     if k > num_ptcl - 20:
