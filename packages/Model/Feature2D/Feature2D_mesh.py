@@ -6,7 +6,7 @@ from math import cos, sin
 from copy import copy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-colMap = copy.copy(cm.get_cmap("Accent"))
+colMap = copy(cm.get_cmap("Accent"))
 colMap.set_under(color='white')
 from scipy.optimize import minimize
 
@@ -142,7 +142,7 @@ class MESH2D(object):
                     self._find_next_node(_idx_down,
                                          lb=lb, rb=rb, tb=tb, bb=bb)
 
-    def hit_check(self, posn):
+    def check_hit(self, posn):
         """
         Check wether a particle hits a material.
 
@@ -399,3 +399,10 @@ class MESH2D(object):
                           svec[0], svec[1], width=0.001)
            
         fig.savefig(fname, dpi=dpi)
+        
+    def init_ptcl_posn(self):
+        """Init particle posn at the top boundary."""
+        posn = np.zeros(3)
+        posn[0] = np.random.uniform(self.left, self.right)
+        posn[1] = self.top
+        return posn
