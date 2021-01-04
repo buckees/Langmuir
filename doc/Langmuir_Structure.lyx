@@ -1,0 +1,1370 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{tikz}
+\usetikzlibrary{matrix,shapes}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Langmuir Project Design
+\end_layout
+
+\begin_layout Author
+Wei Tian
+\end_layout
+
+\begin_layout Date
+12/18/2020
+\end_layout
+
+\begin_layout Standard
+The Langmuir project is designed for ...
+\end_layout
+
+\begin_layout Standard
+The Langmuir project file structure can be seen as below,
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Langmuir Project File Structure
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Lib/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Poisson1D_Solver.py	# 1D Poisson solver
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Poisson2D_Solver.py	# 2D Poisson solver
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Mesh/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Geom2D.py	# 2D geometry generator
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Mesh2D.py	# 2D mesh generator
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Model/Common
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Particle.cpp	# class for single particle, 3D by default
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Multi_Particle.py	# class for multi-particles, supporting vector operation
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Particle_Mover.py	# functions to move particle
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Field.py	# class for field info and solver
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Model/Feature2D
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Feature2D_main.py	# 'main' func for feature model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Feature2D_mesh.py	# class for feature mesh, inherited from mesh2d.py
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Feature2D_rct.py	# class for reaction
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Feature2D_rflct.py	# class for reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Model/Sheath2D
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Sheath2D_main.py	# 'main' func for sheath model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Sheath2D_coll.py	# class for collision
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+packages/Model/Reactor2D
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_main.py	# 'main' func for reactor model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_transp.py	# solver for plasma transport
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_eerg.py	# solver for electron energy equation
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_edistb.py	# solver for electron energy distribution
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_field.py	# solver for field
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Reactor2D_rct.py	# class for reaction
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+database/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Species.csv	# database for species info
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Cross_Section.csv	# database for species info
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+database/valid
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- reaction_xxx.yaml	# validated reaction set for xxx
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+utest/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Particle_test.py	# test for Particle.py
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Multi_Particle_test.py	# test for Multi_Particle.py
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Particle_Mover_test.py	# test for Particle_Mover.py
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+stest/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- xxx_test.py	# test for xxx
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+run/Feature2D
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Feature2D_run.py	# prepare input and call main()
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- mesh.npz	# mesh for feature model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- feature.yaml	# input for feature model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- reaction.csv	# reaction set
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+run/Sheath2D
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Sheath2D_run.py	# prepare input and call main()
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- sheath.yaml	# input for sheath model
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- collision.py	# collision set
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+doc/
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Doc.lyx	# lyx for Langmuir pyhsics 
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Doc.pdf	# pdf for Langmuir pyhsics 
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Doc.tex	# LaTex for Langmuir pyhsics 
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Structure.lyx	# lyx for Langmuir code structure
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Structure.pdf	# pdf for Langmuir code structure
+\end_layout
+
+\begin_layout Plain Layout
+
+	|- Langmuir_Structure.tex	# LaTex for Langmuir code structure
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This project design will focus on the modules.
+\end_layout
+
+\begin_layout Standard
+The project design is based on the modeling of the physics and cannot go
+ beyond it.
+ In order to well design the project structure, the models need to be analyzed
+ in details.
+\end_layout
+
+\begin_layout Standard
+Let's see the particle-based Monte Carlo models first.
+\end_layout
+
+\begin_layout Standard
+The most frequently called function in a Monte Carlo model is random number
+ generator.
+ In order to repeat the simulation identically, the random number generator
+ should be able to produce identical pseudo-random numbers for each run.
+ The random number generator will be placed in /basics.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Function Poisson2d_Solver(input)
+\end_layout
+
+\begin_layout Plain Layout
+
+	return solution
+\end_layout
+
+\begin_layout Plain Layout
+
+		# input: 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# solution:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Another core module for particle-based models is, as its name states, particle
+ module, which determines the properties and actions of a particle.
+ 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class Particle()
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.name: str
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.type: str, one of('Eon', 'Ion', 'Neut')
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.charge: float, unit in C
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.mass: float, unit in AMU
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.position: float array(3), unit in m
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.speed: float, unit in m/s
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.erg: float, unit in eV
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.vel: float array(3) unit in m/s
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.uvec: float array(3), unitless, normalized velocity
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.ang: float array(2), theta and phi
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.accl: float array(3), unit in m/s**2, acceleration
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.isAlive: bool, state of particle
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.initParticle()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.initPosition()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.initSpeed(imode)
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.initEnergy(imode)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# imode: str, determines the distribution such as 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Uniform, Normal and Cosine.
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.move(dL, imode='Space')
+\end_layout
+
+\begin_layout Plain Layout
+
+		# dL: float, unit in m, spacestep for a move
+\end_layout
+
+\begin_layout Plain Layout
+
+		# imode: str
+\end_layout
+
+\begin_layout Plain Layout
+
+		# move in a spacestep, with no field, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# that is self.accl = (0.0, 0.0, 0.0), used in Feature Model.
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.move(dt, EF, imode='Normal')
+\end_layout
+
+\begin_layout Plain Layout
+
+		# dt: float, unit in s, timestep for a move
+\end_layout
+
+\begin_layout Plain Layout
+
+		# EF: float array(3), unit in V/m, E-Field
+\end_layout
+
+\begin_layout Plain Layout
+
+		# move in timestep, with E-field, 1st order accuracy.
+\end_layout
+
+\begin_layout Plain Layout
+
+		# used in EEDF Model, or Feature Model with E-field on.
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.move(dt, EF, imode='leapfrog')
+\end_layout
+
+\begin_layout Plain Layout
+
+		# dt: float, unit in s, timestep for a move
+\end_layout
+
+\begin_layout Plain Layout
+
+		# EF: float array(3), unit in V/m, E-Field
+\end_layout
+
+\begin_layout Plain Layout
+
+		# move in timestep, with time-varying E-field or B-field, 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# 2nd order accurary, able to track the oscillating motion.
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.checkBndy(domain, imode):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# domain: float array(6)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# imode: str, 'Rflective' or 'Periodic'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+self.move() is the key method for a particle.
+ Depending on the field, best algorithm needs to be chosen for required
+ accurary and speed.
+ 
+\end_layout
+
+\begin_layout Standard
+self.move() can be designed as a interface, where the real move function
+ is called from /basics or /common
+\end_layout
+
+\begin_layout Standard
+Feature Model needs intensive information for mesh, while Sheath Model and
+ EEDF Model do not.
+\end_layout
+
+\begin_layout Standard
+Feature Model mesh class is designed as
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class Mesh()
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.name: str
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.domain: float array(6), unit in m, (top, bottom, left, right, front,
+ back)
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.res: float array(3), unit in m, resolution in structured mesh
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.ngrid: int array(3), num of nodes in structured mesh
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.x, self.z, self.y: float array(m,n), unit in m, coordinates in axis x,
+ z, y
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.mat: int array(m,n), material number, vacuum = 0 by default
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.matDict: dictionary to map material number to material name
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.surf: int array(m,n), indicator for surface nodes
+\end_layout
+
+\begin_layout Plain Layout
+
+		# 0: non-surf node
+\end_layout
+
+\begin_layout Plain Layout
+
+		# 1: surf node in material
+\end_layout
+
+\begin_layout Plain Layout
+
+		# -1: surf node in vacuum
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.initMesh()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.readMesh()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.addShape(ishape='Rectangle', 'Triangle' or 'Circle')
+\end_layout
+
+\begin_layout Plain Layout
+
+	or self.addRectangle(), self.addTriangle() and self.addCircle()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.find_surf(): assign values to self.surf
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.saveMesh()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This mesh class can be shared by all mesh-based models, such as Feature
+ Model and Fluid Model.
+\end_layout
+
+\begin_layout Standard
+This mesh class will support read-in function so that it enables restart
+ capability for Sheath Model.
+\end_layout
+
+\begin_layout Standard
+In Feature Model, mesh evolution is the key so that mesh needs more methods.
+ Let's create a FeatMesh class to inheritate generic Mesh class.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
+ Mesh
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.surfNorm: list of float array(3) store all surface normal along the
+ surface
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.checkHit(Particle.position)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# the position of the particle is passed to checkHit()
+\end_layout
+
+\begin_layout Plain Layout
+
+		# position in continuous space is mapped to meshgrid
+\end_layout
+
+\begin_layout Plain Layout
+
+		# position --> index
+\end_layout
+
+\begin_layout Plain Layout
+
+		# check the material of the index
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if self.mat[index] != 0, it is a hit
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.calcSurfNorm(global or local)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# calculate the surface normal either globally or for a given node
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.updateMat(index, newMat)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# change the mat at index to newMat
+\end_layout
+
+\begin_layout Plain Layout
+
+		# to protect the self.mat, we define a method to explicitly
+\end_layout
+
+\begin_layout Plain Layout
+
+		# change the material
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.findFloatChell()
+\end_layout
+
+\begin_layout Plain Layout
+
+		# find the floating cells which are detached from surface
+\end_layout
+
+\begin_layout Plain Layout
+
+		# the algorithm is not determined yet
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.dropFloatCell(imode='Remove' or 'Drop')
+\end_layout
+
+\begin_layout Plain Layout
+
+		# process floating cells
+\end_layout
+
+\begin_layout Plain Layout
+
+		# imode='Remove': Remove floating cells, change mat to zero
+\end_layout
+
+\begin_layout Plain Layout
+
+		# imode='Drop': Drop floating cells to bottom, like deposition
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+checkHit() is placed under FeatMesh() class instead of Particle() because
+ checkHit() is more associated to Mesh than Particle.
+\end_layout
+
+\begin_layout Standard
+self.calcSurfNorm() and self.findFloatCell() can be designed as a interface,
+ where the real functions are called from /basics or /common
+\end_layout
+
+\begin_layout Standard
+There are two classes specific to Feature Model, Reflection and Reaction.
+\end_layout
+
+\begin_layout Standard
+When a hit occurs, the program first check the reaction.
+ If a reaction occurs, the mesh material will be updated; otherwise, the
+ particle is going to reflect.
+\end_layout
+
+\begin_layout Standard
+Reaction class can be seen as blow.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class Reaction()
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.index: int array(3), index of hit node
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.readReaction(fname)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# fname: str, filename for chemical reaction
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Read in reaction files and
+\end_layout
+
+\begin_layout Plain Layout
+
+		# create a reaction list with associated probability
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.getParticle(Particle)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# get information from Particle
+\end_layout
+
+\begin_layout Plain Layout
+
+		# name, erg, uvec
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.getMesh(FeatMesh)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# get information from FeatMesh
+\end_layout
+
+\begin_layout Plain Layout
+
+		# mat, matDict, surfNorm
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.determineReaction(erg, angle, surfNorm)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# explanied with an example
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Cl+ + Si_ --> Etch : p1(erg, angle, surfNorm)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Cl+ + Si_ --> SiCl_ : p2(erg, angle, surfNorm)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Cl+ + Si_ --> SiCl : p3(erg, angle, surfNorm)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# Cl+ + Si_ --> Reflect : p4(erg, angle, surfNorm)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# normalize pi as pi/(p1 + p2 + p3 + p4)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# roll a dice and determine which reaction to happen
+\end_layout
+
+\begin_layout Plain Layout
+
+		# return the serial number of the reaction
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.makeReaction(index)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# index: int, the serial number of the reaction in reaction list
+\end_layout
+
+\begin_layout Plain Layout
+
+		# change Particle.isAlive to False
+\end_layout
+
+\begin_layout Plain Layout
+
+		# call updateMat()
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if the reaction is a type of 
+\begin_inset Quotes eld
+\end_inset
+
+Byproduct
+\begin_inset Quotes erd
+\end_inset
+
+: initParticle()
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Reflection class can be seen as below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class Reflection()
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.index: int array(3), index of hit node
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.getParticle(Particle)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# get information from Particle
+\end_layout
+
+\begin_layout Plain Layout
+
+		# name, erg, uvec
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.getMesh(FeatMesh)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# get information from FeatMesh
+\end_layout
+
+\begin_layout Plain Layout
+
+		# mat, matDict, surfNorm	self.reflect()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.updateAngle(diffThld, specThld)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# diffThld: threshold of diffusive reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		# specThld: threshold of specular reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		# return the anlge or uvec after reflection and
+\end_layout
+
+\begin_layout Plain Layout
+
+		# 	the energy after reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if erg < diffThld: diffusive reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if diffThld < erg < specThld: mixed reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	anlge is determined by the combination of 
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	diffusive and specular reflections
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	angleMixed = 
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	[(erg - diffThld)*angleSpec + (erg - specThld)*angleDiff]
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	/(specThld - diffThld)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if erg > specThld: specular reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.updateEnergy(thermThld, thermErg, facErgLoss)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# thermThld: threshold of falling to thermErg
+\end_layout
+
+\begin_layout Plain Layout
+
+		# thermErg: thermal energy
+\end_layout
+
+\begin_layout Plain Layout
+
+		#	thermErg must be less than thermThld
+\end_layout
+
+\begin_layout Plain Layout
+
+		# facErgLoss: factor of energy loss due to each collision
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if erg < thermThld: Particle.erg = thermErg
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if erg > thermThld: Particle.erg = facErgLoss*Particle.erg
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.postMove(numStep):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# numStep: int, the number of steps to move after reflection
+\end_layout
+
+\begin_layout Plain Layout
+
+		# if the reflection angle is close to the surface (angle is
+\end_layout
+
+\begin_layout Plain Layout
+
+		# almost 90 degrees w.r.t.
+ surface normal), the particle
+\end_layout
+
+\begin_layout Plain Layout
+
+		# travel a long distance within a material before going out.
+\end_layout
+
+\begin_layout Plain Layout
+
+		# the postMove will move the particle by steps without 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# checkHit() until it gets out of the material
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+aaa
+\end_layout
+
+\end_body
+\end_document
