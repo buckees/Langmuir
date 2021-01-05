@@ -40,7 +40,7 @@ packages/Mesh/
 	|- Mesh2D.py	# 2D mesh generator
 
 packages/Model/Common
-	|- Particle.cpp	# class for single particle, 3D by default
+	|- Particle.py	# class for single particle, 3D by default
 	|- Multi_Particle.py	# class for multi-particles, supporting vector operation
 	|- Particle_Mover.py	# functions to move particle
 	|- Field.py	# class for field info and solver
@@ -59,7 +59,7 @@ packages/Model/Reactor2D
 	|- Reactor2D_main.py	# 'main' func for reactor model
 	|- Reactor2D_transp.py	# solver for plasma transport
 	|- Reactor2D_eerg.py	# solver for electron energy equation
-	|- Reactor2D_edistb.py	# solver for electron energy distribution
+	|- Reactor2D_eedf.py	# solver for electron energy distribution
 	|- Reactor2D_field.py	# solver for field
 	|- Reactor2D_rct.py	# class for reaction
 
@@ -88,6 +88,14 @@ run/Sheath2D
 	|- Sheath2D_run.py	# prepare input and call main()
 	|- sheath.yaml	# input for sheath model
 	|- collision.py	# collision set
+
+doc/
+	|- Langmuir_Doc.lyx	# lyx for Langmuir pyhsics 
+	|- Langmuir_Doc.pdf	# pdf for Langmuir pyhsics 
+	|- Langmuir_Doc.tex	# LaTex for Langmuir pyhsics 
+	|- Langmuir_Structure.lyx	# lyx for Langmuir code structure
+	|- Langmuir_Structure.pdf	# pdf for Langmuir code structure
+	|- Langmuir_Structure.tex	# LaTex for Langmuir code structure
 \end{lstlisting}
 
 This project design will focus on the modules.
@@ -111,70 +119,161 @@ Function Poisson2d_Solver(input)
 		# solution:
 \end{lstlisting}
 
-Another core module for particle-based models is, as its name states,
-particle module, which determines the properties and actions of a
-particle. 
+Class PARTICLE() is defined to contain all information of single created
+particle and simple update and move methods. All particle-based models
+use Particle() for basic functions. If advanced functions are needed,
+they are defined within the model, unless sharable. 
 \begin{lstlisting}[basicstyle={\ttfamily}]
-Class Particle()
+Class PARTICLE():
 -- attribute --
 	self.name: str
 	self.type: str, one of('Eon', 'Ion', 'Neut')
-	self.charge: float, unit in C
+	self.charge: int, unit in Element Charge
 	self.mass: float, unit in AMU
-	self.position: float array(3), unit in m
-	self.speed: float, unit in m/s
-	or self.erg: float, unit in eV
-	or self.vel: float array(3) unit in m/s
-	self.uvec: float array(3), unitless, normalized velocity
-	or self.ang: float array(2), theta and phi
-	self.accl: float array(3), unit in m/s**2, acceleration
+	self.posn: float array(3), in (x, z, y), unit in m
+	self.vel: float array(3), in (x, z, y), unit in m/s
+		# velocity can be also defined as
+		# speed + uvec, or erg + angle
 	self.isAlive: bool, state of particle
 -- method --
-	self.initParticle()
-	self.initPosition()
-	self.initSpeed(imode)
-	self.initEnergy(imode)
-		# imode: str, determines the distribution such as 
-		# Uniform, Normal and Cosine.
-	self.move(dL, imode='Space')
+	self.update_posn(posn):
+		# posn: float array(3), unit in m
+	self.update_vel(vel):
+		# vel: float array(3), unit in m/s 
+	self.update_state(state)
+		# state: bool, state of particle
+	self.move_in_space(dL):
 		# dL: float, unit in m, spacestep for a move
-		# imode: str
-		# move in a spacestep, with no field, 
-		# that is self.accl = (0.0, 0.0, 0.0), used in Feature Model.
-	or self.move(dt, EF, imode='Normal')
+		# move in a space, with no field
+	self.move_in_time(dt):
 		# dt: float, unit in s, timestep for a move
-		# EF: float array(3), unit in V/m, E-Field
-		# move in timestep, with E-field, 1st order accuracy.
-		# used in EEDF Model, or Feature Model with E-field on.
-	or self.move(dt, EF, imode='leapfrog')
-		# dt: float, unit in s, timestep for a move
-		# EF: float array(3), unit in V/m, E-Field
-		# move in timestep, with time-varying E-field or B-field, 
-		# 2nd order accurary, able to track the oscillating motion.
-	self.checkBndy(domain, imode):
-		# domain: float array(6)
-		# imode: str, 'Rflective' or 'Periodic'
+		# move in time, with no field
+	self.vel2speed():
+		# speed: float, unit in m/s, speed of the particle
+		# uvec: float array(3), normalized velocity
+		return speed, uvec
+	self.vel2erg():
+		# erg: float, unit in eV, energy of the particle
+		return erg, uvec
+	self.vel2ang():
+		# ang: float array(2), unit in degree, angle of the velocity
+		return ang
 \end{lstlisting}
 
-self.move() is the key method for a particle. Depending on the field,
-best algorithm needs to be chosen for required accurary and speed. 
+There are two kinds of attributes: fixed and variable. Fixed attributes,
+\textit{name, type, charge and mass}, are protected after the particle
+creation. Variable attributes, \textit{posn, vel and isAlive}, can
+be updated through predefined methods, \textit{update\_posn() update\_vel()
+and update\_state()}. These predefined method() should check the consistency
+of the input type. PARTICLE() is defined by default in 3D. When it
+interacts with 2D geometry or mesh, attention should be paid to the
+dimension match. All 3D dimension is defined with the sequency of
+(x, z, y) and 2D dimension as (x, z). Moving a particle is the core
+for particle tracing. Depending on an individual model, moving a particle
+could require information from field or mesh. It makes sense to move
+the moving function out of the class PARTICLE() to an independent
+class or file called PARTICLE\_MOVER(), which will be introduced next.
+Within the class PARTICLE(), only simple move is supported. ``Simple
+move'' means no addtional information is required, except dL and
+dt. In class PARTICLE(), velocity is used for sufficient information.
+However, for certain applications in the PARTICLE\_MOVE() or even
+in the ``simple move'', speed or energy, unit vector or angle, are
+commnly used instead of velocity. To meet these goals, conversion
+functions are defined in PARTICLE(). More general conversions between
+velocity, speed and energy, uvec and angle, can be defined in packages/Lib
+or packages/Model/Common as well.
 
-self.move() can be designed as a interface, where the real move function
-is called from /basics or /common
-
-Feature Model needs intensive information for mesh, while Sheath Model
-and EEDF Model do not.
-
-Feature Model mesh class is designed as
+Class PARTICLE() supports only one sinlge particle, while class MULTI\_PARTICLE()
+supports the creation and track of multi particles at once. 
 
 \begin{lstlisting}[basicstyle={\ttfamily}]
-Class Mesh()
+Class MULTI_PARTICLE():
 -- attribute --
-	self.name: str
-	self.domain: float array(6), unit in m, (top, bottom, left, right, front, back)
-	self.res: float array(3), unit in m, resolution in structured mesh
-	self.ngrid: int array(3), num of nodes in structured mesh
-	self.x, self.z, self.y: float array(m,n), unit in m, coordinates in axis x, z, y
+	self.num: int, num of particles
+	self.name: str array(N)
+	self.type: str array(N), chosen in ('Eon', 'Ion', 'Neut')
+	self.charge: int array(N), unit in Element Charge
+	self.mass: float array(N), unit in AMU
+	self.posn: float array(3, N), in ((x, z, y), N), unit in m
+	self.vel: float array(3, N), in ((x, z, y), N), unit in m/s
+		# velocity can be also defined as
+		# speed + uvec, or erg + angle
+	self.isAlive: bool array(N), state of particle
+-- method --
+	self.update_posn(posn):
+		# posn: float array(3, N), unit in m
+	self.update_vel(vel, N):
+		# vel: float array(3, N), unit in m/s 
+	self.update_state(state):
+		# state: bool array(N), state of particle
+	self.move_in_space(dL):
+		# dL: float, unit in m, spacestep for a move
+		# move in a space, with no field
+	self.move_in_time(dt):
+		# dt: float, unit in s, timestep for a move
+		# move in time, with no field
+	self.vel2speed():
+		# speed: float array(N), unit in m/s, speed of the particle
+		# uvec: float array(3, N), normalized velocity
+		return speed, uvec
+	self.vel2erg():
+		# erg: float array(N), unit in eV, energy of the particle
+		return erg, uvec
+	self.vel2ang():
+		# ang: float array(2, N), unit in degree, angle of the velocity
+		return ang
+\end{lstlisting}
+
+Geometry and mesh generators are defined under packages, since they
+do not depend any physics or models. There are quite a few commercial
+or open-source mesh generators available. Within the Langmuir project,
+the geometry and mesh generator aim only to provide rectangular domain
+with material assignment and structured mesh. In the future, it will
+support the import or readin of internally used mesh. The basic 2D
+geometry and mesh design are shown below,
+
+\begin{lstlisting}[basicstyle={\ttfamily}]
+Class GOEM2D():
+-- attribute --
+	self.name: str, name of the geom
+	self.dim: int, dim of the geom, fixed to 2
+	self.isCly: bool, symmetry of the geom
+	self.domain: float array(4), domain in (left, right, top, bottom)
+	self.shape_list: obj array(N), record list of shape
+-- method --
+	self.add_domain(domain):
+		# domain: float array(4), domain in (left, right, top, bottom)
+	self.add_shape(shape):
+		# shape: obj, defined in SHAPE2D()
+	self.inDomain(posn):
+		# posn: float array(2), position of tested point
+		# isInside: bool, posn is inside the domain or not
+		return isInside
+	self.get_mater(posn):
+		# posn: float array(2), position of tested point
+		# mater: str, mater name of the tested point
+		return mater
+
+Class SHAPE2D():
+-- attribute --
+	self.name: str, name of the geom
+	self.dim: int, dim of the geom, fixed to 2
+	self.domain: float array(), depends on the shape, Rect, Tri, or Circ
+	self.mater: str, mater of the shape
+-- method --
+	self.isInside(posn):
+		# posn: float array(2), position of tested point
+		# isInside: bool, posn is inside the domain or not
+		return isInside
+
+Class MESH2D():
+-- attribute --
+	self.name: str, name of the mesh
+	self.dim: int, dim of the geom, fixed to 2	
+	self.domain: float array(4), domain in (left, right, top, bottom)
+	self.res: float array(2), unit in m, resolution in structured mesh
+	self.ngrid: int array(2), num of nodes in structured mesh
+	self.x, self.z: float array(m,n), unit in m, coordinates in axis x, z
 	self.mat: int array(m,n), material number, vacuum = 0 by default
 	self.matDict: dictionary to map material number to material name
 	self.surf: int array(m,n), indicator for surface nodes
@@ -182,16 +281,27 @@ Class Mesh()
 		# 1: surf node in material
 		# -1: surf node in vacuum
 -- method --
-	self.initMesh()
-	self.readMesh()
-	self.addShape(ishape='Rectangle', 'Triangle' or 'Circle')
-	or self.addRectangle(), self.addTriangle() and self.addCircle()
-	self.find_surf(): assign values to self.surf
-	self.saveMesh()
+	self.import_geom(geom):
+		# geom: obj, defined in GEOM2D()
+	self.gen_mesh(ngrid):
+		# ngrid: int array(2), num of nodes in structured mesh
+		# generate mesh according to geom
+	self.assign_mat():
+		# gen matrix containing mater info
+		# loop all mesh nodes and get the mater from geom
+	self.read_mesh(filename):
+		# filename: str, file name for saved mesh
+	self.find_surf(): 
+		# assign values to self.surf
+	self.save_mesh(filename):
+		# filename: str, file name for saved mesh
 \end{lstlisting}
 
-This mesh class can be shared by all mesh-based models, such as Feature
-Model and Fluid Model.
+Feature Model needs intensive information for mesh, while Sheath Model
+and EEDF Model do not.
+
+Feature Model mesh class is designed asThis mesh class can be shared
+by all mesh-based models, such as Feature Model and Fluid Model.
 
 This mesh class will support read-in function so that it enables restart
 capability for Sheath Model.
@@ -201,26 +311,26 @@ methods. Let's create a FeatMesh class to inheritate generic Mesh
 class.
 
 \begin{lstlisting}[basicstyle={\ttfamily}]
-Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from Mesh
+Class FEATURE2D_MESH(MESH): inheritates all attributes and methods from MESH2D
 -- attribute --
-	self.surfNorm: list of float array(3) store all surface normal along the surface
+	self.surf_norm: float array(2, N) store all surface normal along the surface
 -- method --
-	self.checkHit(Particle.position)
+	self.check_hit(posn):
 		# the position of the particle is passed to checkHit()
 		# position in continuous space is mapped to meshgrid
 		# position --> index
 		# check the material of the index
 		# if self.mat[index] != 0, it is a hit
-	self.calcSurfNorm(global or local)
+	self.calc_surf_norm(global or local)
 		# calculate the surface normal either globally or for a given node
-	self.updateMat(index, newMat)
+	self.update_mat(index, newMat)
 		# change the mat at index to newMat
 		# to protect the self.mat, we define a method to explicitly
 		# change the material
-	self.findFloatChell()
+	self.find_float_cell()
 		# find the floating cells which are detached from surface
 		# the algorithm is not determined yet
-	self.dropFloatCell(imode='Remove' or 'Drop')
+	self.drop_float_cell(imode='Remove' or 'Drop')
 		# process floating cells
 		# imode='Remove': Remove floating cells, change mat to zero
 		# imode='Drop': Drop floating cells to bottom, like deposition
