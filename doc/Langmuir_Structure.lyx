@@ -1283,8 +1283,8 @@ status open
 
 \begin_layout Plain Layout
 
-Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
- Mesh
+Class FEATURE2D_MESH(MESH): inheritates all attributes and methods from
+ MESH2D
 \end_layout
 
 \begin_layout Plain Layout
@@ -1294,8 +1294,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.surfNorm: list of float array(3) store all surface normal along the
- surface
+	self.surf_norm: float array(2, N) store all surface normal along the surface
 \end_layout
 
 \begin_layout Plain Layout
@@ -1305,7 +1304,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.checkHit(Particle.position)
+	self.check_hit(posn):
 \end_layout
 
 \begin_layout Plain Layout
@@ -1335,7 +1334,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.calcSurfNorm(global or local)
+	self.calc_surf_norm(global or local)
 \end_layout
 
 \begin_layout Plain Layout
@@ -1345,7 +1344,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.updateMat(index, newMat)
+	self.update_mat(index, newMat)
 \end_layout
 
 \begin_layout Plain Layout
@@ -1365,7 +1364,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.findFloatChell()
+	self.find_float_cell()
 \end_layout
 
 \begin_layout Plain Layout
@@ -1380,7 +1379,7 @@ Class FeatMesh(Mesh): FeatMesh inheritates all attributes and methods from
 
 \begin_layout Plain Layout
 
-	self.dropFloatCell(imode='Remove' or 'Drop')
+	self.drop_float_cell(imode='Remove' or 'Drop')
 \end_layout
 
 \begin_layout Plain Layout
