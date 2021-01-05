@@ -253,7 +253,7 @@ packages/Model/Reactor2D
 
 \begin_layout Plain Layout
 
-	|- Reactor2D_edistb.py	# solver for electron energy distribution
+	|- Reactor2D_eedf.py	# solver for electron energy distribution
 \end_layout
 
 \begin_layout Plain Layout
@@ -506,7 +506,7 @@ status open
 
 \begin_layout Plain Layout
 
-Class PARTICLE()
+Class PARTICLE():
 \end_layout
 
 \begin_layout Plain Layout
@@ -526,7 +526,7 @@ Class PARTICLE()
 
 \begin_layout Plain Layout
 
-	self.charge: float, unit in C
+	self.charge: int, unit in Element Charge
 \end_layout
 
 \begin_layout Plain Layout
@@ -729,21 +729,14 @@ simple move
 
 , speed or energy, unit vector or angle, are commnly used instead of velocity.
  To meet these goals, conversion functions are defined in PARTICLE().
- 
+ More general conversions between velocity, speed and energy, uvec and angle,
+ can be defined in packages/Lib or packages/Model/Common as well.
 \end_layout
 
 \begin_layout Standard
 Class PARTICLE() supports only one sinlge particle, while class MULTI_PARTICLE()
- supports the creation and track of multi particles.
-\end_layout
-
-\begin_layout Standard
-Feature Model needs intensive information for mesh, while Sheath Model and
- EEDF Model do not.
-\end_layout
-
-\begin_layout Standard
-Feature Model mesh class is designed as
+ supports the creation and track of multi particles at once.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -754,7 +747,223 @@ status open
 
 \begin_layout Plain Layout
 
-Class Mesh()
+Class MULTI_PARTICLE():
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.num: int, num of particles
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.name: str array(N)
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.type: str array(N), chosen in ('Eon', 'Ion', 'Neut')
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.charge: int array(N), unit in Element Charge
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.mass: float array(N), unit in AMU
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.posn: float array(3, N), in ((x, z, y), N), unit in m
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.vel: float array(3, N), in ((x, z, y), N), unit in m/s
+\end_layout
+
+\begin_layout Plain Layout
+
+		# velocity can be also defined as
+\end_layout
+
+\begin_layout Plain Layout
+
+		# speed + uvec, or erg + angle
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.isAlive: bool array(N), state of particle
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.update_posn(posn)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# posn: float array(3, N), unit in m
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.update_vel(vel, N)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# vel: float array(3, N), unit in m/s 
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.update_state(state)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# state: bool array(N), state of particle
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.move_in_space(dL)
+\end_layout
+
+\begin_layout Plain Layout
+
+		# dL: float, unit in m, spacestep for a move
+\end_layout
+
+\begin_layout Plain Layout
+
+		# move in a space, with no field
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.move_in_time(dt):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# dt: float, unit in s, timestep for a move
+\end_layout
+
+\begin_layout Plain Layout
+
+		# move in time, with no field
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.vel2speed():
+\end_layout
+
+\begin_layout Plain Layout
+
+		# speed: float array(N), unit in m/s, speed of the particle
+\end_layout
+
+\begin_layout Plain Layout
+
+		# uvec: float array(3, N), normalized velocity
+\end_layout
+
+\begin_layout Plain Layout
+
+		return speed, uvec
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.vel2erg():
+\end_layout
+
+\begin_layout Plain Layout
+
+		# erg: float array(N), unit in eV, energy of the particle
+\end_layout
+
+\begin_layout Plain Layout
+
+		return erg, uvec
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.vel2ang():
+\end_layout
+
+\begin_layout Plain Layout
+
+		# ang: float array(2, N), unit in degree, angle of the velocity
+\end_layout
+
+\begin_layout Plain Layout
+
+		return ang
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Geometry and mesh generators are defined under packages, since they do not
+ depend any physics or models.
+ There are quite a few commercial or open-source mesh generators available.
+ Within the Langmuir project, the geometry and mesh generator aim only to
+ provide rectangular domain with material assignment and structured mesh.
+ In the future, it will support the import or readin of internally used
+ mesh.
+ The basic 2D geometry and mesh design are shown below,
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Class GOEM2D():
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.name: str, name of the geometry
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Class MESH2D():
 \end_layout
 
 \begin_layout Plain Layout
@@ -860,8 +1069,13 @@ Class Mesh()
 \end_layout
 
 \begin_layout Standard
-This mesh class can be shared by all mesh-based models, such as Feature
- Model and Fluid Model.
+Feature Model needs intensive information for mesh, while Sheath Model and
+ EEDF Model do not.
+\end_layout
+
+\begin_layout Standard
+Feature Model mesh class is designed asThis mesh class can be shared by
+ all mesh-based models, such as Feature Model and Fluid Model.
 \end_layout
 
 \begin_layout Standard
