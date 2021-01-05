@@ -646,7 +646,7 @@ Class PARTICLE()
 
 \begin_layout Plain Layout
 
-	self.speed2erg():
+	self.vel2erg():
 \end_layout
 
 \begin_layout Plain Layout
@@ -656,18 +656,17 @@ Class PARTICLE()
 
 \begin_layout Plain Layout
 
-		return erg
+		return erg, uvec
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.uvec2ang():
+	self.vel2ang():
 \end_layout
 
 \begin_layout Plain Layout
 
-		# ang: float, unit in degree, angle of the velocity w.r.t.
- x=0
+		# ang: float array(2), unit in degree, angle of the velocity
 \end_layout
 
 \begin_layout Plain Layout
@@ -718,12 +717,24 @@ Simple move
 \end_inset
 
  means no addtional information is required, except dL and dt.
+ In class PARTICLE(), velocity is used for sufficient information.
+ However, for certain applications in the PARTICLE_MOVE() or even in the
+ 
+\begin_inset Quotes eld
+\end_inset
+
+simple move
+\begin_inset Quotes erd
+\end_inset
+
+, speed or energy, unit vector or angle, are commnly used instead of velocity.
+ To meet these goals, conversion functions are defined in PARTICLE().
  
 \end_layout
 
 \begin_layout Standard
-self.move() can be designed as a interface, where the real move function
- is called from /basics or /common
+Class PARTICLE() supports only one sinlge particle, while class MULTI_PARTICLE()
+ supports the creation and track of multi particles.
 \end_layout
 
 \begin_layout Standard
