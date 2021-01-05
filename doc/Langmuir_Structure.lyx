@@ -493,8 +493,11 @@ Function Poisson2d_Solver(input)
 \end_layout
 
 \begin_layout Standard
-Another core module for particle-based models is, as its name states, particle
- module, which determines the properties and actions of a particle.
+Class PARTICLE() is defined to contain all information of single created
+ particle and simple update and move methods.
+ All particle-based models use Particle() for basic functions.
+ If advanced functions are needed, they are defined within the model, unless
+ sharable.
  
 \begin_inset listings
 lstparams "basicstyle={\ttfamily}"
@@ -503,7 +506,7 @@ status open
 
 \begin_layout Plain Layout
 
-Class Particle()
+Class PARTICLE()
 \end_layout
 
 \begin_layout Plain Layout
@@ -533,37 +536,22 @@ Class Particle()
 
 \begin_layout Plain Layout
 
-	self.position: float array(3), unit in m
+	self.posn: float array(3), in (x, z, y), unit in m
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.speed: float, unit in m/s
+	self.vel: float array(3), in (x, z, y), unit in m/s
 \end_layout
 
 \begin_layout Plain Layout
 
-	or self.erg: float, unit in eV
+		# velocity can be also defined as
 \end_layout
 
 \begin_layout Plain Layout
 
-	or self.vel: float array(3) unit in m/s
-\end_layout
-
-\begin_layout Plain Layout
-
-	self.uvec: float array(3), unitless, normalized velocity
-\end_layout
-
-\begin_layout Plain Layout
-
-	or self.ang: float array(2), theta and phi
-\end_layout
-
-\begin_layout Plain Layout
-
-	self.accl: float array(3), unit in m/s**2, acceleration
+		# speed + uvec, or erg + angle
 \end_layout
 
 \begin_layout Plain Layout
@@ -578,37 +566,37 @@ Class Particle()
 
 \begin_layout Plain Layout
 
-	self.initParticle()
+	self.update_posn(posn)
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.initPosition()
+		# posn: float array(3), unit in m
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.initSpeed(imode)
+	self.update_vel(vel)
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.initEnergy(imode)
+		# vel: float array(3), unit in m/s 
 \end_layout
 
 \begin_layout Plain Layout
 
-		# imode: str, determines the distribution such as 
+	self.update_state(state)
 \end_layout
 
 \begin_layout Plain Layout
 
-		# Uniform, Normal and Cosine.
+		# state: bool, state of particle
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.move(dL, imode='Space')
+	self.move_in_space(dL)
 \end_layout
 
 \begin_layout Plain Layout
@@ -618,22 +606,12 @@ Class Particle()
 
 \begin_layout Plain Layout
 
-		# imode: str
+		# move in a space, with no field
 \end_layout
 
 \begin_layout Plain Layout
 
-		# move in a spacestep, with no field, 
-\end_layout
-
-\begin_layout Plain Layout
-
-		# that is self.accl = (0.0, 0.0, 0.0), used in Feature Model.
-\end_layout
-
-\begin_layout Plain Layout
-
-	or self.move(dt, EF, imode='Normal')
+	self.move_in_time(dt):
 \end_layout
 
 \begin_layout Plain Layout
@@ -643,57 +621,58 @@ Class Particle()
 
 \begin_layout Plain Layout
 
-		# EF: float array(3), unit in V/m, E-Field
+		# move in time, with no field
 \end_layout
 
 \begin_layout Plain Layout
 
-		# move in timestep, with E-field, 1st order accuracy.
+	self.vel2speed():
 \end_layout
 
 \begin_layout Plain Layout
 
-		# used in EEDF Model, or Feature Model with E-field on.
+		# speed: float, unit in m/s, speed of the particle
 \end_layout
 
 \begin_layout Plain Layout
 
-	or self.move(dt, EF, imode='leapfrog')
+		# uvec: float array(3), normalized velocity
 \end_layout
 
 \begin_layout Plain Layout
 
-		# dt: float, unit in s, timestep for a move
+		return speed, uvec
 \end_layout
 
 \begin_layout Plain Layout
 
-		# EF: float array(3), unit in V/m, E-Field
+	self.speed2erg():
 \end_layout
 
 \begin_layout Plain Layout
 
-		# move in timestep, with time-varying E-field or B-field, 
+		# erg: float, unit in eV, energy of the particle
 \end_layout
 
 \begin_layout Plain Layout
 
-		# 2nd order accurary, able to track the oscillating motion.
+		return erg
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.checkBndy(domain, imode):
+	self.uvec2ang():
 \end_layout
 
 \begin_layout Plain Layout
 
-		# domain: float array(6)
+		# ang: float, unit in degree, angle of the velocity w.r.t.
+ x=0
 \end_layout
 
 \begin_layout Plain Layout
 
-		# imode: str, 'Rflective' or 'Periodic'
+		return ang
 \end_layout
 
 \end_inset
@@ -702,9 +681,43 @@ Class Particle()
 \end_layout
 
 \begin_layout Standard
-self.move() is the key method for a particle.
- Depending on the field, best algorithm needs to be chosen for required
- accurary and speed.
+There are two kinds of attributes: fixed and variable.
+ Fixed attributes, 
+\shape italic
+name, type, charge and mass
+\shape default
+, are protected after the particle creation.
+ Variable attributes, 
+\shape italic
+posn, vel and isAlive
+\shape default
+, can be updated through predefined methods, 
+\shape italic
+update_posn() update_vel() and update_state()
+\shape default
+.
+ These predefined method() should check the consistency of the input type.
+ PARTICLE() is defined by default in 3D.
+ When it interacts with 2D geometry or mesh, attention should be paid to
+ the dimension match.
+ All 3D dimension is defined with the sequency of (x, z, y) and 2D dimension
+ as (x, z).
+ Moving a particle is the core for particle tracing.
+ Depending on an individual model, moving a particle could require information
+ from field or mesh.
+ It makes sense to move the moving function out of the class PARTICLE()
+ to an independent class or file called PARTICLE_MOVER(), which will be
+ introduced next.
+ Within the class PARTICLE(), only simple move is supported.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Simple move
+\begin_inset Quotes erd
+\end_inset
+
+ means no addtional information is required, except dL and dt.
  
 \end_layout
 
