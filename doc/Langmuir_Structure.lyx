@@ -566,7 +566,7 @@ Class PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.update_posn(posn)
+	self.update_posn(posn):
 \end_layout
 
 \begin_layout Plain Layout
@@ -576,7 +576,7 @@ Class PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.update_vel(vel)
+	self.update_vel(vel):
 \end_layout
 
 \begin_layout Plain Layout
@@ -596,7 +596,7 @@ Class PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.move_in_space(dL)
+	self.move_in_space(dL):
 \end_layout
 
 \begin_layout Plain Layout
@@ -812,7 +812,7 @@ Class MULTI_PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.update_posn(posn)
+	self.update_posn(posn):
 \end_layout
 
 \begin_layout Plain Layout
@@ -822,7 +822,7 @@ Class MULTI_PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.update_vel(vel, N)
+	self.update_vel(vel, N):
 \end_layout
 
 \begin_layout Plain Layout
@@ -832,7 +832,7 @@ Class MULTI_PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.update_state(state)
+	self.update_state(state):
 \end_layout
 
 \begin_layout Plain Layout
@@ -842,7 +842,7 @@ Class MULTI_PARTICLE():
 
 \begin_layout Plain Layout
 
-	self.move_in_space(dL)
+	self.move_in_space(dL):
 \end_layout
 
 \begin_layout Plain Layout
@@ -954,7 +954,151 @@ Class GOEM2D():
 
 \begin_layout Plain Layout
 
-	self.name: str, name of the geometry
+	self.name: str, name of the geom
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.dim: int, dim of the geom, fixed to 2
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.isCly: bool, symmetry of the geom
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.domain: float array(4), domain in (left, right, top, bottom)
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.shape_list: obj array(N), record list of shape
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.add_domain(domain):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# domain: float array(4), domain in (left, right, top, bottom)
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.add_shape(shape):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# shape: obj, defined in SHAPE2D()
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.inDomain(posn):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# posn: float array(2), position of tested point
+\end_layout
+
+\begin_layout Plain Layout
+
+		# isInside: bool, posn is inside the domain or not
+\end_layout
+
+\begin_layout Plain Layout
+
+		return isInside
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.get_mater(posn):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# posn: float array(2), position of tested point
+\end_layout
+
+\begin_layout Plain Layout
+
+		# mater: str, mater name of the tested point
+\end_layout
+
+\begin_layout Plain Layout
+
+		return mater
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Class SHAPE2D():
+\end_layout
+
+\begin_layout Plain Layout
+
+-- attribute --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.name: str, name of the geom
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.dim: int, dim of the geom, fixed to 2
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.domain: float array(), depends on the shape, Rect, Tri, or Circ
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.mater: str, mater of the shape
+\end_layout
+
+\begin_layout Plain Layout
+
+-- method --
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.isInside(posn):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# posn: float array(2), position of tested point
+\end_layout
+
+\begin_layout Plain Layout
+
+		# isInside: bool, posn is inside the domain or not
+\end_layout
+
+\begin_layout Plain Layout
+
+		return isInside
 \end_layout
 
 \begin_layout Plain Layout
@@ -973,29 +1117,32 @@ Class MESH2D():
 
 \begin_layout Plain Layout
 
-	self.name: str
+	self.name: str, name of the mesh
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.domain: float array(6), unit in m, (top, bottom, left, right, front,
- back)
+	self.dim: int, dim of the geom, fixed to 2	
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.res: float array(3), unit in m, resolution in structured mesh
+	self.domain: float array(4), domain in (left, right, top, bottom)
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.ngrid: int array(3), num of nodes in structured mesh
+	self.res: float array(2), unit in m, resolution in structured mesh
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.x, self.z, self.y: float array(m,n), unit in m, coordinates in axis x,
- z, y
+	self.ngrid: int array(2), num of nodes in structured mesh
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.x, self.z: float array(m,n), unit in m, coordinates in axis x, z
 \end_layout
 
 \begin_layout Plain Layout
@@ -1035,32 +1182,72 @@ Class MESH2D():
 
 \begin_layout Plain Layout
 
-	self.initMesh()
+	self.import_geom(geom):
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.readMesh()
+		# geom: obj, defined in GEOM2D()
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.addShape(ishape='Rectangle', 'Triangle' or 'Circle')
+	self.gen_mesh(ngrid):
 \end_layout
 
 \begin_layout Plain Layout
 
-	or self.addRectangle(), self.addTriangle() and self.addCircle()
+		# ngrid: int array(2), num of nodes in structured mesh
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.find_surf(): assign values to self.surf
+		# generate mesh according to geom
 \end_layout
 
 \begin_layout Plain Layout
 
-	self.saveMesh()
+	self.assign_mat():
+\end_layout
+
+\begin_layout Plain Layout
+
+		# gen matrix containing mater info
+\end_layout
+
+\begin_layout Plain Layout
+
+		# loop all mesh nodes and get the mater from geom
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.read_mesh(filename):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# filename: str, file name for saved mesh
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.find_surf(): 
+\end_layout
+
+\begin_layout Plain Layout
+
+		# assign values to self.surf
+\end_layout
+
+\begin_layout Plain Layout
+
+	self.save_mesh(filename):
+\end_layout
+
+\begin_layout Plain Layout
+
+		# filename: str, file name for saved mesh
 \end_layout
 
 \end_inset
