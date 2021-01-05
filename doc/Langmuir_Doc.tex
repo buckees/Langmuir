@@ -1,4 +1,4 @@
-%% LyX 2.3.0 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.3.6.1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
@@ -24,9 +24,7 @@
 
 \usepackage{babel}
 \begin{document}
-
 \title{The Langmuir Model}
-
 \author{Wei Tian}
 \maketitle
 
@@ -190,10 +188,10 @@ continuity equation can be written in terms of density and potential,
 \frac{\partial n_{e}}{\partial t}=-\nabla\cdot(-\mu_{e}n\vec{_{e}E}-D_{e}\nabla n_{e})+S_{e}=f_{e}(n_{e}(t),\phi(t))
 \]
 \[
-\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
+\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(\frac{q_{i}}{|q_{i}|}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
 \]
 \[
--\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}n_{i}(t)-n_{e}(t))
+-\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}q_{i}n_{i}(t)-n_{e}(t))
 \]
 
 In this form, the future density $n_{e}(t1)$ is determined by current

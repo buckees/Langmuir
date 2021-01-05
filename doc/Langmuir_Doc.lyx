@@ -589,7 +589,7 @@ E-field in the continuity equation is derived by potential,
 
 \begin_inset Formula 
 \[
-\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(q_{i}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
+\frac{\partial n_{i}}{\partial t}=-\nabla\cdot(\frac{q_{i}}{|q_{i}|}\mu_{i}n\vec{_{i}E}-D_{i}\nabla n_{i})+S_{i}=f_{i}(n_{i}(t),\phi(t))
 \]
 
 \end_inset
@@ -597,7 +597,7 @@ E-field in the continuity equation is derived by potential,
 
 \begin_inset Formula 
 \[
--\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}n_{i}(t)-n_{e}(t))
+-\nabla\cdot\varepsilon\nabla\phi(t)=e(\sum_{i}q_{i}n_{i}(t)-n_{e}(t))
 \]
 
 \end_inset
