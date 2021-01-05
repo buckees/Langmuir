@@ -161,7 +161,7 @@ packages/Model/Common
 
 \begin_layout Plain Layout
 
-	|- Particle.cpp	# class for single particle, 3D by default
+	|- Particle.py	# class for single particle, 3D by default
 \end_layout
 
 \begin_layout Plain Layout
