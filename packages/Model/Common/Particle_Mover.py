@@ -14,13 +14,15 @@ def EULER_MOVE(ptcl, field, dt):
     
     x(t + dt) = x(t) + v(t) * dt
     v(t + dt) = v(t) + F(t)/m * dt
-    x: arr(3) of float, position in (x, z, y)
-    v: arr(3) of float, velocity in (x, z, y)
+    posn: arr(3) of float, position in (x, z, y)
+    vel: arr(3) of float, velocity in (x, z, y)
     ptcl: PARTICLE() or MULTI_PARTICLE() obj
     field: FIELD() obj
+    dt: float, unit in s, timestep
     """
+    Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
     posn = ptcl.posn + ptcl.vel*dt
-    vel = ptcl.vel + field.E*(ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)*dt
+    vel = ptcl.vel + field.E*Coulomb_const*dt
     return posn, vel
 
 def S_EULER(ptcl, field, dt):
@@ -29,7 +31,34 @@ def S_EULER(ptcl, field, dt):
     
     v(t + dt) = v(t) + F(t)/m * dt
     x(t + dt) = x(t) + v(t + dt) * dt
-    """    
-    vel = ptcl.vel + field.E*(ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)*dt
+    posn: arr(3) of float, position in (x, z, y)
+    vel: arr(3) of float, velocity in (x, z, y)
+    ptcl: PARTICLE() or MULTI_PARTICLE() obj
+    field: FIELD() obj
+    dt: float, unit in s, timestep
+    """
+    Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
+    vel = ptcl.vel + field.E*Coulomb_const*dt
     posn = ptcl.posn + ptcl.vel*dt
     return posn, vel
+
+def LEAPFROG(ptcl, field, t, dt):
+    """
+    Semi-explicit Euler: 1st order symplectic integrator.
+    
+    v(t + dt) = v(t) + F(t)/m * dt
+    x(t + dt) = x(t) + v(t + dt) * dt
+    posn: arr(3) of float, position in (x, z, y)
+    vel: arr(3) of float, velocity in (x, z, y)
+    ptcl: PARTICLE() or MULTI_PARTICLE() obj
+    field: FIELD() obj
+    dt: float, unit in s, timestep
+    """
+    Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
+    Acur = field.E*Coulomb_const
+    # CWong's note: Efunc interface would be better if only need to poass time variable
+    Anew = field.Efunc(t + dt) * Coulomb_const
+    posn = ptcl.posn + ptcl.vel*dt + 0.5*Acur*dt*dt
+    vel = ptcl.vel + 0.5*(Acur + Anew)*dt
+    return posn, vel
+    
