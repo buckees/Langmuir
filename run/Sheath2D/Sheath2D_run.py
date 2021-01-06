@@ -17,13 +17,12 @@ oper.d_sh = 0.01
 oper.wfr_loc = 0.0
 oper.dt = 1e-8
 oper.Vdc = 100.0
-oper.Vrf = 50.0
+oper.Vrf = 20.0
 oper.freq = 1
 
 # init ptcl
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
-
 
 # init field
 def Efunc(Vdc, Vrf, dsh, freq, phi0, t):
@@ -35,4 +34,4 @@ def Efunc(Vdc, Vrf, dsh, freq, phi0, t):
 field = FIELD('Sheath')
 field.add_Efunc(Efunc)
 
-MAIN(oper, ptcl)
+MAIN(oper, ptcl, field)
