@@ -102,7 +102,7 @@ EERN.to_PLASMA(PLA)
 # SRC = REACT2D('SRC2D')
 
 
-# ne_ave, ni_ave, Te_ave = [], [], []
+# ne_ave, ni_ave, Te_ave = [], [], []  
 # time = []
 # niter = 1000
 # dt = 1e-7
