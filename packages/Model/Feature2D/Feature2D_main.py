@@ -54,12 +54,11 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
             rec_traj.append([])
             rec_traj[-1].append(ptcl.posn.copy())
         #############################################
-    
-        num_rflct = 0
         
         ###############################################
         ########## main loop for pctl launch ##########
         ###############################################
+        num_rflct = 0
         for i in range(oper.max_step):
             # move the ptcl in space by delta_L
             ptcl.move_in_space(delta_L)
