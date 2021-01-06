@@ -81,7 +81,7 @@ def MAIN(oper, ptcl, coll=None):
             if step > max_step:
                 ptcl.update_state(False)
     
-    # plot results
+    ########## plot results ##########
     print(f'{num_ptcl} particles are launched.' 
           + f'\n{len(erg)} particles are collected by the wafer.')
     
