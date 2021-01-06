@@ -1,46 +1,17 @@
 """Sheath Model 2D. Main program."""
 
 import numpy as np
-from math import sin
 import matplotlib.pyplot as plt
 
-from packages.Model.Common.Particle import PARTICLE
-from packages.Model.Common.Field import FIELD
 from packages.Model.Common.Particle_Mover import EULER_MOVE
-from packages.Constants import (PI, AMU, UNIT_CHARGE)
+from packages.Constants import PI
 
-# Physics parameters
-w_loc = 0.0 # by default
-
-dsh = 0.01
-dt = 1e-8
-Vdc, Vrf = 100, 20
-# freq = 13.56e6 # T = 70 ns
-freq = 1
-
-def Efunc(Vdc, Vrf, dsh, freq, phi0, t):
-    """Calc sheath E-field."""
-    E = np.zeros(3)
-    E[1] = -Vdc/dsh - Vrf/dsh*sin(2*PI*freq*t + phi0)
-    return E
-
-# Model parameters
-num_ptcl = 10000
-max_step = 10000
-
-ptcl = PARTICLE('M+')
-ptcl.customize_ptcl('Ion', 40, 1)
-
-field = FIELD('Sheath')
-field.add_Efunc(Efunc)
-
-
-
-def MAIN(oper, ptcl, coll=None):
+def MAIN(oper, ptcl, field, coll=None):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
     ptcl: PARTICLE(obj), contains all particle information.
+    field: FIELD(obj), contains all field information.
     coll: COLLISION(obj), contains all collision information.
     """
 
@@ -78,17 +49,17 @@ def MAIN(oper, ptcl, coll=None):
             if ptcl.posn[1] < oper.wfr_loc:
                 ptcl.update_state(False)
                 erg.append(ptcl.vel2erg())
-            if step > max_step:
+            if step > oper.max_step:
                 ptcl.update_state(False)
     
     ########## plot results ##########
-    print(f'{num_ptcl} particles are launched.' 
+    print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(erg)} particles are collected by the wafer.')
     
     
     fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
                            constrained_layout=True)
-    ax.hist(erg, 2*int(Vrf), density=True)
+    ax.hist(erg, 2*int(oper.Vrf), density=True)
     ax.set_xlim(40, 160)
     ax.set_title('Ion Energy Distribution')
     ax.set_xlabel('Energy (eV)')
