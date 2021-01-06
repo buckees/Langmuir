@@ -2,6 +2,7 @@
 
 import numpy as np
 from math import sin, cos
+from copy import deepcopy
 
 def MAIN(oper, ptcl, mesh, rct, rflct):
     """
