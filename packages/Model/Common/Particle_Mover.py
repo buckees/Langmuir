@@ -52,6 +52,7 @@ def LEAPFROG(ptcl, field, t, dt):
     vel: arr(3) of float, velocity in (x, z, y)
     ptcl: PARTICLE() or MULTI_PARTICLE() obj
     field: FIELD() obj
+    t: float, unit in s, current time
     dt: float, unit in s, timestep
     """
     Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
