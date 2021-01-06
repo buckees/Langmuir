@@ -2,7 +2,7 @@
 
 from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Sheath2D.Sheath2D_ops import PARAMETER
-from packages.Model.Sheath2D.Sheath2D_main_new import MAIN
+from packages.Model.Sheath2D.Sheath2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
