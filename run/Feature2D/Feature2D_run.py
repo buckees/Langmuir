@@ -5,7 +5,7 @@ from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Feature2D.Feature2D_mesh import MESH2D
 from packages.Model.Feature2D.Feature2D_rflct import REFLECT
 from packages.Model.Feature2D.Feature2D_rct import REACT
-from packages.Model.Feature2D.Feature2D_main_new import MAIN
+from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
