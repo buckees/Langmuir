@@ -65,7 +65,7 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
             ptcl.move_in_space(delta_L)
             
             ########## check b.c. ##########
-            if ptcl.posn[1] >= (mesh.top - mesh.dz*0.5):
+            if ptcl.posn[1] > mesh.top:
                 ptcl.update_state(False)
             if not (mesh.left < ptcl.posn[0] < mesh.right):
                 posn = deepcopy(ptcl.posn)
