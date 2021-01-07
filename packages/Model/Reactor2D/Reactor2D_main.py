@@ -1,6 +1,11 @@
 """Sheath Model 2D. Main program."""
 
 import numpy as np
+from copy import copy, deepcopy
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+colMap = copy(cm.get_cmap("jet"))
+colMap.set_under(color='white')
 
 def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     """
@@ -71,61 +76,65 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     ne_ave, ni_ave, Te_ave = [], [], []  
     time = []
    
-    # for itn in range(niter):
-    #     # call REACT2D
-    #     SRC.from_PLASMA(PLA)
-    #     SRC.calc_src(PLA)
-    #     SRC.to_PLASMA(PLA)
-    #     PLA.update_plasma()
-    #     # call TRANSP2D
-    #     TXP.from_PLASMA(PLA)
-    #     TXP.calc_ambi(PLA)
-    #     TXP.solve_fluid(dt)
-    #     TXP.to_PLASMA(PLA)
-    #     PLA.update_plasma()
-    #     # call EERGY2D
-    #     EERN.from_PLASMA(PLA)
-    #     for itn_Te in range(niter_Te):    
-    #         EERN.solve_Te(PLA, dt/niter_Te)
-    #     EERN.to_PLASMA(PLA)
-    #     PLA.update_plasma()
-    #     # record ave
-    #     ne_ave.append(deepcopy(PLA.ne_ave))
-    #     ni_ave.append(deepcopy(PLA.ni_ave))
-    #     Te_ave.append(deepcopy(PLA.Te_ave))
-    #     time.append(dt*(itn+1))
-    #     if not (itn+1) % (niter/5):
-    #         # plot 2D        
-    #         MESH.plot_var(var=[PLA.ne, PLA.ni], 
-    #               var_name=['E Density', 'Ion Density'],
-    #               fname=f'Density_itn{itn+1}')
-    #         MESH.plot_var(var=[PLA.Te, PLA.Ti], 
-    #               var_name=['E Temperature', 'Ion Temperature'],
-    #               fname=f'Te_itn{itn+1}')
-    #         MESH.plot_var(var=[PLA.dfluxe, PLA.Se], 
-    #               var_name=['E Loss', 'E Prod'],
-    #               fname=f'SRC_itn{itn+1}')
-    #         MESH.plot_var(var=[PLA.pwr_in, EERN.dQe], 
-    #               var_name=['Power due to Ey', 'dQe'],
-    #               fname=f'Power_itn{itn+1}')
+    for itn in range(oper.num_iter):
+        # call field module
+        # field.solve_E(pla)
+        # call eon energy module
+        eergy.from_PLASMA(pla)
+        for itn_Te in range(oper.num_iter_Te):    
+            eergy.solve_Te(pla, dt/oper.num_iter_Te)
+        eergy.to_PLASMA(pla)
+        pla.update_plasma()
+        # call reaction module
+        rct.from_PLASMA(pla)
+        rct.calc_src(pla)
+        rct.to_PLASMA(pla)
+        pla.update_plasma()
+        # call transport module
+        txp.from_PLASMA(pla)
+        txp.calc_ambi(pla)
+        txp.solve_fluid(dt)
+        txp.to_PLASMA(pla)
+        pla.update_plasma()
+        
+        
+        ########## record and plot ##########
+        ne_ave.append(deepcopy(pla.ne_ave))
+        ni_ave.append(deepcopy(pla.ni_ave))
+        Te_ave.append(deepcopy(pla.Te_ave))
+        time.append(dt*(itn+1))
+        if not (itn+1) % (oper.num_iter/5):
+            # plot 2D        
+            mesh.plot_var(var=[pla.ne, pla.ni], 
+                  var_name=['E Density', 'Ion Density'],
+                  fname=f'Density_itn{itn+1}')
+            mesh.plot_var(var=[pla.Te, pla.Ti], 
+                  var_name=['E Temperature', 'Ion Temperature'],
+                  fname=f'Te_itn{itn+1}')
+            mesh.plot_var(var=[pla.dfluxe, pla.Se], 
+                  var_name=['E Loss', 'E Prod'],
+                  fname=f'rct_itn{itn+1}')
+            mesh.plot_var(var=[pla.pwr_in, eergy.dQe], 
+                  var_name=['Power due to Ey', 'dQe'],
+                  fname=f'Power_itn{itn+1}')
     
-    #         # plot ave. values
-    #         fig, axes = plt.subplots(1, 2, figsize=(8,4), dpi=300,
-    #                                               constrained_layout=True)
-    #         ax = axes[0]
-    #         ax.plot(time, ne_ave, 'b-')
-    #         ax.legend(['ne'])
-    #         ax.set_title('Eon Density (m^-3)')
-    #         plt.xlabel('Time (s)')
-    #         plt.ylabel('Ave. Density (m^-3)')
+            # plot ave. values
+            fig, axes = plt.subplots(1, 2, figsize=(8,4), dpi=300,
+                                                  constrained_layout=True)
+            ax = axes[0]
+            ax.plot(time, ne_ave, 'b-')
+            ax.legend(['ne'])
+            ax.set_title('Eon Density (m^-3)')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Ave. Density (m^-3)')
             
-    #         ax = axes[1]
-    #         ax.plot(time, Te_ave, 'r-')
-    #         ax.legend(['Te'])
-    #         ax.set_title('Eon Temperature (eV)')
-    #         plt.xlabel('Time (s)')
-    #         plt.ylabel('Ave. Eon Temperature (eV)')
+            ax = axes[1]
+            ax.plot(time, Te_ave, 'r-')
+            ax.legend(['Te'])
+            ax.set_title('Eon Temperature (eV)')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Ave. Eon Temperature (eV)')
             
-    #         fig.savefig('Ave_vs_Time.png', dpi=300)
-    #         plt.close()
+            fig.savefig('Ave_vs_Time.png', dpi=300)
+            plt.close()
         
