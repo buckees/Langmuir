@@ -9,9 +9,6 @@ import glob
 for i in glob.glob("*.png"):
     os.remove(i)
 
-import matplotlib.pyplot as plt
-from copy import deepcopy
-
 ########## import Langmuir modules ##########
 from packages.Model.Common.Parameter import PARAMETER
 from packages.Model.Reactor2D.Reactor2D_mesh import MESH2D
@@ -40,4 +37,13 @@ pla = PLASMA2D('Plasma')
 # init transport module
 txp = AMBI2D('Ambipolar')
 
-MAIN(oper, mesh, pla, txp)
+# init eon energy module
+eergy = EERGY2D('Eon_Energy')
+
+# init field module
+field = FIELD2D('Field')
+
+# init reaction module
+rct = REACT2D('React')
+
+MAIN(oper, mesh, pla, txp, eergy, rct, field)
