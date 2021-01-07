@@ -1,6 +1,6 @@
 """Feature Model 2D. Main program."""
 
-from packages.Model.Feature2D.Feature2D_ops import PARAMETER
+from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Feature2D.Feature2D_mesh import MESH2D
 from packages.Model.Feature2D.Feature2D_rflct import REFLECT

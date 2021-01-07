@@ -5,7 +5,7 @@ from math import sin
 
 from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Common.Field import FIELD
-from packages.Model.Sheath2D.Sheath2D_ops import PARAMETER
+from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
 from packages.Constants import PI
 
