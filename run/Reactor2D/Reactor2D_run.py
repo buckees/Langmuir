@@ -21,9 +21,10 @@ from packages.Model.Reactor2D.Reactor2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_iter = 300
+oper.num_iter = 1000
 oper.dt = 1e-6
 oper.ne = 1e18
+oper.num_iter_Te = 30
 oper.Te = 2.0
 
 # init mesh obj
