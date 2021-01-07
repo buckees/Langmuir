@@ -404,5 +404,5 @@ class MESH2D(object):
         """Init particle posn at the top boundary."""
         posn = np.zeros(3)
         posn[0] = np.random.uniform(self.left, self.right)
-        posn[1] = self.top
+        posn[1] = self.top*0.999
         return posn
