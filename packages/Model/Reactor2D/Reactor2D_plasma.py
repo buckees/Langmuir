@@ -10,7 +10,7 @@ PLASMA2D contains:
 
 import numpy as np
 
-from packages.Constants import (PI, AMU, UNIT_CHARGE, EON_MASS)
+from packages.Constants import (PI, AMU, UNIT_CHARGE, EON_MASS, KB_EV)
 
 class PLASMA2D(object):
     """Define PLASMA2D."""
@@ -82,6 +82,7 @@ class PLASMA2D(object):
         self._limit_plasma()
         self._calc_conde()
         self._calc_pwr_in()
+        self._calc_txp_coeff()
         self._calc_ave(MESH)
         
     def _set_nonPlasma(self, MESH):
@@ -113,6 +114,22 @@ class PLASMA2D(object):
         """Calc input power due to E-field."""
         EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
         self.pwr_in = np.multiply(np.real(self.conde), EF2)
+    
+    def _calc_txp_coeff(self):
+        """
+        Calc diffusion coefficient and mobility.
+
+        MESH: MESH2D object/class
+        De,i: m^2/s, (nz, nx) matrix, D = k*T/(m*coll_m)
+        Mue,i: m^2/(V*s), (nz, nx) matrix, Mu = q/(m*coll_m)
+        D and Mu depend only on PLA.
+        """
+        # calc diff coeff: D = k*T/(m*coll_m)
+        self.De = np.divide(KB_EV*self.Te, self._Me*self.coll_em)  
+        self.Di = np.divide(KB_EV*self.Ti, self._Mi*self.coll_im)  
+        # calc mobility: Mu = q/(m*coll_m)
+        self.Mue = UNIT_CHARGE/self._Me/self.coll_em
+        self.Mui = UNIT_CHARGE/self._Mi/self.coll_im
     
     def _calc_ave(self, MESH):
         """Calc averaged variables."""

@@ -15,8 +15,6 @@ Transp_2d contains:
 import numpy as np
 from copy import deepcopy
 
-from packages.Constants import (UNIT_CHARGE, KB_EV)
-
 class TRANSP2D(object):
     """Define the base tranport module/object."""
     
@@ -35,16 +33,14 @@ class TRANSP2D(object):
         self.Se, self.Si = deepcopy(PLA.Se), deepcopy(PLA.Si)
         self.Ex, self.Ez = deepcopy(PLA.Ex), deepcopy(PLA.Ez)
         self.Te, self.Ti = deepcopy(PLA.Te), deepcopy(PLA.Ti)
-        self.coll_em = deepcopy(PLA.coll_em)
-        self.coll_im = deepcopy(PLA.coll_im)
-        self._Me, self._Mi = deepcopy(PLA._Me), deepcopy(PLA._Mi)
+        self.De, self.Di = deepcopy(PLA.De), deepcopy(PLA.Di)
+        self.Mue, self.Mui = deepcopy(PLA.Mue), deepcopy(PLA.Mui)
         self.fluxex = np.zeros_like(PLA.ne)
         self.fluxez = np.zeros_like(PLA.ne)
         self.fluxix = np.zeros_like(PLA.ne)
         self.fluxiz = np.zeros_like(PLA.ne)
         self.dfluxe = np.zeros_like(PLA.ne)
         self.dfluxi = np.zeros_like(PLA.ne)
-        self._calc_txp_coeff()
     
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -58,22 +54,6 @@ class TRANSP2D(object):
         PLA.dfluxe = deepcopy(self.dfluxe)
         PLA.dfluxi = deepcopy(self.dfluxi)
 
-    def _calc_txp_coeff(self):
-        """
-        Calc diffusion coefficient and mobility.
-
-        MESH: MESH2D object/class
-        De,i: m^2/s, (nz, nx) matrix, D = k*T/(m*coll_m)
-        Mue,i: m^2/(V*s), (nz, nx) matrix, Mu = q/(m*coll_m)
-        D and Mu depend only on PLA.
-        """
-        # calc diff coeff: D = k*T/(m*coll_m)
-        self.De = np.divide(KB_EV*self.Te, self._Me*self.coll_em)  
-        self.Di = np.divide(KB_EV*self.Ti, self._Mi*self.coll_im)  
-        # calc mobility: Mu = q/(m*coll_m)
-        self.Mue = UNIT_CHARGE/self._Me/self.coll_em
-        self.Mui = UNIT_CHARGE/self._Mi/self.coll_im
-    
     def solve_fluid(self, dt):
         """
         Evolve the density.
@@ -95,8 +75,6 @@ class DIFF2D(TRANSP2D):
     
     def calc_diff(self, MESH):
         """Calc diffusion term: D * d2n/dx2 and diffusion flux D * dn/dx."""
-        # Calc transp coeff first
-        self.calc_txp_coeff()
         # Calc flux
         self.fluxex, self.fluxez = -self.De * MESH.cnt_diff(self.ne)
         self.fluxix, self.fluxiz = -self.Di * MESH.cnt_diff(self.ni)
@@ -134,8 +112,6 @@ class AMBI2D(TRANSP2D):
         Assume Te >> Ti, Ambipolar Coeff can be simplified as
         Da = Di(1 + Te/Ti).
         """
-        # Calc transp coeff first
-        self._calc_txp_coeff()
         # Calc ambi coeff
         self.Da = self.Di*(1.0 + np.divide(self.Te, self.Ti))
         dnix, dniz = MESH.cnt_diff(self.ni)
