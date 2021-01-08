@@ -6,14 +6,10 @@ Create mesh for input geometry.
 """
 
 import numpy as np
-from copy import copy, deepcopy
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-colMap = copy(cm.get_cmap("jet"))
-colMap.set_under(color='white')
 
+from packages.Mesh.Mesh import MESH2D
 
-class MESH2D():
+class MESH2D(MESH2D):
     """Define 2d Mesh."""
 
     def __init__(self, name='Mesh2d'):
@@ -65,125 +61,3 @@ class MESH2D():
         """Calc the total area of plasma region."""
         self.isPlasma = (self.mat == 0).astype(int)
         self.area = self.dx * self.dz * self.isPlasma.sum()
-
-    def cnt_diff(self, f, imode='Scalar'):
-        """
-        Caculate dy/dx using central differencing.
-        
-        f: scalar or vector
-        imode: str, var, 'Scalar' or 'Vector'
-        if imode == 'Scalar':
-            df/dx = (f[i+1] - f[i-1])/(2.0*dx)
-            df[0] = df[1]; df[-1] = dy[-2]
-            df/dz = ...
-        if imode == 'Vector':
-            (d/dx, d/dz)*(fx, fz) = dfx/dx + dfz/dz
-        """
-        if imode not in ['Scalar', 'Vector']:
-            return 'Error: imode not found!'
-        
-        if imode == 'Scalar':
-            dfx = np.zeros_like(self.x)
-            dfz = np.zeros_like(self.z)
-            # Although dy[0] and dy[-1] are signed here,
-            # they are eventually specified in boundary conditions
-            # dy[0] = dy[1]; dy[-1] = dy[-2]
-            for i in range(1, self.nx-1):
-                dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.dx/2.0
-            for j in range(1, self.nz-1):
-                dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.dz/2.0
-            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
-            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
-            return dfx, dfz
-        elif imode == 'Vector':
-            fx, fz = f
-            dfx, dfz = np.zeros_like(self.x), np.zeros_like(self.x)
-            for i in range(1, self.nx-1):
-                dfx[:, i] = (fx[:, i+1] - fx[:, i-1])/self.dx/2.0
-            for j in range(1, self.nz-1):
-                dfz[j, :] = (fz[j+1, :] - fz[j-1, :])/self.dz/2.0
-            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
-            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
-            df = dfx + dfz
-            return df
-    
-    def cnt_diff_2nd(self, f):
-        """
-        Caculate d2y/dx2 using 2nd order central differencing.
-
-        input: y
-        d2y/dx2 = (y[i+1] - 2 * y[i] + y[i-1])/dx^2
-        d2y[0] = d2y[1]; d2y[-1] = d2y[-2]
-        output: d2y/dx2
-        """
-        d2fx = np.zeros_like(self.x)
-        d2fz = np.zeros_like(self.z)
-        # Although dy[0] and dy[-1] are signed here,
-        # they are eventually specified in boundary conditions
-        # d2y[0] = d2y[1]; d2y[-1] = d2y[-2]
-        for i in range(1, self.nx-1):
-            d2fx[:, i] = (f[:, i+1] - 2 * f[:, i] + f[:, i-1])/self.dx**2
-        for j in range(1, self.nz-1):
-            d2fz[j, :] = (f[j+1, :] - 2 * f[j, :] + f[j-1, :])/self.dz**2
-        d2fx[:, 0], d2fx[:, -1] = deepcopy(d2fx[:, 1]), deepcopy(d2fx[:, -2])
-        d2fz[0, :], d2fz[-1, :] = deepcopy(d2fz[1, :]), deepcopy(d2fz[-2, :])
-        d2f = d2fx + d2fz
-        return d2f
-
-    def plot(self, figsize=(8, 8), dpi=600, ihoriz=1):
-        """Plot mesh."""
-        colMap = plt.get_cmap('Set1')
-        
-        if ihoriz:
-            fig, axes = plt.subplots(1, 2, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(2, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot mesh
-        for ax, den, title in zip(axes, (self.mat, self.bndy), 
-                                  ('Material', 'Boundary')):
-            ax.scatter(self.x, self.z, c=den, s=10, cmap=colMap)
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        # save and close()
-        fig.savefig(self.name, dpi=dpi)
-        plt.close()
-        
-    def plot_var(self, var, var_name,
-                 fname='Plasma.png',figsize=(16, 8), ihoriz=1, dpi=300, 
-                 imode='Contour', iplot_geom=0):
-        """
-        Plot plasma variables vs. position.
-            
-        var: list of var, such as [ne, ni]
-        var_name: list of str, such as ['E Density', 'Ion Density']
-        fname: str, var, name of png file to save
-        figsize: a.u., (2, ) tuple, size of fig
-        ihoriz: a.u., var, 0 or 1, set the layout of fig horizontal or not
-        dpi: a.u., dots per inch
-        imode: str, var, ['Contour', 'Scatter']
-        iplot_geom: int, var, control whether to plot geom
-        """
-        nvar = len(var)
-        if ihoriz:
-            fig, axes = plt.subplots(1, nvar, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        else:
-            fig, axes = plt.subplots(nvar, 1, figsize=figsize, dpi=dpi,
-                                     constrained_layout=True)
-        # plot var
-        for ax, den, title in zip(axes, var, var_name):
-            if imode == 'Contour':
-                cs = ax.contourf(self.x, self.z, den, cmap=colMap)
-            elif imode == 'Scatter':
-                cs = ax.scatter(self.x, self.z, c=den, cmap=colMap)
-            ax.set_title(title)
-            fig.colorbar(cs, ax=ax, shrink=0.9)
-            ax.set_xlabel('Position (m)')
-            ax.set_ylabel('Height (m)')
-            ax.set_aspect('equal')
-        # save and close()
-        fig.savefig(fname, dpi=dpi)
-        plt.close()
