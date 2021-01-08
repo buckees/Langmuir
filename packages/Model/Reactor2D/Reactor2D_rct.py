@@ -23,23 +23,26 @@ class REACT2D(object):
         """Init REACT2D."""
         self.Se = np.zeros_like(PLA.ne)
         self.Si = np.zeros_like(PLA.ne)
+        self.Te = deepcopy(PLA.Te)
+        self.ne = deepcopy(PLA.ne)
+        self.nn = deepcopy(PLA.nn)
     
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
         PLA.Se = deepcopy(self.Se)
         PLA.Si = deepcopy(self.Si)
     
-    def calc_src(self, PLA, ke=2.34e-14):
+    def calc_src(self, MESH, ke=2.34e-14):
         """Calc src due to ionization."""
-        self.Se = ke * np.power(PLA.Te, 0.59)
-        self.Se *= np.exp(-17.8/PLA.Te)
-        self.Se *= np.multiply(PLA.ne, PLA.nn)
+        self.Se = ke * np.power(self.Te, 0.59)
+        self.Se *= np.exp(-17.8/self.Te)
+        self.Se *= np.multiply(self.ne, self.nn)
         self.Si = deepcopy(self.Se)
-        self._set_nonPlasma(PLA)
+        self._set_nonPlasma(MESH)
 
-    def _set_nonPlasma(self, PLA):
+    def _set_nonPlasma(self, MESH):
         """Impose fixed Te on the non-PLAsma materials."""
-        for idx, mat in np.ndenumerate(PLA.mesh.mat):
+        for idx, mat in np.ndenumerate(MESH.mat):
             if mat:
                 self.Se[idx] = 0.0
                 self.Si[idx] = 0.0
