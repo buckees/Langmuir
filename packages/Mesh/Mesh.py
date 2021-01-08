@@ -6,6 +6,7 @@ Create mesh for a given geometry.
 
 import numpy as np
 import matplotlib.pyplot as plt
+from copy import deepcopy
 
 class MESH():
     """Define all shared basic properties."""
@@ -65,6 +66,71 @@ class MESH2D(MESH):
         ax.scatter(self.x, self.z, c=self.mat, s=s_size, cmap=colMap)
         fig.savefig(self.name, dpi=dpi)
         plt.close()
+
+    def cnt_diff(self, f, imode='Scalar'):
+        """
+        Caculate dy/dx using central differencing.
+        
+        f: scalar or vector
+        imode: str, var, 'Scalar' or 'Vector'
+        if imode == 'Scalar':
+            df/dx = (f[i+1] - f[i-1])/(2.0*dx)
+            df[0] = df[1]; df[-1] = dy[-2]
+            df/dz = ...
+        if imode == 'Vector':
+            (d/dx, d/dz)*(fx, fz) = dfx/dx + dfz/dz
+        """
+        if imode not in ['Scalar', 'Vector']:
+            return 'Error: imode not found!'
+        
+        if imode == 'Scalar':
+            dfx = np.zeros_like(self.x)
+            dfz = np.zeros_like(self.z)
+            # Although dy[0] and dy[-1] are signed here,
+            # they are eventually specified in boundary conditions
+            # dy[0] = dy[1]; dy[-1] = dy[-2]
+            for i in range(1, self.nx-1):
+                dfx[:, i] = (f[:, i+1] - f[:, i-1])/self.dx/2.0
+            for j in range(1, self.nz-1):
+                dfz[j, :] = (f[j+1, :] - f[j-1, :])/self.dz/2.0
+            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
+            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
+            return dfx, dfz
+        elif imode == 'Vector':
+            fx, fz = f
+            dfx, dfz = np.zeros_like(self.x), np.zeros_like(self.x)
+            for i in range(1, self.nx-1):
+                dfx[:, i] = (fx[:, i+1] - fx[:, i-1])/self.dx/2.0
+            for j in range(1, self.nz-1):
+                dfz[j, :] = (fz[j+1, :] - fz[j-1, :])/self.dz/2.0
+            dfx[:, 0], dfx[:, -1] = deepcopy(dfx[:, 1]), deepcopy(dfx[:, -2])
+            dfz[0, :], dfz[-1, :] = deepcopy(dfz[1, :]), deepcopy(dfz[-2, :])
+            df = dfx + dfz
+            return df
+    
+    def cnt_diff_2nd(self, f):
+        """
+        Caculate d2y/dx2 using 2nd order central differencing.
+
+        input: y
+        d2y/dx2 = (y[i+1] - 2 * y[i] + y[i-1])/dx^2
+        d2y[0] = d2y[1]; d2y[-1] = d2y[-2]
+        output: d2y/dx2
+        """
+        d2fx = np.zeros_like(self.x)
+        d2fz = np.zeros_like(self.z)
+        # Although dy[0] and dy[-1] are signed here,
+        # they are eventually specified in boundary conditions
+        # d2y[0] = d2y[1]; d2y[-1] = d2y[-2]
+        for i in range(1, self.nx-1):
+            d2fx[:, i] = (f[:, i+1] - 2 * f[:, i] + f[:, i-1])/self.dx**2
+        for j in range(1, self.nz-1):
+            d2fz[j, :] = (f[j+1, :] - 2 * f[j, :] + f[j-1, :])/self.dz**2
+        d2fx[:, 0], d2fx[:, -1] = deepcopy(d2fx[:, 1]), deepcopy(d2fx[:, -2])
+        d2fz[0, :], d2fz[-1, :] = deepcopy(d2fz[1, :]), deepcopy(d2fz[-2, :])
+        d2f = d2fx + d2fz
+        return d2f
+
 
 class MESH1D(MESH):
     """Define 1D Mesh."""
