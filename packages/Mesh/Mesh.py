@@ -5,10 +5,9 @@ Create mesh for a given geometry.
 """
 
 import numpy as np
-from copy import deepcopy
 import matplotlib.pyplot as plt
 
-class Mesh():
+class MESH():
     """Define all shared basic properties."""
 
     def __init__(self, import_geom):
@@ -24,7 +23,7 @@ class Mesh():
         return res
     
         
-class Mesh2D(Mesh):
+class MESH2D(MESH):
     """Define 2D mesh."""
 
     def gen_mesh(self, ngrid=(10, 10)):
@@ -67,7 +66,7 @@ class Mesh2D(Mesh):
         fig.savefig(self.name, dpi=dpi)
         plt.close()
 
-class Mesh1D(Mesh):
+class MESH1D(MESH):
     """Define 1D Mesh."""
 
     def gen_mesh(self, nx=10):

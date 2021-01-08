@@ -12,7 +12,7 @@ import numpy as np
 
 from packages.Constants import COLOR_DICT
 
-class Geom(object):
+class GEOM(object):
     """Define all shared basic properties."""
     
     def __init__(self, name='Base', is_cyl=False):
@@ -88,7 +88,7 @@ class Geom(object):
         return mater
 
 
-class Shape():
+class SHAPE():
     """Basic geometry element."""
     
     def __init__(self, label, mater, dim):
@@ -103,7 +103,7 @@ class Shape():
         self.mater = mater
         self.dim = dim
 
-class Domain2D(Shape):
+class DOMAIN2D(SHAPE):
     """Define 2D domain."""
     
     def __init__(self, bl=(0.0, 0.0), domain=(1.0, 1.0)):
@@ -134,7 +134,7 @@ class Domain2D(Shape):
         """
         return all(self.bl <= posn) and all(posn <= self.tr)
 
-class Domain1D(Shape):
+class DOMAIN1D(SHAPE):
     """Define 1D domain."""
     
     def __init__(self, domain=(0.0, 1.0)):
@@ -160,7 +160,7 @@ class Domain1D(Shape):
         """
         return self.domain[0] <= posn <= self.domain[1]
 
-class Rectangle(Shape):
+class RECTANGLE(SHAPE):
     """Rectangle is a 2D basic shape."""
     
     def __init__(self, mater, bottom_left, top_right):
@@ -188,7 +188,7 @@ class Rectangle(Shape):
         """
         return all(self.bl <= posn) and all(posn <= self.tr)
 
-class Circle(Shape):
+class CIRCLE(SHAPE):
     """Circle is a 2D basic shape."""
     
     def __init__(self, mater, center, radius):
@@ -214,7 +214,7 @@ class Circle(Shape):
         """
         return np.power((posn - self.center), 2).sum() < self.radius**2
 
-class Triangle(Shape):
+class TRIANGLE(SHAPE):
     """Circle is a 2D basic shape."""
     
     def __init__(self, mater, point1, point2, point3):
@@ -256,7 +256,7 @@ class Triangle(Shape):
                                   *self.point3,
                                   *posn)
 
-class Interval(Shape):
+class INTERVEL(SHAPE):
     """Interval is a 1D basic shape."""
     
     def __init__(self, mater, lr):
@@ -282,7 +282,7 @@ class Interval(Shape):
         return self.lr[0] <= posn <= self.lr[1]
 
 
-class RctMod2D(Geom):
+class RCTMOD2D(GEOM):
     """Define the geometry for 2D Reactor Model."""
     
     def __str__(self):
@@ -344,13 +344,14 @@ class RctMod2D(Geom):
         fig.savefig(self.name, dpi=dpi)
         plt.close()
 
-class FeatMod2D(RctMod2D):
+
+class FEATMOD2D(RCTMOD2D):
     """Define the geometry for 2D Feature Model."""
     
     pass
 
 
-class RctMod1D(Geom):
+class RCTMOD1D(GEOM):
     """Define the geometry for 1D Reactor Model."""
     
     def __init__(self, name='Base', is_cyl=False):
