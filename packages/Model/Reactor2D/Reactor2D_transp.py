@@ -34,14 +34,17 @@ class TRANSP2D(object):
         self.pot = deepcopy(PLA.pot)
         self.Se, self.Si = deepcopy(PLA.Se), deepcopy(PLA.Si)
         self.Ex, self.Ez = deepcopy(PLA.Ex), deepcopy(PLA.Ez)
+        self.Te, self.Ti = deepcopy(PLA.Te), deepcopy(PLA.Ti)
+        self.coll_em = deepcopy(PLA.coll_em)
+        self.coll_im = deepcopy(PLA.coll_im)
+        self._Me, self._Mi = deepcopy(PLA._Me), deepcopy(PLA._Mi)
         self.fluxex = np.zeros_like(PLA.ne)
         self.fluxez = np.zeros_like(PLA.ne)
         self.fluxix = np.zeros_like(PLA.ne)
         self.fluxiz = np.zeros_like(PLA.ne)
         self.dfluxe = np.zeros_like(PLA.ne)
         self.dfluxi = np.zeros_like(PLA.ne)
-
-        self._calc_txp_coeff(PLA)
+        self._calc_txp_coeff()
     
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -55,21 +58,21 @@ class TRANSP2D(object):
         PLA.dfluxe = deepcopy(self.dfluxe)
         PLA.dfluxi = deepcopy(self.dfluxi)
 
-    def _calc_txp_coeff(self, PLA):
+    def _calc_txp_coeff(self):
         """
         Calc diffusion coefficient and mobility.
 
-        PLA: PLASMA2D object/class
+        MESH: MESH2D object/class
         De,i: m^2/s, (nz, nx) matrix, D = k*T/(m*coll_m)
         Mue,i: m^2/(V*s), (nz, nx) matrix, Mu = q/(m*coll_m)
         D and Mu depend only on PLA.
         """
         # calc diff coeff: D = k*T/(m*coll_m)
-        self.De = np.divide(KB_EV*PLA.Te, PLA._Me*PLA.coll_em)  
-        self.Di = np.divide(KB_EV*PLA.Ti, PLA._Mi*PLA.coll_im)  
+        self.De = np.divide(KB_EV*self.Te, self._Me*self.coll_em)  
+        self.Di = np.divide(KB_EV*self.Ti, self._Mi*self.coll_im)  
         # calc mobility: Mu = q/(m*coll_m)
-        self.Mue = UNIT_CHARGE/PLA._Me/PLA.coll_em
-        self.Mui = UNIT_CHARGE/PLA._Mi/PLA.coll_im
+        self.Mue = UNIT_CHARGE/self._Me/self.coll_em
+        self.Mui = UNIT_CHARGE/self._Mi/self.coll_im
     
     def solve_fluid(self, dt):
         """
@@ -90,16 +93,16 @@ class DIFF2D(TRANSP2D):
     Output: D * d2n/dx2
     """
     
-    def calc_diff(self, PLA):
+    def calc_diff(self, MESH):
         """Calc diffusion term: D * d2n/dx2 and diffusion flux D * dn/dx."""
         # Calc transp coeff first
-        self.calc_txp_coeff(PLA)
+        self.calc_txp_coeff()
         # Calc flux
-        self.fluxex, self.fluxez = -self.De * PLA.mesh.cnt_diff(self.ne)
-        self.fluxix, self.fluxiz = -self.Di * PLA.mesh.cnt_diff(self.ni)
+        self.fluxex, self.fluxez = -self.De * MESH.cnt_diff(self.ne)
+        self.fluxix, self.fluxiz = -self.Di * MESH.cnt_diff(self.ni)
         # Calc dflux
-        self.dfluxe = -self.De * PLA.mesh.cnt_diff_2nd(self.ne)
-        self.dfluxi = -self.Di * PLA.mesh.cnt_diff_2nd(self.ni)
+        self.dfluxe = -self.De * MESH.cnt_diff_2nd(self.ne)
+        self.dfluxi = -self.Di * MESH.cnt_diff_2nd(self.ni)
 
     
 class AMBI2D(TRANSP2D):
@@ -112,7 +115,7 @@ class AMBI2D(TRANSP2D):
     Output: Da * d2n/dx2 and E-field
     """
 
-    def calc_ambi(self, PLA):
+    def calc_ambi(self, MESH):
         """
         Calc ambipolar diffusion coefficient.
 
@@ -132,18 +135,18 @@ class AMBI2D(TRANSP2D):
         Da = Di(1 + Te/Ti).
         """
         # Calc transp coeff first
-        self._calc_txp_coeff(PLA)
+        self._calc_txp_coeff()
         # Calc ambi coeff
-        self.Da = self.Di*(1.0 + np.divide(PLA.Te, PLA.Ti))
-        dnix, dniz = PLA.mesh.cnt_diff(self.ni)
+        self.Da = self.Di*(1.0 + np.divide(self.Te, self.Ti))
+        dnix, dniz = MESH.cnt_diff(self.ni)
         self.Ex = np.divide(self.Di - self.De, self.Mui + self.Mue)
         self.Ez = deepcopy(self.Ex)
         self.Ex *= np.divide(dnix, self.ni)
         self.Ez *= np.divide(dniz, self.ni)
         # # Calc flux
-        self.fluxex, self.fluxez = -self.Da * PLA.mesh.cnt_diff(self.ne)
-        self.fluxix, self.fluxiz = -self.Da * PLA.mesh.cnt_diff(self.ni)
+        self.fluxex, self.fluxez = -self.Da * MESH.cnt_diff(self.ne)
+        self.fluxix, self.fluxiz = -self.Da * MESH.cnt_diff(self.ni)
         # Calc dflux
-        self.dfluxe = -self.Da * PLA.mesh.cnt_diff_2nd(self.ne)
-        self.dfluxi = -self.Da * PLA.mesh.cnt_diff_2nd(self.ni)
+        self.dfluxe = -self.Da * MESH.cnt_diff_2nd(self.ne)
+        self.dfluxi = -self.Da * MESH.cnt_diff_2nd(self.ni)
         

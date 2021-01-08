@@ -17,8 +17,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     """
 
     ########## init and plot plasma ##########
-    pla.import_mesh(mesh)
-    pla.init_plasma(ne=oper.ne, Te=oper.Te)
+    pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te)
         
     mesh.plot_var(var=[pla.ne, pla.ni], 
                   var_name=['E Density', 'Ion Density'],
@@ -34,11 +33,11 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     txp.from_PLASMA(pla)
     
     for itn in range(500):
-        txp.calc_ambi(pla)
+        txp.calc_ambi(mesh)
         txp.solve_fluid(dt)
 
     txp.to_PLASMA(pla)
-    pla.update_plasma()
+    pla.update_plasma(mesh)
     
     mesh.plot_var(var=[pla.ne, pla.ni], 
                   var_name=['E Density', 'Ion Density'],
@@ -48,7 +47,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
             
     ########## init and plot field ##########
     field.from_PLASMA(pla)
-    field.create_Ey()
+    field.create_Ey(mesh)
     field.to_PLASMA(pla)
     
     mesh.plot_var(var=[pla.Ey, pla.Ex], 
@@ -59,10 +58,10 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     ########## pre-run eon energy ##########
     eergy.from_PLASMA(pla)
     for itn in range(100):
-        eergy.solve_Te(pla, dt)
+        eergy.solve_Te(mesh, dt)
         
     eergy.to_PLASMA(pla)
-    pla.update_plasma()
+    pla.update_plasma(mesh)
     
     mesh.plot_var(var=[pla.Te, pla.Ti], 
                   var_name=['E Temperature', 'Ion Temperature'],
@@ -77,25 +76,31 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     time = []
    
     for itn in range(oper.num_iter):
+        
+        ########## print progress ##########
+        if (itn + 1) % int(oper.num_iter/oper.num_plot) == 0:
+            print('%d iterations have completed!' % (itn+1))
+        ####################################
+        
         # call field module
         # field.solve_E(pla)
         # call eon energy module
         eergy.from_PLASMA(pla)
         for itn_Te in range(oper.num_iter_Te):    
-            eergy.solve_Te(pla, dt/oper.num_iter_Te)
+            eergy.solve_Te(mesh, dt/oper.num_iter_Te)
         eergy.to_PLASMA(pla)
-        pla.update_plasma()
+        pla.update_plasma(mesh)
         # call reaction module
         rct.from_PLASMA(pla)
-        rct.calc_src(pla)
+        rct.calc_src(mesh)
         rct.to_PLASMA(pla)
-        pla.update_plasma()
+        pla.update_plasma(mesh)
         # call transport module
         txp.from_PLASMA(pla)
-        txp.calc_ambi(pla)
+        txp.calc_ambi(mesh)
         txp.solve_fluid(dt)
         txp.to_PLASMA(pla)
-        pla.update_plasma()
+        pla.update_plasma(mesh)
         
         
         ########## record and plot ##########
@@ -103,21 +108,22 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         ni_ave.append(deepcopy(pla.ni_ave))
         Te_ave.append(deepcopy(pla.Te_ave))
         time.append(dt*(itn+1))
-        if not (itn+1) % (oper.num_iter/5):
-            # plot 2D        
-            mesh.plot_var(var=[pla.ne, pla.ni], 
-                  var_name=['E Density', 'Ion Density'],
-                  fname=f'Density_itn{itn+1}')
-            mesh.plot_var(var=[pla.Te, pla.Ti], 
-                  var_name=['E Temperature', 'Ion Temperature'],
-                  fname=f'Te_itn{itn+1}')
-            mesh.plot_var(var=[pla.dfluxe, pla.Se], 
-                  var_name=['E Loss', 'E Prod'],
-                  fname=f'rct_itn{itn+1}')
-            mesh.plot_var(var=[pla.pwr_in, eergy.dQe], 
-                  var_name=['Power due to Ey', 'dQe'],
-                  fname=f'Power_itn{itn+1}')
-    
+        if oper.idiag:
+            if not (itn+1) % (oper.num_iter/oper.num_plot):
+                # plot 2D        
+                mesh.plot_var(var=[pla.ne, pla.ni], 
+                      var_name=['E Density', 'Ion Density'],
+                      fname=f'Density_itn{itn+1}')
+                mesh.plot_var(var=[pla.Te, pla.Ti], 
+                      var_name=['E Temperature', 'Ion Temperature'],
+                      fname=f'Te_itn{itn+1}')
+                mesh.plot_var(var=[pla.dfluxe, pla.Se], 
+                      var_name=['E Loss', 'E Prod'],
+                      fname=f'rct_itn{itn+1}')
+                mesh.plot_var(var=[pla.pwr_in, eergy.dQe], 
+                      var_name=['Power due to Ey', 'dQe'],
+                      fname=f'Power_itn{itn+1}')
+        
             # plot ave. values
             fig, axes = plt.subplots(1, 2, figsize=(8,4), dpi=300,
                                                   constrained_layout=True)

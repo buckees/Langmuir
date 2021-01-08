@@ -9,11 +9,7 @@ EERGY2D contains:
 """
 
 import numpy as np
-from copy import copy, deepcopy
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-colMap = copy(cm.get_cmap("jet"))
-colMap.set_under(color='white')
+from copy import deepcopy
 
 from packages.Constants import KB_EV
 
@@ -31,17 +27,19 @@ class EERGY2D(object):
     def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
         self.Te = deepcopy(PLA.Te)
+        self.ne = deepcopy(PLA.ne)
         # eon energy = 3/2 * ne * kTe
-        self.ergy_e = 1.5*KB_EV*np.multiply(PLA.ne, PLA.Te)
+        self.ergy_e = 1.5*KB_EV*np.multiply(self.ne, self.Te)
         self.fluxex = deepcopy(PLA.fluxex)
         self.fluxez = deepcopy(PLA.fluxez)
         self.dfluxe = deepcopy(PLA.dfluxe)
+        self.pwr_in = deepcopy(PLA.pwr_in)
         
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
         PLA.Te = deepcopy(self.Te)
     
-    def _calc_th_cond_coeff(self, PLA):
+    def _calc_th_cond_coeff(self, MESH):
         """
         Calc thermal conduction coefficient.
 
@@ -49,23 +47,23 @@ class EERGY2D(object):
         th_cond_e: W/m/K, (nz, nx) matrix, heat conductivity for eon
         """
         # calc thermal conductivity for eon
-        self.th_cond_e = np.ones_like(PLA.ne)*1e-3
-        self._set_nonPlasma(PLA)
+        self.th_cond_e = np.ones_like(self.Te)*1e-3
+        self._set_nonPlasma(MESH)
 
-    def _set_nonPlasma(self, PLA):
+    def _set_nonPlasma(self, MESH):
         """Impose fixed th_cond_coeff on the non-PLAsma materials."""
-        for idx, mat in np.ndenumerate(PLA.mesh.mat):
+        for idx, mat in np.ndenumerate(MESH.mat):
             if mat:
                 self.th_cond_e[idx] = 1e-3
                 self.Te[idx] = 0.1
     
-    def _calc_th_flux(self, PLA):
+    def _calc_th_flux(self, MESH):
         """
         Calc eon thermal flux, Qe.
         
         Qe = 5/2kTe * fluxe - ke * dTe/dx
         dQe = 5/2kTe * dfluxe - ke * d2Te/dx2
-        PLA: PLASMA2D obj/class
+        MESH: MESH2D obj/class
         """
         # calc convection term
         self.Qex = 2.5*KB_EV*np.multiply(self.Te, self.fluxex)
@@ -74,8 +72,8 @@ class EERGY2D(object):
         # self.dQe = PLA.mesh.cnt_diff((self.Qex, self.Qez), imode='Vector')
         # self.dQe = 2.5*KB_EV*np.multiply(self.Te, self.dfluxe)
         # calc conduction term
-        self.dTex, self.dTez = PLA.mesh.cnt_diff(self.Te)
-        self.d2Te = PLA.mesh.cnt_diff_2nd(self.Te)
+        self.dTex, self.dTez = MESH.cnt_diff(self.Te)
+        self.d2Te = MESH.cnt_diff_2nd(self.Te)
         self.Qex -= np.multiply(self.th_cond_e, self.dTex)
         self.Qez -= np.multiply(self.th_cond_e, self.dTez)
         self.dQe -= np.multiply(self.th_cond_e, self.d2Te)
@@ -84,7 +82,7 @@ class EERGY2D(object):
         """Limit Te in the PLAsma."""
         self.Te = np.clip(self.Te, T_min, T_max)
         
-    def solve_Te(self, PLA, dt):
+    def solve_Te(self, MESH, dt):
         """
         Solve for Te.
         
@@ -92,9 +90,9 @@ class EERGY2D(object):
         PLA: PLASMA2D object/class.
         TXP: TRANSP2D object/class.
         """
-        self._calc_th_cond_coeff(PLA)
-        self._calc_th_flux(PLA)
-        self.ergy_e += (-self.dQe + PLA.pwr_in)*dt
-        self.Te = np.divide(self.ergy_e, PLA.ne)/1.5/KB_EV
-        self._set_nonPlasma(PLA)
+        self._calc_th_cond_coeff(MESH)
+        self._calc_th_flux(MESH)
+        self.ergy_e += (-self.dQe + self.pwr_in)*dt
+        self.Te = np.divide(self.ergy_e, self.ne)/1.5/KB_EV
+        self._set_nonPlasma(MESH)
         self._limit_Te()

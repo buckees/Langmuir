@@ -2,7 +2,7 @@
 2D Plasma Module - Data Transfer/Communication Hub.
 
 PLASMA2D contains:
-    mesh
+    MESH
     all updated variables
     plot
     diagnostics
@@ -23,11 +23,7 @@ class PLASMA2D(object):
         """
         self.name = name
 
-    def import_mesh(self, mesh):
-        """Import mesh."""
-        self.mesh = mesh
-
-    def init_plasma(self, ne=1e17, press=10, 
+    def init_plasma(self, MESH, ne=1e17, press=10, 
                     Te=1, Ti=0.1, Mi=40, freq=13.56e6):
         """
         Initiate plasma attributes.
@@ -54,8 +50,8 @@ class PLASMA2D(object):
         self._Mi = Mi*AMU # ion mass in kg
         self._wrf = 2.0*PI*freq # rf frequency in angular frequency,  rad/s
         # public attributes
-        x = self.mesh.x
-        self.ne = np.ones_like(x)*ne  # init uniform ne on 1d mesh
+        x = MESH.x
+        self.ne = np.ones_like(x)*ne  # init uniform ne on 1d MESH
         self.ni = np.ones_like(x)*ne  # init ni to neutralize ne
         self.nn = np.ones_like(x)*(press*3.3e19)  # init neutral density
         self.Te = np.ones_like(x)*Te  # init eon temperature
@@ -74,23 +70,23 @@ class PLASMA2D(object):
         self.fluxix, self.fluxiz = np.zeros_like(x), np.zeros_like(x)
         self.dfluxe, self.dfluxi = np.zeros_like(x), np.zeros_like(x)
         # modify init
-        self.update_plasma()
+        self.update_plasma(MESH)
         
-    def update_plasma(self):
+    def update_plasma(self, MESH):
         """
         Make sure the all attr in PLASMA2D are updated.
         
         aaa
         """
-        self._set_nonPlasma()
+        self._set_nonPlasma(MESH)
         self._limit_plasma()
         self._calc_conde()
         self._calc_pwr_in()
-        self._calc_ave()
+        self._calc_ave(MESH)
         
-    def _set_nonPlasma(self):
+    def _set_nonPlasma(self, MESH):
         """Impose fixed values on the non-plasma materials."""
-        for idx, mat in np.ndenumerate(self.mesh.mat):
+        for idx, mat in np.ndenumerate(MESH.mat):
             if mat:
                 self.ne[idx], self.ni[idx], self.nn[idx] = 1e11, 1e11, 1e11
                 self.Te[idx], self.Ti[idx] = 0.1, 0.01
@@ -118,17 +114,17 @@ class PLASMA2D(object):
         EF2 = np.abs(self.Ex)**2 + np.abs(self.Ez)**2 + np.abs(self.Ey)**2
         self.pwr_in = np.multiply(np.real(self.conde), EF2)
     
-    def _calc_ave(self):
+    def _calc_ave(self, MESH):
         """Calc averaged variables."""
-        sum_isPlasma = self.mesh.isPlasma.sum()
-        self.ne_ave = (self.ne*self.mesh.isPlasma).sum()/sum_isPlasma
-        self.ni_ave = (self.ni*self.mesh.isPlasma).sum()/sum_isPlasma
-        self.Te_ave = (self.Te*self.mesh.isPlasma).sum()/sum_isPlasma
-        self.Ti_ave = (self.Ti*self.mesh.isPlasma).sum()/sum_isPlasma
+        sum_isPlasma = MESH.isPlasma.sum()
+        self.ne_ave = (self.ne*MESH.isPlasma).sum()/sum_isPlasma
+        self.ni_ave = (self.ni*MESH.isPlasma).sum()/sum_isPlasma
+        self.Te_ave = (self.Te*MESH.isPlasma).sum()/sum_isPlasma
+        self.Ti_ave = (self.Ti*MESH.isPlasma).sum()/sum_isPlasma
     
-    def get_eps(self):
+    def get_eps(self, MESH):
         """Get epsilon from materials."""
         self.eps = np.ones_like(self.ne)
-        for idx, mat in np.ndenumerate(self.mesh.mat):
+        for idx, mat in np.ndenumerate(MESH.mat):
             if mat == 2:
                 self.eps[idx] = 3.8

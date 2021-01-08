@@ -22,8 +22,7 @@ class FIELD2D(object):
     
     def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
-        self.x = deepcopy(PLA.mesh.x)
-        self.z = deepcopy(PLA.mesh.z)
+        pass
         
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -36,7 +35,11 @@ class FIELD2D(object):
         Ey = np.flip(Ey, 0)
         self.Ey = Ey
     
-    def create_Ey(self):
-        """Create Ey for play."""
-        self.Ey = self.z/self.z.sum()*1.0e4
+    def create_Ey(self, MESH):
+        """
+        Create Ey for play.
+        
+        MESH: obj MESH2D()
+        """
+        self.Ey = MESH.z/MESH.z.sum()*1.0e4
         
