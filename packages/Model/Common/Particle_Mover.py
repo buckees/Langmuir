@@ -8,7 +8,7 @@ import numpy as np
 
 from packages.Constants import (AMU, UNIT_CHARGE)
 
-def EULER_MOVE(ptcl, field, dt):
+def EULER_MOVE(ptcl, field, t, dt):
     """
     Solve the Newton's equatoin of motion by Euler method.
     
@@ -18,14 +18,15 @@ def EULER_MOVE(ptcl, field, dt):
     vel: arr(3) of float, velocity in (x, z, y)
     ptcl: PARTICLE() or MULTI_PARTICLE() obj
     field: FIELD() obj
+    t: unused
     dt: float, unit in s, timestep
     """
     Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
     posn = ptcl.posn + ptcl.vel*dt
-    vel = ptcl.vel + field.E*Coulomb_const*dt
+    vel = ptcl.vel + field.calc_E(t)*Coulomb_const*dt
     return posn, vel
 
-def S_EULER(ptcl, field, dt):
+def S_EULER(ptcl, field, t, dt):
     """
     Semi-explicit Euler: 1st order symplectic integrator.
     
@@ -35,10 +36,11 @@ def S_EULER(ptcl, field, dt):
     vel: arr(3) of float, velocity in (x, z, y)
     ptcl: PARTICLE() or MULTI_PARTICLE() obj
     field: FIELD() obj
+    t: unused
     dt: float, unit in s, timestep
     """
     Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
-    vel = ptcl.vel + field.E*Coulomb_const*dt
+    vel = ptcl.vel + field.calc_E(t)*Coulomb_const*dt
     posn = ptcl.posn + ptcl.vel*dt
     return posn, vel
 
@@ -56,9 +58,9 @@ def LEAPFROG(ptcl, field, t, dt):
     dt: float, unit in s, timestep
     """
     Coulomb_const = (ptcl.charge*UNIT_CHARGE)/(ptcl.mass*AMU)
-    Acur = field.E*Coulomb_const
+    Acur = field.calc_E(t)*Coulomb_const
     # CWong's note: Efunc interface would be better if only need to poass time variable
-    Anew = field.Efunc(t + dt) * Coulomb_const
+    Anew = field.calc_E(t + dt) * Coulomb_const
     posn = ptcl.posn + ptcl.vel*dt + 0.5*Acur*dt*dt
     vel = ptcl.vel + 0.5*(Acur + Anew)*dt
     return posn, vel
