@@ -4,9 +4,10 @@ import numpy as np
 from math import sin
 
 from packages.Model.Common.Particle import PARTICLE
-from packages.Model.Common.Field import FIELD
 from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
+from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
+from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
 from packages.Constants import PI
 
 # init operation parameters
@@ -24,14 +25,8 @@ oper.freq = 1
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 
-# init field
-def Efunc(Vdc, Vrf, dsh, freq, phi0, t):
-    """Calc sheath E-field."""
-    E = np.zeros(3)
-    E[1] = -Vdc/dsh - Vrf/dsh*sin(2*PI*freq*t + phi0)
-    return E
+field = FIELD_SHEATH('Sheath')
+field.add_para(d_sh=oper.d_sh, Vdc=oper.Vdc, Vrf=oper.Vrf, 
+               freq=oper.freq, phi=0.0)
 
-field = FIELD('Sheath')
-field.add_Efunc(Efunc)
-
-MAIN(oper, ptcl, field)
+MAIN(oper, ptcl, field, move=EULER_MOVE)
