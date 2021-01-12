@@ -30,6 +30,9 @@ class FIELD_SHEATH(FIELD):
         self.freq = freq
         self.phi = phi
     
+    def update_phi(self, phi):
+        self.phi = phi
+    
     def calc_E(self, t):
         """
         Add field func parameters.
