@@ -28,7 +28,7 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
         t = 0
         step = 0
         phi0 = np.random.uniform(0.0, 2*PI)
-        field.add_para(phi=phi0)
+        field.update_phi(phi=phi0)
         
         ###############################################
         ########## main loop for pctl launch ##########
