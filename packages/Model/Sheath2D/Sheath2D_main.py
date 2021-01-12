@@ -3,16 +3,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from packages.Model.Common.Particle_Mover import EULER_MOVE
 from packages.Constants import PI
 
-def MAIN(oper, ptcl, field, coll=None):
+def MAIN(oper, ptcl, field, coll=None, move=None):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
     ptcl: PARTICLE(obj), contains all particle information.
     field: FIELD(obj), contains all field information.
     coll: COLLISION(obj), contains all collision information.
+    move: Func, selected from Particle_Mover
     """
 
     erg = list()
@@ -28,6 +28,7 @@ def MAIN(oper, ptcl, field, coll=None):
         t = 0
         step = 0
         phi0 = np.random.uniform(0.0, 2*PI)
+        field.add_para(phi=phi0)
         
         ###############################################
         ########## main loop for pctl launch ##########
@@ -39,9 +40,8 @@ def MAIN(oper, ptcl, field, coll=None):
                 if dt1 < dt:
                     dt = dt1*1.001
             # move
-            field.update_E(field.Efunc(oper.Vdc, oper.Vrf, oper.d_sh, 
-                                       oper.freq, phi0, t))
-            posn_next, vel_next = EULER_MOVE(ptcl, field, dt)
+            field.update_E(field.calc_E(t))
+            posn_next, vel_next = move(ptcl, field, t, dt)
             ptcl.update_posn(posn_next)
             ptcl.update_vel(vel_next)
             t += dt
