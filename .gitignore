@@ -4,3 +4,4 @@
 .spyproject\*.ini
 *.png
 *.lyx~
+*.npy
