@@ -31,6 +31,7 @@ class FIELD_SHEATH(FIELD):
         self.phi = phi
     
     def update_phi(self, phi):
+        """Update phi."""
         self.phi = phi
     
     def calc_E(self, t):
@@ -38,9 +39,27 @@ class FIELD_SHEATH(FIELD):
         Add field func parameters.
         
         t: float, unit in s, time
-        
         """
         E = np.zeros(3)
         E[1] = -self.Vdc/self.d_sh
         E[1] -= self.Vrf/self.d_sh*sin(2*PI*self.freq*t + self.phi)
+        return E
+    
+    def read_E(self, fname):
+        """
+        Read in E-field file.
+        
+        fname: str, filename for E-field.
+        """
+        self.E_input = np.genfromtxt(fname, delimiter=',')
+    
+    def interp_E(self, t):
+        """
+        Interpolate E-field according to E_input.
+        
+        t: float, unit in s, time
+        """
+        E = np.zeros(3)
+        period = self.E_input[0].max() - self.E_input[0].min()
+        E[1] = np.interp(t, self.E_input[0], self.E_input[1], period=period)
         return E
