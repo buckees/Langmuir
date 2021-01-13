@@ -7,6 +7,7 @@ FIELD2D contains:
 """
 
 import numpy as np
+from math import sqrt
 from copy import deepcopy
 
 class FIELD2D(object):
@@ -22,7 +23,7 @@ class FIELD2D(object):
     
     def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
-        pass
+        self.pwr_in_tot = deepcopy(PLA.pwr_in_tot)
         
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -50,4 +51,10 @@ class FIELD2D(object):
         Efunc: function of space.
         """
         self.Ey = Efunc(MESH.x, MESH.z)
+    
+    def adjust_E(self, power):
+        """Adjust E-field to target desired input power."""
+        fac = power/self.pwr_in_tot
+        fac = min(1.1, fac)
+        self.Ey = sqrt(fac)*self.Ey
         
