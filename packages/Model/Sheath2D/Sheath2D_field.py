@@ -7,32 +7,19 @@ Field.py serves as a data center/hub,
 """
 
 import numpy as np
-from math import sin
 
 from packages.Model.Common.Field import FIELD
-from packages.Constants import PI
         
 class FIELD_SHEATH(FIELD):
     """Create FIELD_SHEATH() object just for sheath model."""
-    
-    def add_para(self, d_sh, Vdc, Vrf, freq, phi):
+
+    def add_Efunc(self, Efunc):
         """
-        Add field func parameters.
+        Add Efunc.
         
-        d_sh: float, unit in m, sheath thickness
-        Vdc, Vrf: float, unit in V, voltage of DC and RF component
-        freq: float, unit in Hz, freq of the sheath voltage
-        phi: float, unit in rad, phase
+        Efunc: function, f(t) is function of time.
         """
-        self.d_sh = d_sh
-        self.Vdc = Vdc
-        self.Vrf = Vrf
-        self.freq = freq
-        self.phi = phi
-    
-    def update_phi(self, phi):
-        """Update phi."""
-        self.phi = phi
+        self.Efunc = Efunc
     
     def calc_E(self, t):
         """
@@ -41,8 +28,7 @@ class FIELD_SHEATH(FIELD):
         t: float, unit in s, time
         """
         E = np.zeros(3)
-        E[1] = -self.Vdc/self.d_sh
-        E[1] -= self.Vrf/self.d_sh*sin(2*PI*self.freq*t + self.phi)
+        E[1] = self.Efunc(t)
         return E
     
     def read_E(self, fname):
