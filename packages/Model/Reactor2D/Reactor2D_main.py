@@ -18,13 +18,13 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
 
     ########## init and plot plasma ##########
     pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te)
-        
-    mesh.plot_var(var=[pla.ne, pla.ni], 
-                  var_name=['E Density', 'Ion Density'],
-                  fname='Init_Density.png')
-    mesh.plot_var(var=[pla.Te, pla.Ti], 
-                  var_name=['E Temperature', 'Ion Temperature'],
-                  fname='Init_Temperature.png')
+    if oper.idiag:        
+        mesh.plot_var(var=[pla.ne, pla.ni], 
+                      var_name=['E Density', 'Ion Density'],
+                      fname='Init_Density.png')
+        mesh.plot_var(var=[pla.Te, pla.Ti], 
+                      var_name=['E Temperature', 'Ion Temperature'],
+                      fname='Init_Temperature.png')
     ##########################################
 
     dt = oper.dt
@@ -38,21 +38,19 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
 
     txp.to_PLASMA(pla)
     pla.update_plasma(mesh)
-    
-    mesh.plot_var(var=[pla.ne, pla.ni], 
-                  var_name=['E Density', 'Ion Density'],
-                  fname='Prerun_Density.png')
+    if oper.idiag:    
+        mesh.plot_var(var=[pla.ne, pla.ni], 
+                      var_name=['E Density', 'Ion Density'],
+                      fname='Prerun_Density.png')
     
     ####################################
             
     ########## init and plot field ##########
-    field.from_PLASMA(pla)
-    field.create_Ey(mesh)
     field.to_PLASMA(pla)
     
     mesh.plot_var(var=[pla.Ey, pla.Ex], 
           var_name=['Ey', 'Ex'],
-          fname='E-Field')
+          fname='init_EField')
     #########################################
     
     ########## pre-run eon energy ##########
@@ -62,17 +60,18 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         
     eergy.to_PLASMA(pla)
     pla.update_plasma(mesh)
-    
-    mesh.plot_var(var=[pla.Te, pla.Ti], 
-                  var_name=['E Temperature', 'Ion Temperature'],
-                  fname='Prerun_Temperature.png')
+    if oper.idiag:    
+        mesh.plot_var(var=[pla.Te, pla.Ti], 
+                      var_name=['E Temperature', 'Ion Temperature'],
+                      fname='Prerun_Temperature.png')
     ########################################
     
 
     ##########################################
     ########## main loop for plasma ##########
     ##########################################
-    ne_ave, ni_ave, Te_ave = [], [], []  
+    ne_ave, ni_ave, Te_ave = [], [], []
+    pwr_in_tot = []
     time = []
    
     for itn in range(oper.num_iter):
@@ -81,10 +80,11 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         if (itn + 1) % int(oper.num_iter/oper.num_plot) == 0:
             print('%d iterations have completed!' % (itn+1))
         ####################################
-        
         # call field module
-        # field.solve_E(pla)
-        # call eon energy module
+        field.from_PLASMA(pla)
+        field.adjust_E(oper.input_pwr)
+        field.to_PLASMA(pla)
+        # call electron energy module
         eergy.from_PLASMA(pla)
         for itn_Te in range(oper.num_iter_Te):    
             eergy.solve_Te(mesh, dt/oper.num_iter_Te)
@@ -107,6 +107,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         ne_ave.append(deepcopy(pla.ne_ave))
         ni_ave.append(deepcopy(pla.ni_ave))
         Te_ave.append(deepcopy(pla.Te_ave))
+        pwr_in_tot.append(deepcopy(pla.pwr_in_tot))
         time.append(dt*(itn+1))
         if oper.idiag:
             if not (itn+1) % (oper.num_iter/oper.num_plot):
@@ -125,7 +126,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
                       fname=f'Power_itn{itn+1}')
         
             # plot ave. values
-            fig, axes = plt.subplots(1, 2, figsize=(8,4), dpi=300,
+            fig, axes = plt.subplots(1, 3, figsize=(12,4), dpi=300,
                                                   constrained_layout=True)
             ax = axes[0]
             ax.plot(time, ne_ave, 'b-')
@@ -140,6 +141,13 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
             ax.set_title('Eon Temperature (eV)')
             plt.xlabel('Time (s)')
             plt.ylabel('Ave. Eon Temperature (eV)')
+            
+            ax = axes[2]
+            ax.plot(time, pwr_in_tot, 'k-')
+            ax.legend(['Total Power'])
+            ax.set_title('Total Power (W)')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Total Input Power (W)')
             
             fig.savefig('Ave_vs_Time.png', dpi=300)
             plt.close()
