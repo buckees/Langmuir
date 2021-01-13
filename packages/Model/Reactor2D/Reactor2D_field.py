@@ -43,3 +43,11 @@ class FIELD2D(object):
         """
         self.Ey = MESH.z/MESH.z.sum()*1.0e4
         
+    def add_Efunc(self, Efunc, MESH):
+        """
+        Add Efunc for play.
+        
+        Efunc: function of space.
+        """
+        self.Ey = Efunc(MESH.x, MESH.z)
+        
