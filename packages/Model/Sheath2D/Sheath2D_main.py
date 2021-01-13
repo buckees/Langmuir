@@ -5,6 +5,18 @@ import matplotlib.pyplot as plt
 
 from packages.Constants import PI
 
+def plot_erg(erg):
+    """Plot energy distribution."""
+    fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
+                           constrained_layout=True)
+    ax.hist(erg, bins=50, density=True)
+    ax.set_title('Ion Energy Distribution')
+    ax.set_xlabel('Energy (eV)')
+    ax.set_ylabel('Count')
+    fig.savefig('erg_distrb.png', dpi=600)
+    plt.close()
+
+
 def MAIN(oper, ptcl, field, coll=None, move=None):
     """
     MAIN() actually runs the feature model.
@@ -15,7 +27,7 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
     move: Func, selected from Particle_Mover
     """
 
-    erg = list()
+    erg, ang = list(), list()
     for i in range(oper.num_ptcl):
         
         ########## init ptcl ##########
@@ -25,10 +37,9 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
         ################################
         
         dt = oper.dt
-        t = 0
         step = 0
         phi0 = np.random.uniform(0.0, 2*PI)
-        field.update_phi(phi=phi0)
+        t = phi0/(2*PI*oper.freq)
         
         ###############################################
         ########## main loop for pctl launch ##########
@@ -56,13 +67,7 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
     print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(erg)} particles are collected by the wafer.')
     
+    if oper.iplot:
+        plot_erg(erg)
     
-    fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
-                           constrained_layout=True)
-    ax.hist(erg, 2*int(oper.Vrf), density=True)
-    ax.set_xlim(40, 160)
-    ax.set_title('Ion Energy Distribution')
-    ax.set_xlabel('Energy (eV)')
-    ax.set_ylabel('Count')
-    fig.savefig(f'Vdc{oper.Vdc}_Vrf{oper.Vrf}.png', dpi=600)
-    plt.close()
+    return erg, ang
