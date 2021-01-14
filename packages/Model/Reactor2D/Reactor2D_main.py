@@ -17,7 +17,12 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     """
 
     ########## init and plot plasma ##########
-    pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te)
+    if oper.irestart:
+        pla.loadz(oper.frestart)
+        pla.update_plasma(mesh)
+    else:
+        pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te)
+        
     if oper.idiag:        
         mesh.plot_var(var=[pla.ne, pla.ni], 
                       var_name=['E Density', 'Ion Density'],
@@ -152,4 +157,5 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
                 
                 fig.savefig('Ave_vs_Time.png', dpi=300)
                 plt.close()
-        
+    
+    print('MAIN program has completed!')
