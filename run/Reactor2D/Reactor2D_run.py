@@ -23,13 +23,13 @@ from packages.Model.Reactor2D.Reactor2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_iter = 10000
-oper.num_plot = 10
+oper.num_iter = 5000
+oper.num_plot = 5
 oper.dt = 1e-6
-oper.ne = 1e18
-oper.num_iter_Te = 30
+oper.ne = 2e18
+oper.num_iter_Te = 10
 oper.Te = 2.0
-oper.input_pwr = 10.0
+oper.input_pwr = 5.0
 oper.idiag = True
 
 # init mesh obj
@@ -59,7 +59,7 @@ def Ey_func(x, z):
     Ey: 2d matrix as x and z, E-field in y direction.
     """
     Ey_const = 7e-1
-    decay_const = 0.1
+    decay_const = 0.2
     x1, z1 = -0.12, 0.25
     x2, z2 =  0.12, 0.25
     dist1 = np.sqrt((x - x1)**2 + (z - z1)**2)
@@ -70,9 +70,9 @@ def Ey_func(x, z):
 
 field.add_Efunc(Ey_func, mesh)
 
-mesh.plot_var(var=[field.Ey, field.Ey], 
-                  var_name=['Ey', 'Ey'],
-                  fname='init_Ey.png')
+# mesh.plot_var(var=[field.Ey, field.Ey], 
+#                   var_name=['Ey', 'Ey'],
+#                   fname='init_Ey.png')
 
 # init reaction module
 rct = REACT2D('React')
