@@ -65,6 +65,7 @@ class PLASMA2D(object):
         ne = self.ne
         self.Se, self.Si = np.zeros_like(ne), np.zeros_like(ne)
         self.Ex, self.Ez = np.zeros_like(ne), np.zeros_like(ne)
+        self.Ey = np.zeros_like(ne)
         self.fluxex, self.fluxez = np.zeros_like(ne), np.zeros_like(ne)
         self.fluxix, self.fluxiz = np.zeros_like(ne), np.zeros_like(ne)
         self.dfluxe, self.dfluxi = np.zeros_like(ne), np.zeros_like(ne)
@@ -77,9 +78,9 @@ class PLASMA2D(object):
         """
         self._set_nonPlasma(MESH)
         self._limit_plasma()
+        self._calc_coll()
         self._calc_conde()
         self._calc_pwr_in()
-        self._calc_coll()
         self._calc_txp_coeff()
         self._calc_ave(MESH)
         
