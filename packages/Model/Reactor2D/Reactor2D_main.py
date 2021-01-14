@@ -35,18 +35,19 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     dt = oper.dt
     
     ########## pre-run tranport ##########
-    txp.from_PLASMA(pla)
+    if not oper.irestart:
+        txp.from_PLASMA(pla)
+        
+        for itn in range(500):
+            txp.calc_ambi(mesh)
+            txp.solve_fluid(dt)
     
-    for itn in range(500):
-        txp.calc_ambi(mesh)
-        txp.solve_fluid(dt)
-
-    txp.to_PLASMA(pla)
-    pla.update_plasma(mesh)
-    if oper.idiag:    
-        mesh.plot_var(var=[pla.ne, pla.ni], 
-                      var_name=['E Density', 'Ion Density'],
-                      fname='Prerun_Density.png')
+        txp.to_PLASMA(pla)
+        pla.update_plasma(mesh)
+        if oper.idiag:    
+            mesh.plot_var(var=[pla.ne, pla.ni], 
+                          var_name=['E Density', 'Ion Density'],
+                          fname='Prerun_Density.png')
     
     ####################################
             
@@ -59,16 +60,17 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     #########################################
     
     ########## pre-run eon energy ##########
-    eergy.from_PLASMA(pla)
-    for itn in range(100):
-        eergy.solve_Te(mesh, dt)
-        
-    eergy.to_PLASMA(pla)
-    pla.update_plasma(mesh)
-    if oper.idiag:    
-        mesh.plot_var(var=[pla.Te, pla.Ti], 
-                      var_name=['E Temperature', 'Ion Temperature'],
-                      fname='Prerun_Temperature.png')
+    if not oper.irestart:
+        eergy.from_PLASMA(pla)
+        for itn in range(100):
+            eergy.solve_Te(mesh, dt)
+            
+        eergy.to_PLASMA(pla)
+        pla.update_plasma(mesh)
+        if oper.idiag:    
+            mesh.plot_var(var=[pla.Te, pla.Ti], 
+                          var_name=['E Temperature', 'Ion Temperature'],
+                          fname='Prerun_Temperature.png')
     ########################################
     
 
