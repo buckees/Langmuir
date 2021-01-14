@@ -138,6 +138,8 @@ class PLASMA2D(object):
         self.ni_ave = (self.ni*MESH.isPlasma).sum()/sum_isPlasma
         self.Te_ave = (self.Te*MESH.isPlasma).sum()/sum_isPlasma
         self.Ti_ave = (self.Ti*MESH.isPlasma).sum()/sum_isPlasma
+        self.pwr_in_ave = (self.pwr_in*MESH.isPlasma).sum()/sum_isPlasma
+        self.pwr_in_tot = self.pwr_in_ave * MESH.area
     
     def get_eps(self, MESH):
         """Get epsilon from materials."""
