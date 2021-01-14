@@ -68,9 +68,9 @@ class EERGY2D(object):
         # calc convection term
         self.Qex = 2.5*KB_EV*np.multiply(self.Te, self.fluxex)
         self.Qez = 2.5*KB_EV*np.multiply(self.Te, self.fluxez)
-        self.dQe = 0.0
-        # self.dQe = PLA.mesh.cnt_diff((self.Qex, self.Qez), imode='Vector')
-        # self.dQe = 2.5*KB_EV*np.multiply(self.Te, self.dfluxe)
+        # self.dQe = 0.0
+        # self.dQe = MESH.cnt_diff((self.Qex, self.Qez), imode='Vector')
+        self.dQe = 2.5*KB_EV*np.multiply(self.Te, self.dfluxe)
         # calc conduction term
         self.dTex, self.dTez = MESH.cnt_diff(self.Te)
         self.d2Te = MESH.cnt_diff_2nd(self.Te)
