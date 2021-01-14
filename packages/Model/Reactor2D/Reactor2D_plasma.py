@@ -56,8 +56,6 @@ class PLASMA2D(object):
         self.Te = np.ones_like(x)*Te  # init eon temperature
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
         self.Tn = np.ones_like(x)*Tn  # init neut temperature
-        self.Se = np.zeros_like(x)
-        self.Si = np.zeros_like(x)
         self.pot = np.zeros_like(x)  # initial uniform potential
         self.Ex = np.zeros_like(x)  # initial uniform E-field
         self.Ez = np.zeros_like(x)  # initial uniform E-field
