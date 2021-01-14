@@ -35,7 +35,13 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     dt = oper.dt
     
     ########## pre-run tranport ##########
-    if not oper.irestart:
+    if oper.irestart:
+        txp.from_PLASMA(pla)
+        txp.calc_ambi(mesh)
+        txp.solve_fluid(dt)
+        txp.to_PLASMA(pla)
+        pla.update_plasma(mesh)
+    else:
         txp.from_PLASMA(pla)
         
         for itn in range(500):
@@ -52,15 +58,25 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     ####################################
             
     ########## init and plot field ##########
-    field.to_PLASMA(pla)
-    
-    mesh.plot_var(var=[pla.Ey, pla.Ex], 
-          var_name=['Ey', 'Ex'],
-          fname='init_EField')
+    if oper.irestart:
+        field.from_PLASMA(pla)
+        field.adjust_E(oper.input_pwr)
+        field.to_PLASMA(pla)
+    else:
+        field.to_PLASMA(pla)
+        if oper.idiag:
+            mesh.plot_var(var=[pla.Ey, pla.Ex], 
+                          var_name=['Ey', 'Ex'],
+                          fname='init_EField')
     #########################################
     
     ########## pre-run eon energy ##########
-    if not oper.irestart:
+    if oper.irestart:
+        eergy.from_PLASMA(pla)
+        eergy.solve_Te(mesh, dt)
+        eergy.to_PLASMA(pla)
+        pla.update_plasma(mesh)
+    else:
         eergy.from_PLASMA(pla)
         for itn in range(100):
             eergy.solve_Te(mesh, dt)
