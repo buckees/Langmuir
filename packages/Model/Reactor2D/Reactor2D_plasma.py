@@ -48,7 +48,7 @@ class PLASMA2D(object):
         self._Me = EON_MASS # eon mass in kg
         self._Mi = Mi*AMU # ion mass in kg
         self._wrf = 2.0*PI*freq # rf frequency in angular frequency,  rad/s
-        # public attributes
+        # essential attributes for restart
         x = MESH.x
         self.ne = np.ones_like(x)*ne  # init uniform ne on 1d MESH
         self.ni = np.ones_like(x)*ne  # init ni to neutralize ne
@@ -57,16 +57,17 @@ class PLASMA2D(object):
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
         self.Tn = np.ones_like(x)*Tn  # init neut temperature
         self.pot = np.zeros_like(x)  # initial uniform potential
-        self.Ex = np.zeros_like(x)  # initial uniform E-field
-        self.Ez = np.zeros_like(x)  # initial uniform E-field
-        self.Ey = np.zeros_like(x)  # initial uniform E-field
-        self.conde = np.zeros_like(x)
-        self.pwr_in = np.zeros_like(x)
+        self._init_nonessential(MESH)
+        # modify init
+        self.update_plasma(MESH)
+    
+    def _init_nonessential(self, MESH):
+        x = MESH.x
+        self.Se, self.Si = np.zeros_like(x), np.zeros_like(x)
+        self.Ex, self.Ez = np.zeros_like(x), np.zeros_like(x)
         self.fluxex, self.fluxez = np.zeros_like(x), np.zeros_like(x)
         self.fluxix, self.fluxiz = np.zeros_like(x), np.zeros_like(x)
         self.dfluxe, self.dfluxi = np.zeros_like(x), np.zeros_like(x)
-        # modify init
-        self.update_plasma(MESH)
         
     def update_plasma(self, MESH):
         """
@@ -78,8 +79,8 @@ class PLASMA2D(object):
         self._limit_plasma()
         self._calc_conde()
         self._calc_pwr_in()
-        self._calc_txp_coeff()
         self._calc_coll()
+        self._calc_txp_coeff()
         self._calc_ave(MESH)
         
     def _set_nonPlasma(self, MESH):
@@ -151,10 +152,11 @@ class PLASMA2D(object):
             if mat == 2:
                 self.eps[idx] = 3.8
                 
-    def savez(self):
+    def savez(self, fname):
         """Save attributes to a bin file."""
-        np.savez(self.name, 
+        np.savez(fname, 
                  self._press, self._Me, self._Mi, self._wrf,
                  self.ne, self.ni, self.nn,
                  self.Te, self.Ti, self.Tn,
-                 )
+                 self.pot)
+    
