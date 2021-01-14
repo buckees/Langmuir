@@ -118,37 +118,37 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
                 mesh.plot_var(var=[pla.Te, pla.Ti], 
                       var_name=['E Temperature', 'Ion Temperature'],
                       fname=f'Te_itn{itn+1}')
-                mesh.plot_var(var=[pla.dfluxe, pla.Se], 
-                      var_name=['E Loss', 'E Prod'],
+                mesh.plot_var(var=[pla.Se, pla.dfluxe], 
+                      var_name=['E Prod', 'E Loss'],
                       fname=f'rct_itn{itn+1}')
                 mesh.plot_var(var=[pla.pwr_in, eergy.dQe], 
                       var_name=['Power due to Ey', 'dQe'],
                       fname=f'Power_itn{itn+1}')
         
-            # plot ave. values
-            fig, axes = plt.subplots(1, 3, figsize=(12,4), dpi=300,
-                                                  constrained_layout=True)
-            ax = axes[0]
-            ax.plot(time, ne_ave, 'b-')
-            ax.legend(['ne'])
-            ax.set_title('Eon Density (m^-3)')
-            plt.xlabel('Time (s)')
-            plt.ylabel('Ave. Density (m^-3)')
-            
-            ax = axes[1]
-            ax.plot(time, Te_ave, 'r-')
-            ax.legend(['Te'])
-            ax.set_title('Eon Temperature (eV)')
-            plt.xlabel('Time (s)')
-            plt.ylabel('Ave. Eon Temperature (eV)')
-            
-            ax = axes[2]
-            ax.plot(time, pwr_in_tot, 'k-')
-            ax.legend(['Total Power'])
-            ax.set_title('Total Power (W)')
-            plt.xlabel('Time (s)')
-            plt.ylabel('Total Input Power (W)')
-            
-            fig.savefig('Ave_vs_Time.png', dpi=300)
-            plt.close()
+                # plot ave. values
+                fig, axes = plt.subplots(1, 3, figsize=(12,4), dpi=300,
+                                                      constrained_layout=True)
+                ax = axes[0]
+                ax.plot(time, ne_ave, 'b-')
+                ax.legend(['ne'])
+                ax.set_title('Eon Density (m^-3)')
+                plt.xlabel('Time (s)')
+                plt.ylabel('Ave. Density (m^-3)')
+                
+                ax = axes[1]
+                ax.plot(time, Te_ave, 'r-')
+                ax.legend(['Te'])
+                ax.set_title('Eon Temperature (eV)')
+                plt.xlabel('Time (s)')
+                plt.ylabel('Ave. Eon Temperature (eV)')
+                
+                ax = axes[2]
+                ax.plot(time, pwr_in_tot, 'k-')
+                ax.legend(['Total Power'])
+                ax.set_title('Total Power (W)')
+                plt.xlabel('Time (s)')
+                plt.ylabel('Total Input Power (W)')
+                
+                fig.savefig('Ave_vs_Time.png', dpi=300)
+                plt.close()
         
