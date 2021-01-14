@@ -111,7 +111,8 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         time.append(dt*(itn+1))
         if oper.idiag:
             if not (itn+1) % (oper.num_iter/oper.num_plot):
-                # plot 2D        
+                # plot 2D
+                pla.savez(f'Plasma_itn{itn+1}')
                 mesh.plot_var(var=[pla.ne, pla.ni], 
                       var_name=['E Density', 'Ion Density'],
                       fname=f'Density_itn{itn+1}')
