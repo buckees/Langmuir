@@ -54,7 +54,10 @@ class FIELD2D(object):
     
     def adjust_E(self, power):
         """Adjust E-field to target desired input power."""
-        fac = power/self.pwr_in_tot
+        if self.pwr_in_tot:
+            fac = power/self.pwr_in_tot
+        else:
+            fac = 1.0
         fac = min(1.1, fac)
         self.Ey = sqrt(fac)*self.Ey
         
