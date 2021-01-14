@@ -21,7 +21,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         pla.loadz(oper.frestart)
         pla.update_plasma(mesh)
     else:
-        pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te)
+        pla.init_plasma(MESH=mesh, ne=oper.ne, Te=oper.Te, press=oper.press)
         
     if oper.idiag:        
         mesh.plot_var(var=[pla.ne, pla.ni], 
