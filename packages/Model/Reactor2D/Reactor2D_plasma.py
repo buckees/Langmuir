@@ -24,7 +24,7 @@ class PLASMA2D(object):
         self.name = name
 
     def init_plasma(self, MESH, ne=1e17, press=10, 
-                    Te=1, Ti=0.1, Mi=40, freq=13.56e6):
+                    Te=1, Ti=0.1, Tn=0.025, Mi=40, freq=13.56e6):
         """
         Initiate plasma attributes.
 
@@ -36,8 +36,7 @@ class PLASMA2D(object):
             At 1 atm, number density = 0.025e27 m^-3.
             At 1 Torr, number density = 3.3e22 m^-3.
             At 1 mTorr, number density = 3.3e19 m^-3.
-        Te: eV, eon temperature
-        Ti: eV, ion temperature
+        Te, Ti, Tn: eV, eon, ion, neut temperature
         coll_e,im: 1/s, coll freq (momentum)
                 coll_e,im = 1e7 at 10 mTorr
                             1e8 at 100 mTorr
@@ -56,10 +55,9 @@ class PLASMA2D(object):
         self.nn = np.ones_like(x)*(press*3.3e19)  # init neutral density
         self.Te = np.ones_like(x)*Te  # init eon temperature
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
+        self.Tn = np.ones_like(x)*Tn  # init neut temperature
         self.Se = np.zeros_like(x)
         self.Si = np.zeros_like(x)
-        self.coll_em = np.ones_like(x)*(press/10.0*1e7)  # eon coll freq (mom)
-        self.coll_im = np.ones_like(x)*(press/10.0*1e7)  # ion coll freq (mom)
         self.pot = np.zeros_like(x)  # initial uniform potential
         self.Ex = np.zeros_like(x)  # initial uniform E-field
         self.Ez = np.zeros_like(x)  # initial uniform E-field
@@ -83,6 +81,7 @@ class PLASMA2D(object):
         self._calc_conde()
         self._calc_pwr_in()
         self._calc_txp_coeff()
+        self._calc_coll()
         self._calc_ave(MESH)
         
     def _set_nonPlasma(self, MESH):
@@ -141,9 +140,23 @@ class PLASMA2D(object):
         self.pwr_in_ave = (self.pwr_in*MESH.isPlasma).sum()/sum_isPlasma
         self.pwr_in_tot = self.pwr_in_ave * MESH.area
     
+    def _calc_coll(self):
+        """Calc collision frequency."""
+        temp_coll =self._press/10.0*1e7
+        self.coll_em = np.ones_like(self.ne)*temp_coll
+        self.coll_im = np.ones_like(self.ne)*temp_coll
+    
     def get_eps(self, MESH):
         """Get epsilon from materials."""
         self.eps = np.ones_like(self.ne)
         for idx, mat in np.ndenumerate(MESH.mat):
             if mat == 2:
                 self.eps[idx] = 3.8
+                
+    def savez(self):
+        """Save attributes to a bin file."""
+        np.savez(self.name, 
+                 self._press, self._Me, self._Mi, self._wrf,
+                 self.ne, self.ni, self.nn,
+                 self.Te, self.Ti, self.Tn,
+                 )
