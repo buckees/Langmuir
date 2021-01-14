@@ -57,6 +57,7 @@ class PLASMA2D(object):
         self.Ti = np.ones_like(x)*Ti  # init ion temperature
         self.Tn = np.ones_like(x)*Tn  # init neut temperature
         self.pot = np.zeros_like(x)  # initial uniform potential
+        self.Ey = np.zeros_like(x)
         self._init_nonessential()
         # modify init
         self.update_plasma(MESH)
@@ -65,7 +66,6 @@ class PLASMA2D(object):
         ne = self.ne
         self.Se, self.Si = np.zeros_like(ne), np.zeros_like(ne)
         self.Ex, self.Ez = np.zeros_like(ne), np.zeros_like(ne)
-        self.Ey = np.zeros_like(ne)
         self.fluxex, self.fluxez = np.zeros_like(ne), np.zeros_like(ne)
         self.fluxix, self.fluxiz = np.zeros_like(ne), np.zeros_like(ne)
         self.dfluxe, self.dfluxi = np.zeros_like(ne), np.zeros_like(ne)
@@ -160,7 +160,7 @@ class PLASMA2D(object):
                  Me=self._Me, Mi=self._Mi, wrf=self._wrf,
                  ne=self.ne, ni=self.ni, nn=self.nn,
                  Te=self.Te, Ti=self.Ti, Tn=self.Tn,
-                 pot=self.pot)
+                 pot=self.pot, Ey=self.Ey)
     
     def loadz(self, fname):
         """Load attributes from a bin file."""
@@ -170,6 +170,6 @@ class PLASMA2D(object):
         self._wrf = data['wrf']
         self.ne, self.ni, self.nn = data['ne'], data['ni'], data['nn']
         self.Te, self.Ti, self.Tn = data['Te'], data['Ti'], data['Tn']
-        self.pot = data['pot']
+        self.pot, self.Ey = data['pot'], data['Ey']
         self._init_nonessential()
         
