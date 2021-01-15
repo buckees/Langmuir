@@ -24,6 +24,7 @@ class FIELD2D(object):
     def from_PLASMA(self, PLA):
         """Copy var from PLASMA2D."""
         self.pwr_in_tot = deepcopy(PLA.pwr_in_tot)
+        self.Ey = deepcopy(PLA.Ey)
         
     def to_PLASMA(self, PLA):
         """Copy var to PLASMA2D."""
@@ -58,6 +59,6 @@ class FIELD2D(object):
             fac = power/self.pwr_in_tot
         else:
             fac = 1.0
-        fac = min(1.1, fac)
+        fac = min(1.01, fac)
         self.Ey = sqrt(fac)*self.Ey
         
