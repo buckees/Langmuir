@@ -60,7 +60,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     ########## init and plot field ##########
     if oper.irestart:
         field.from_PLASMA(pla)
-        field.adjust_E(oper.input_pwr)
+        field.adjust_E(oper.pwr)
         field.to_PLASMA(pla)
     else:
         field.to_PLASMA(pla)
@@ -98,6 +98,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
     time = []
    
     for itn in range(oper.num_iter):
+        t = dt*(itn+1)
         
         ########## print progress ##########
         if (itn + 1) % int(oper.num_iter/oper.num_plot) == 0:
@@ -105,7 +106,8 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         ####################################
         # call field module
         field.from_PLASMA(pla)
-        field.adjust_E(oper.input_pwr)
+        oper.update_pwr(t)
+        field.adjust_E(oper.pwr)
         field.to_PLASMA(pla)
         # call electron energy module
         eergy.from_PLASMA(pla)
@@ -131,7 +133,7 @@ def MAIN(oper, mesh, pla, txp, eergy=None, rct=None, field=None):
         ni_ave.append(deepcopy(pla.ni_ave))
         Te_ave.append(deepcopy(pla.Te_ave))
         pwr_in_tot.append(deepcopy(pla.pwr_in_tot))
-        time.append(dt*(itn+1))
+        time.append(t)
         if oper.idiag:
             if not (itn+1) % (oper.num_iter/oper.num_plot):
                 # plot 2D
