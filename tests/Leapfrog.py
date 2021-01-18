@@ -49,11 +49,11 @@ ptcl2.update_vel(np.zeros(3))
 field = FIELD_SHEATH('Sheath')
 field.add_Efunc(Efunc_single)
 
-t, dt = 0.0, 1e-11
+t, dt = 0.0, 1e-9
 time, traj, Efield = list(), list(), list()
 traj2 = list()
 
-for i in range(30000):
+for i in range(300):
     time.append(t)
     traj.append(ptcl.posn[1])
     traj2.append(ptcl2.posn[1])
@@ -76,10 +76,12 @@ for i in glob.glob(fname + '.png'):
 
 fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
                            constrained_layout=True)
-ax.plot(time, traj, 'b-', time, traj2, 'r-')
-ax.set_title('Ion Energy Distribution')
+ax.plot(time, traj, 'b-', label='LEAPFROG')
+ax.plot(time, traj2, 'r-', label='EULER_FORWARD')
+ax.set_title('f=14MHz, dt=1ns')
 ax.set_xlabel('Time (s)')
 ax.set_ylabel('Position (m)')
+ax.legend()
 fig.savefig(fname + '.png', dpi=600)
 plt.close()
 
