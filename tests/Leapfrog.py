@@ -18,9 +18,11 @@ from packages.Constants import PI
 def Efunc_single(t):
     d_sh = 0.01
     freq = 14e6
-    Vdc = 100
+    Vdc = 0
     Vrf = 50
-    return min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
+    phi = PI/2
+    # return min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
+    return -Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t + phi)
 
 def Efunc_dual(t):
     d_sh = 0.01
@@ -29,28 +31,40 @@ def Efunc_dual(t):
     Vdc = 100
     Vrf1 = 50
     Vrf2 = 10.0
-    return min(-Vdc/d_sh - Vrf1/d_sh*sin(2*PI*freq1*t) - 
-               Vrf2/d_sh*sin(2*PI*freq2*t), 0.0)
+    # return min(-Vdc/d_sh - Vrf1/d_sh*sin(2*PI*freq1*t) - 
+    #            Vrf2/d_sh*sin(2*PI*freq2*t), 0.0)
+    return -Vdc/d_sh-Vrf1/d_sh*sin(2*PI*freq1*t)-Vrf2/d_sh*sin(2*PI*freq2*t)
 
 # init ptcl
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 ptcl.update_posn(np.zeros(3))
 ptcl.update_vel(np.zeros(3))
+
+ptcl2 = PARTICLE()
+ptcl2.customize_ptcl('Ion', 40, 1)
+ptcl2.update_posn(np.zeros(3))
+ptcl2.update_vel(np.zeros(3))
 # init field
 field = FIELD_SHEATH('Sheath')
 field.add_Efunc(Efunc_single)
 
-t, dt = 0.0, 1e-9
-time, traj = list(), list()
-move = LEAPFROG
-for i in range(1000):
+t, dt = 0.0, 1e-11
+time, traj, Efield = list(), list(), list()
+traj2 = list()
+
+for i in range(30000):
     time.append(t)
-    traj.append(ptcl.posn)
+    traj.append(ptcl.posn[1])
+    traj2.append(ptcl2.posn[1])
     field.update_E(field.calc_E(t))
-    posn_next, vel_next = move(ptcl, field, t, dt)
+    Efield.append(field.E)
+    posn_next, vel_next = LEAPFROG(ptcl, field, t, dt)
     ptcl.update_posn(posn_next)
     ptcl.update_vel(vel_next)
+    posn_next, vel_next = EULER_MOVE(ptcl2, field, t, dt)
+    ptcl2.update_posn(posn_next)
+    ptcl2.update_vel(vel_next)
     t += dt
 
 
@@ -62,10 +76,10 @@ for i in glob.glob(fname + '.png'):
 
 fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
                            constrained_layout=True)
-ax.plot(time, traj)
+ax.plot(time, traj, 'b-', time, traj2, 'r-')
 ax.set_title('Ion Energy Distribution')
-ax.set_xlabel('Energy (eV)')
-ax.set_ylabel('Count')
+ax.set_xlabel('Time (s)')
+ax.set_ylabel('Position (m)')
 fig.savefig(fname + '.png', dpi=600)
 plt.close()
 
