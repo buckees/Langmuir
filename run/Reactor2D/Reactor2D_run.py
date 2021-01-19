@@ -23,14 +23,17 @@ from packages.Model.Reactor2D.Reactor2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_iter = 5000
-oper.num_plot = 5
-oper.dt = 1e-6
-oper.ne = 2e18
+oper.press = 20
+oper.num_iter = 50000
+oper.num_plot = 50 
+oper.dt = 2e-6
+oper.ne = 1e19
 oper.num_iter_Te = 10
 oper.Te = 2.0
-oper.input_pwr = 5.0
+oper.input_pwr = 100.0
 oper.idiag = True
+oper.irestart = False
+oper.frestart = 'restart.npz'
 
 # init mesh obj
 fname = 'ICP2D_Mesh'
