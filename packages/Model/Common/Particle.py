@@ -5,7 +5,7 @@ Particle.py serves as a data center/hub,
 """
 
 import numpy as np
-from math import sqrt
+from math import sqrt, acos, degrees
 
 from packages.Constants import (AMU, J2EV)
 
@@ -59,19 +59,28 @@ class PARTICLE(object):
     
     def update_state(self, state):
         """Update state."""
-        self.isAlive = state
+        self.isAlive = state     
     
-    def vel2erg(self):
-        """Convert velocity to energy."""
-        temp = np.power(self.vel, 2)
-        temp = np.sum(temp)
-        return 0.5*(self.mass*AMU)*temp*J2EV
-    
-    def _norm_vel(self):
+    def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
         speed = sqrt(np.sum(self.vel**2))
         uvec = self.vel/speed
         return speed, uvec
+    
+    def vel2erg(self, nvec=np.array([0, -1, 0])):
+        """
+        Convert velocity to energy.
+        
+        nvec: arr(3) of float, normal vector.
+        erg: float, energy of the particle.
+        theta: float, theta w.r.t. nvec.
+        """
+        speed, uvec = self.vel2speed()
+        erg = 0.5*(self.mass*AMU)*speed**2
+        erg *= J2EV
+        theta = acos(np.dot(uvec, nvec))*np.sign(uvec)[0]
+        theta = degrees(theta)
+        return erg, theta
     
     def move_in_space(self, dL):
         """
@@ -80,7 +89,7 @@ class PARTICLE(object):
         Assume no field at all.
         dL: float, space step, unit in m.
         """
-        speed, uvec = self._norm_vel()
+        speed, uvec = self.vel2speed()
         self.posn += uvec*dL
         
     def move_in_time(self, dt):
