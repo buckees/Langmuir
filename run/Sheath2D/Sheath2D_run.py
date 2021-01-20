@@ -27,21 +27,25 @@ oper.freq = 2e6
 oper.iplot = False
 
 def Efunc_single(t):
+    E = np.zeros(3)
     d_sh = oper.d_sh
     freq = oper.freq
     Vdc = oper.Vdc
     Vrf = oper.Vrf
-    return min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
+    E[1] = min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
+    return E
 
 def Efunc_dual(t):
+    E = np.zeros(3)
     d_sh = oper.d_sh
     freq1 = oper.freq
     freq2 = 14e6
     Vdc = oper.Vdc
     Vrf1 = oper.Vrf
     Vrf2 = 10.0
-    return min(-Vdc/d_sh - Vrf1/d_sh*sin(2*PI*freq1*t) - 
+    E[1] = min(-Vdc/d_sh - Vrf1/d_sh*sin(2*PI*freq1*t) - 
                Vrf2/d_sh*sin(2*PI*freq2*t), 0.0)
+    return E
 
 # init ptcl
 ptcl = PARTICLE()
