@@ -4,7 +4,6 @@ import os
 import glob
 
 import numpy as np
-from math import sin
 import matplotlib.pyplot as plt
 
 from packages.Model.Common.Particle import PARTICLE
@@ -12,7 +11,6 @@ from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
 from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
-from packages.Constants import PI
 
 from Efunc import EFUNC
 
