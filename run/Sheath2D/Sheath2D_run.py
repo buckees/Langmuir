@@ -14,57 +14,45 @@ from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
 from packages.Constants import PI
 
+from Efunc import EFUNC
+
 # init operation parameters
 oper = PARAMETER()
 oper.num_ptcl = 2000
 oper.max_step = 1000
 oper.d_sh = 0.002
 oper.wfr_loc = 0.0
+oper.imode_move = 'LEAPFROG'
 oper.dt = 1e-9
+oper.imode_Efunc = 'Dual'
 oper.Vdc = 100.0
 oper.Vrf = 50.0
 oper.freq = 2e6
+oper.Vrf2 = 25.0
+oper.freq2 = 14e6
 oper.iplot = False
 
-def Efunc_single(t):
-    E = np.zeros(3)
-    d_sh = oper.d_sh
-    freq = oper.freq
-    Vdc = oper.Vdc
-    Vrf = oper.Vrf
-    E[1] = min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
-    return E
-
-def Efunc_dual(t):
-    E = np.zeros(3)
-    d_sh = oper.d_sh
-    freq1 = oper.freq
-    freq2 = 14e6
-    Vdc = oper.Vdc
-    Vrf1 = oper.Vrf
-    Vrf2 = 10.0
-    E[1] = min(-Vdc/d_sh - Vrf1/d_sh*sin(2*PI*freq1*t) - 
-               Vrf2/d_sh*sin(2*PI*freq2*t), 0.0)
-    return E
-
-def Efunc_tilt(t):
-    E = np.zeros(3)
-    d_sh = oper.d_sh
-    freq = oper.freq
-    Vdc = oper.Vdc
-    Vrf = oper.Vrf
-    E[0] = Vdc/d_sh/10
-    E[1] = min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
-    return E
 
 # init ptcl
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 
 field = FIELD_SHEATH('Sheath')
-field.add_Efunc(Efunc_tilt)
+Efunc = EFUNC()
+Efunc.load(oper)
+if oper.imode_Efunc == "Single":
+    field.add_Efunc(Efunc.sgl_freq)
+elif oper.imode_Efunc == "Dual":
+    field.add_Efunc(Efunc.dual_freq)
+elif oper.imode_Efunc == "Customize":
+    field.add_Efunc(Efunc.customize)
 
-erg, ang = MAIN(oper, ptcl, field, move=LEAPFROG)
+if oper.imode_move == 'EULER':
+    move = EULER_MOVE
+elif oper.imode_move == 'LEAPFROG':
+    move = LEAPFROG
+
+erg, ang = MAIN(oper, ptcl, field, move=move)
 
 fname = 'test'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
