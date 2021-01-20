@@ -47,12 +47,22 @@ def Efunc_dual(t):
                Vrf2/d_sh*sin(2*PI*freq2*t), 0.0)
     return E
 
+def Efunc_tilt(t):
+    E = np.zeros(3)
+    d_sh = oper.d_sh
+    freq = oper.freq
+    Vdc = oper.Vdc
+    Vrf = oper.Vrf
+    E[0] = Vdc/d_sh/10
+    E[1] = min(-Vdc/d_sh - Vrf/d_sh*sin(2*PI*freq*t), 0.0)
+    return E
+
 # init ptcl
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 
 field = FIELD_SHEATH('Sheath')
-field.add_Efunc(Efunc_single)
+field.add_Efunc(Efunc_tilt)
 
 erg, ang = MAIN(oper, ptcl, field, move=LEAPFROG)
 
