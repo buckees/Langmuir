@@ -48,26 +48,36 @@ ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 
 field = FIELD_SHEATH('Sheath')
-field.add_Efunc(Efunc_dual)
+field.add_Efunc(Efunc_single)
 
 erg, ang = MAIN(oper, ptcl, field, move=LEAPFROG)
 
+fname = 'test'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
 # fname += '_H2O'
 # fname = f'dual_freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
-fname = 'dual_freq214_Vdc100_Vrf5010'
+# fname = 'dual_freq214_Vdc100_Vrf5010'
 
 for i in glob.glob(fname + '.*'):
     os.remove(i)
 
 np.save(fname, erg)
 
-fig, ax = plt.subplots(1, 1, figsize=(4, 3), dpi=600,
+fig, axes = plt.subplots(1, 2, figsize=(8, 3), dpi=600,
                            constrained_layout=True)
+
+ax = axes[0]
 ax.hist(erg, bins=100, density=False)
 ax.set_title('Ion Energy Distribution')
 ax.set_xlabel('Energy (eV)')
 ax.set_ylabel('Count')
+
+ax = axes[1]
+ax.hist(ang, bins=100, density=False)
+ax.set_title('Ion Angular Distribution')
+ax.set_xlabel('Angle (degree)')
+ax.set_ylabel('Count')
+
 fig.savefig(fname + '.png', dpi=600)
 plt.close()
 
