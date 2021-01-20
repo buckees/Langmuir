@@ -28,7 +28,7 @@ class FIELD_SHEATH(FIELD):
         t: float, unit in s, time
         """
         E = np.zeros(3)
-        E[1] = self.Efunc(t)
+        E = self.Efunc(t)
         return E
     
     def read_E(self, fname):
