@@ -59,7 +59,9 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
             step += 1
             if ptcl.posn[1] < oper.wfr_loc:
                 ptcl.update_state(False)
-                erg.append(ptcl.vel2erg())
+                ptcl_erg, ptcl_ang = ptcl.vel2erg()
+                erg.append(ptcl_erg)
+                ang.append(ptcl_ang)
             if step > oper.max_step:
                 ptcl.update_state(False)
     
