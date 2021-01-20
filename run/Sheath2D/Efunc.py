@@ -21,7 +21,6 @@ class EFUNC(object):
             self.d_sh = OPER.d_sh
             if OPER.imode_Efunc == 'Dual':
                 self.freq2 = OPER.freq2
-                self.Vdc2 = OPER.Vdc2
                 self.Vrf2 = OPER.Vrf2
     
     def sgl_freq(self, t):
@@ -49,4 +48,10 @@ class EFUNC(object):
                -self.Vrf/self.d_sh*sin(2*PI*self.freq*t) \
                -self.Vrf2/self.d_sh*sin(2*PI*self.freq2*t)
         E[1] = min(E[1], 0.0)
+        return E
+    
+    def customize(self, t):
+        """Customize the E-field function."""
+        E = np.zeros(3)
+        pass
         return E
