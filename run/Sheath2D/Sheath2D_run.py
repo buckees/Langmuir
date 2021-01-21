@@ -5,24 +5,28 @@ import glob
 
 import numpy as np
 import matplotlib.pyplot as plt
+from math import sin, cos, sqrt
 
 from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
 from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
+from scipy.stats import maxwell
+from packages.Constants import EV2J, AMU
 
 from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 2000
+oper.num_ptcl = 20000
 oper.max_step = 1000
-oper.d_sh = 0.002
+oper.Ti = 1.0  # eV
+oper.d_sh = 0.002  # m
 oper.wfr_loc = 0.0
 oper.imode_move = 'LEAPFROG'
 oper.dt = 1e-9
-oper.imode_Efunc = 'Dual'
+oper.imode_Efunc = 'Single'
 oper.Vdc = 100.0
 oper.Vrf = 50.0
 oper.freq = 2e6
@@ -35,6 +39,23 @@ oper.iplot = False
 ptcl = PARTICLE()
 ptcl.customize_ptcl('Ion', 40, 1)
 
+def xFunc():
+    return np.array([0.0, oper.d_sh, 0.0])
+
+def vFunc():
+    a = sqrt(oper.Ti*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
+    speed = maxwell.rvs(loc=0.0, scale=a, size=1)
+    vel = np.zeros(3)
+    mu, sigma = 0.0, 0.1  # default mean and standard deviation
+    theta = np.random.normal(mu, sigma)
+    vel[0], vel[1] = sin(theta), -cos(theta)
+    vel = speed * vel
+    return vel
+
+ptcl.add_initPosnFunc(xFunc)
+ptcl.add_initVelFunc(vFunc)
+
+# init field
 field = FIELD_SHEATH('Sheath')
 Efunc = EFUNC()
 Efunc.load(oper)
