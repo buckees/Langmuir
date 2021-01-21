@@ -32,8 +32,8 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
         
         ########## init ptcl ##########
         ptcl.update_state(True)
-        ptcl.update_posn(np.array([0.0, oper.d_sh, 0.0]))
-        ptcl.update_vel(np.zeros(3))
+        ptcl.init_posn()
+        ptcl.init_vel()
         ################################
         
         dt = oper.dt
