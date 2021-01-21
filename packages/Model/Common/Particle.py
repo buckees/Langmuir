@@ -61,6 +61,22 @@ class PARTICLE(object):
         """Update state."""
         self.isAlive = state     
     
+    def add_initPosnFunc(self, xFunc):
+        """Add init position function."""
+        self.initPosnFunc = xFunc
+    
+    def init_posn(self):
+        """Init position."""
+        self.posn = self.initPosnFunc()
+    
+    def add_initVelFunc(self, vFunc):
+        """Add init velocity function."""
+        self.initVelFunc = vFunc
+    
+    def init_vel(self):
+        """Init velocity."""
+        self.vel = self.initVelFunc()
+    
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
         speed = sqrt(np.sum(self.vel**2))
