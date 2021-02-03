@@ -1,0 +1,387 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+\noindent
+Initial Condition
+\end_layout
+
+\begin_layout Subsection
+Introduction of Inductivly Coupled Plasma
+\end_layout
+
+\begin_layout Standard
+Low-pressure high-density plasmas are widely used for semiconductor processing.
+ High density results in high ion fluxes, which increase the etch rate.
+ So the throughput of wafer processing can be increased.
+ Low pressure results in the collision frequency, from which ions reduces
+ energy loss.
+ So the ion energy to the wafer can be high, benefiting the desired etch
+ process.
+ Inductively coupled plasma (ICP) meets these requirements and becomes widely
+ used strting in 1990s.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+inductively
+\begin_inset Quotes erd
+\end_inset
+
+ in the name comes from the way the electric field is produced.
+ An electromagnetic field is created by radio frequency (RF) current flowing
+ in a coil, which can be seen in the figure below.
+ The current flowing through the coil creates B-field, which in turn creates
+ the E-field below the dielectric window.
+ The underline E-field delivers the energy to the electrons, which creates
+ the plasma.
+ The plasma current in the azimuthal direction also feedbacks to the coil
+ current.
+ Therefore, the coil and plasma are tightly coupled together.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/ICP_Field.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+RF magnetic field (B-field) and RF electric field (E-field) created inside
+ the ICP by applying RF power to the planar coil through the dieletric window.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Model Geometry
+\end_layout
+
+\begin_layout Standard
+A typical ICP geometry is shown below.
+ The whole domain is defined by the outmost boundaries.
+ However, the equations in the Reactor Model are solved in different domains.
+\end_layout
+
+\begin_layout Itemize
+ICP field equation is solved within the domain except all metals, plus coils
+ although coils are metal too.
+\end_layout
+
+\begin_layout Itemize
+Poisson's equation is solved within the domain except all metals.
+ Coils are not counted.
+\end_layout
+
+\begin_layout Itemize
+Plasma equation is solved only within the vacuum area, which is the domian
+ minus all metals and dielectrics.
+\end_layout
+
+\begin_layout Standard
+The material properties:
+\end_layout
+
+\begin_layout Itemize
+Coil current - 
+\begin_inset Formula $I_{coil}$
+\end_inset
+
+ is determined by the total power coupled to plasma.
+ It is not easy to determine the initial current value.
+ Users have to try out in a large range from 0.001 A to 10.0 A.
+\end_layout
+
+\begin_layout Standard
+Dieletric constat (relative) (absolute permittivity = 
+\begin_inset Formula $8.85\times10^{-12}m^{-3}kg^{-1}s^{4}A^{2}$
+\end_inset
+
+ ):
+\end_layout
+
+\begin_layout Itemize
+Vacuum, air - 1.0
+\end_layout
+
+\begin_layout Itemize
+Quartz - 3.8 - 4.2 depending on what kind of quartz, 4.0 can be used for most
+ cases
+\end_layout
+
+\begin_layout Itemize
+Metal - 1.0, metal does not have dieletric constants.
+ It is assigned 1.0 only for computation.
+\end_layout
+
+\begin_layout Standard
+Conductivity:
+\end_layout
+
+\begin_layout Itemize
+Vacuum, air - 0.0
+\end_layout
+
+\begin_layout Itemize
+Quartz - very small, 1e-6 to 1e-3 S/m.
+ Users can use 0.0.
+ Quartz is designed to have very small conductivity so that magnetic field
+ can penetrate through it.
+\end_layout
+
+\begin_layout Itemize
+Metal - infinity.
+ Metal serves as boundary condition.
+ Users can assign metal with conductivity of 1.0e6 S/m.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/ICP2D.png
+	lyxscale 75
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Geometry of an ICP.
+ White - Vacuum; Black - Grounded metal; Blue - Coil; Yellow - Air; Green
+ - Quartz.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Initial Condition
+\end_layout
+
+\begin_layout Standard
+A typical ICP case is given here with all necessary initial conditions,
+ which can be used as a test for Reactor Model.
+ 
+\end_layout
+
+\begin_layout Standard
+Operation conditions:
+\end_layout
+
+\begin_layout Itemize
+Pressure - 10 mT
+\end_layout
+
+\begin_layout Itemize
+Power - 100 W
+\end_layout
+
+\begin_layout Itemize
+RF frequency - 13.56 MHz
+\end_layout
+
+\begin_layout Itemize
+Room Temperature - 300 K
+\end_layout
+
+\begin_layout Standard
+Plasma conditions:
+\end_layout
+
+\begin_layout Itemize
+mass - 
+\begin_inset Formula $m_{e}=9.1\times10^{-31}kg,\:m_{Ar}=40\times1.66\times10^{-27}kg$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+elementary charge - 
+\begin_inset Formula $e=1.6\times10^{-19}\:C$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+neutral density - 
+\begin_inset Formula $n_{Ar}=P(mT)\times3.3\times10^{19}\:m^{-3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+metastable density - 
+\begin_inset Formula $n_{Ar^{*}}=1\%\times n_{Ar}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+electron density - 
+\begin_inset Formula $n_{e}=10^{-4}\times n_{Ar}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+ion density - 
+\begin_inset Formula $n_{Ar^{+}}=n_{e}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+electron temperature - 
+\begin_inset Formula $T_{e}=1.0\:eV$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+ion temperature - 
+\begin_inset Formula $T_{Ar^{+}}=0.1\:eV$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+neutral temperature - 
+\begin_inset Formula $T_{Ar}=T_{Ar^{*}}=0.025\:eV$
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
