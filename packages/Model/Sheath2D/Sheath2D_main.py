@@ -15,6 +15,7 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
     move: Func, selected from Particle_Mover
     """
 
+    init_erg, init_ang = list(), list()
     erg, ang = list(), list()
     for i in range(oper.num_ptcl):
         
@@ -22,6 +23,9 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
         ptcl.update_state(True)
         ptcl.init_posn()
         ptcl.init_vel()
+        ptcl_erg, ptcl_ang = ptcl.vel2erg()
+        init_erg.append(ptcl_erg)
+        init_ang.append(ptcl_ang)
         ################################
         
         dt = oper.dt
@@ -57,4 +61,4 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
     print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(erg)} particles are collected by the wafer.')
     
-    return erg, ang
+    return erg, ang, init_erg, init_ang
