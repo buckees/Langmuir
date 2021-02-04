@@ -14,7 +14,7 @@ class EFUNC(object):
         
         OPER: obj, contains all parameters.
         """
-        if OPER.imode_Efunc == 'Single' or 'Dual':
+        if OPER.imode_Efunc != "Customize":
             self.freq = OPER.freq
             self.Vdc = OPER.Vdc
             self.Vrf = OPER.Vrf
@@ -38,7 +38,7 @@ class EFUNC(object):
     
     def dual_freq(self, t):
         """
-        E-field function of time with single frquency.
+        E-field function of time with dual frquency.
         
         The E-field is negative, only along z-axis.
         E: arr(3) of float, E-field
@@ -47,6 +47,20 @@ class EFUNC(object):
         E[1] = -self.Vdc/self.d_sh \
                -self.Vrf/self.d_sh*sin(2*PI*self.freq*t) \
                -self.Vrf2/self.d_sh*sin(2*PI*self.freq2*t)
+        E[1] = min(E[1], 0.0)
+        return E
+    
+    def tilt(self, t):
+        """
+        E-field function of time with tilt E-field.
+        
+        The E-field is negative, with an angle along z-axis.
+        E: arr(3) of float, E-field
+        """
+        E = np.zeros(3)
+        E[0] = -self.Vdc/self.d_sh * 0.01
+        E[1] = -self.Vdc/self.d_sh \
+               -self.Vrf/self.d_sh*sin(2*PI*self.freq*t)
         E[1] = min(E[1], 0.0)
         return E
     
