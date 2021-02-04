@@ -26,14 +26,12 @@ oper.d_sh = 0.002  # m
 oper.wfr_loc = 0.0
 oper.imode_move = 'LEAPFROG'
 oper.dt = 1e-9
-oper.imode_Efunc = 'Single'
-oper.Vdc = 100.0
-oper.Vrf = 50.0
+oper.imode_Efunc = 'Dual'
+oper.Vdc = 0.0
+oper.Vrf = 100.0
 oper.freq = 2e6
-oper.Vrf2 = 25.0
+oper.Vrf2 = 20.0
 oper.freq2 = 14e6
-oper.iplot = False
-
 
 # init ptcl
 ptcl = PARTICLE()
@@ -63,6 +61,13 @@ if oper.imode_Efunc == "Single":
     field.add_Efunc(Efunc.sgl_freq)
 elif oper.imode_Efunc == "Dual":
     field.add_Efunc(Efunc.dual_freq)
+    # freq = min(Efunc.freq, Efunc.freq2)
+    # period = 1/freq
+    # time = np.linspace(0.0, period, 101)
+    # voltage = np.array([Efunc.dual_freq(t) for t in time])
+    # plt.plot(time, voltage)
+elif oper.imode_Efunc == "Tilt":
+    field.add_Efunc(Efunc.tilt)
 elif oper.imode_Efunc == "Customize":
     field.add_Efunc(Efunc.customize)
 
@@ -71,7 +76,7 @@ if oper.imode_move == 'EULER':
 elif oper.imode_move == 'LEAPFROG':
     move = LEAPFROG
 
-erg, ang = MAIN(oper, ptcl, field, move=move)
+erg, ang, init_erg, init_ang = MAIN(oper, ptcl, field, move=move)
 
 fname = 'test'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
@@ -84,20 +89,37 @@ for i in glob.glob(fname + '.*'):
 
 np.save(fname, erg)
 
-fig, axes = plt.subplots(1, 2, figsize=(8, 3), dpi=600,
+fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
                            constrained_layout=True)
 
-ax = axes[0]
+ax = axes[0, 0]
+ax.hist(init_erg, bins=100, density=False)
+ax.set_title('Ion Energy Distribution')
+ax.set_xlabel('Energy (eV)')
+ax.set_ylabel('Count')
+ax.set_xlim([0, 12])
+
+ax = axes[0, 1]
+ax.hist(init_ang, bins=100, density=False)
+ax.set_title('Ion Angular Distribution')
+ax.set_xlabel('Angle (degree)')
+ax.set_ylabel('Count')
+ax.set_xlim([-20, 20])
+
+ax = axes[1, 0]
 ax.hist(erg, bins=100, density=False)
 ax.set_title('Ion Energy Distribution')
 ax.set_xlabel('Energy (eV)')
 ax.set_ylabel('Count')
+ax.set_xlim([0, 200])
 
-ax = axes[1]
+ax = axes[1, 1]
 ax.hist(ang, bins=100, density=False)
 ax.set_title('Ion Angular Distribution')
 ax.set_xlabel('Angle (degree)')
 ax.set_ylabel('Count')
+ax.set_xlim([-4, 4])
+
 
 fig.savefig(fname + '.png', dpi=600)
 plt.close()
