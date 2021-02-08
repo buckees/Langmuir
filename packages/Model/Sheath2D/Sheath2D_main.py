@@ -1,12 +1,12 @@
 """Sheath Model 2D. Main program."""
 
 import numpy as np
-import matplotlib.pyplot as plt
+from math import exp
 from copy import deepcopy
 
 from packages.Constants import PI
 
-def MAIN(oper, ptcl, field, coll=None, move=None):
+def MAIN(oper, ptcl, field, coll, move=None):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
@@ -16,11 +16,10 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
     move: Func, selected from Particle_Mover
     """
 
+    vel = list()
     if oper.idiag:
         init_erg, init_ang = list(), list()
         erg, ang = list(), list()
-    else:
-        vel = list()
     for i in range(oper.num_ptcl):
         
         ########## init ptcl ##########
@@ -54,6 +53,7 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
             ptcl.update_vel(vel_next)
             t += dt
             step += 1
+            
             if ptcl.posn[1] < oper.wfr_loc:
                 ptcl.update_state(False)
                 vel.append(deepcopy(ptcl.vel))
@@ -62,12 +62,20 @@ def MAIN(oper, ptcl, field, coll=None, move=None):
                 ang.append(ptcl_ang)
             if step > oper.max_step:
                 ptcl.update_state(False)
+
+            # collision
+            coll_freq = coll.func_CollFreq(ptcl.vel)
+            prob_coll = 1.0 - exp( - coll_freq * dt)
+            rand = np.reandom.uniform(0.0, 1.0)
+            if rand < prob_coll:
+                vel_new = coll.func_ReinitVel(ptcl.vel)
+                ptcl.update_vel(vel_new)
     
     ########## plot results ##########
     print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(erg)} particles are collected by the wafer.')
     
     if oper.idiag:
-        return erg, ang, init_erg, init_ang
+        return vel, erg, ang, init_erg, init_ang
     else:
         return vel
