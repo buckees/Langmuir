@@ -32,6 +32,7 @@ oper.Vrf = 100.0
 oper.freq = 2e6
 oper.Vrf2 = 20.0
 oper.freq2 = 14e6
+oper.idiag = True
 
 # init ptcl
 ptcl = PARTICLE()
