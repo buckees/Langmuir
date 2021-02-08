@@ -17,7 +17,7 @@ class COLLISION(object):
         """
         Add func of collision frquency.
         
-        func_CollFreq: function of energy, f(energy) returns collision frequency.
+        func_CollFreq: function of velocity, f(velocity) returns collision frequency.
         """
         self.func_CollFreq = func_CollFreq
     
@@ -25,6 +25,6 @@ class COLLISION(object):
         """
         Add func of reinit velocity.
         
-        func_ReinitVel: function of xxx, f(xxx) returns velocity.
+        func_ReinitVel: function of velocity, f(velocity) returns velocity.
         """
         self.func_ReinitVel = func_ReinitVel
