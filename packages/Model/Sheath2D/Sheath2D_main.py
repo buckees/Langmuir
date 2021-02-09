@@ -66,7 +66,7 @@ def MAIN(oper, ptcl, field, coll, move=None):
             # collision
             coll_freq = coll.func_CollFreq(ptcl.vel)
             prob_coll = 1.0 - exp( - coll_freq * dt)
-            rand = np.reandom.uniform(0.0, 1.0)
+            rand = np.random.uniform(0.0, 1.0)
             if rand < prob_coll:
                 vel_new = coll.func_ReinitVel(ptcl.vel)
                 ptcl.update_vel(vel_new)
