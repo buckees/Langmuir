@@ -11,6 +11,7 @@ from packages.Model.Common.Particle import PARTICLE
 from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
 from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
+from packages.Model.Sheath2D.Sheath2D_coll import COLLISION
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
 from scipy.stats import maxwell
 from packages.Constants import EV2J, AMU
@@ -19,19 +20,21 @@ from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 20000
+oper.num_ptcl = 200000
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
+oper.Tg = 0.025  # eV
 oper.d_sh = 0.002  # m
 oper.wfr_loc = 0.0
 oper.imode_move = 'LEAPFROG'
 oper.dt = 1e-9
-oper.imode_Efunc = 'Dual'
-oper.Vdc = 0.0
-oper.Vrf = 100.0
-oper.freq = 2e6
+oper.imode_Efunc = 'Single'
+oper.Vdc = 100.0
+oper.Vrf = 50.0
+oper.freq = 14e6
 oper.Vrf2 = 20.0
 oper.freq2 = 14e6
+oper.coll_freq = 0  # 4e6
 oper.idiag = True
 
 # init ptcl
@@ -76,8 +79,25 @@ if oper.imode_move == 'EULER':
     move = EULER_MOVE
 elif oper.imode_move == 'LEAPFROG':
     move = LEAPFROG
+    
+def func_CollFreq(ptcl_vel):
+    return oper.coll_freq
 
-erg, ang, init_erg, init_ang = MAIN(oper, ptcl, field, move=move)
+def func_ReinitVel(ptcl_vel):
+    a = sqrt(oper.Tg*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
+    speed = maxwell.rvs(loc=0.0, scale=a, size=1)
+    vel = np.zeros(3)
+    mu, sigma = 0.0, 0.1  # default mean and standard deviation
+    theta = np.random.normal(mu, sigma)
+    vel[0], vel[1] = sin(theta), -cos(theta)
+    vel = speed * vel
+    return vel
+
+coll = COLLISION('Ion_Collision')
+coll.add_func_CollFreq(func_CollFreq)
+coll.add_func_ReinitVel(func_ReinitVel)
+
+vel, erg, ang, init_erg, init_ang = MAIN(oper, ptcl, field, coll, move=move)
 
 fname = 'test'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
@@ -88,7 +108,12 @@ fname = 'test'
 for i in glob.glob(fname + '.*'):
     os.remove(i)
 
-np.save(fname, erg)
+vel = np.array(vel)
+erg = np.array(erg)
+ang = np.array(ang)
+np.save('vel.npy', vel)
+np.save('erg.npy', erg)
+np.save('ang.npy', ang)
 
 fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
                            constrained_layout=True)
