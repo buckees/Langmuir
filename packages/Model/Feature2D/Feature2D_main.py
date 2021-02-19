@@ -4,7 +4,7 @@ import numpy as np
 from math import sin, cos
 from copy import deepcopy
 
-def MAIN(oper, ptcl, mesh, rct, rflct):
+  def MAIN(oper, ptcl, mesh, rct, rflct):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
@@ -15,7 +15,9 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
     """
         
     # init diagnostics
-    rec_traj, rec_surf, rec_mesh = [], [], []
+    if oper.idiag:
+        init_posn, init_vel = list(), list()
+        rec_traj, rec_surf, rec_mesh = [], [], []
     
     delta_L = (mesh.res*oper.step_fac).min()
 
@@ -35,18 +37,11 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
         ########## init ptcl ##########
         # make the ptcl alive
         ptcl.update_state(True)
-        # gen rand posn at the top, in (x, z, y)
-        posn = mesh.init_ptcl_posn()
-        # pass posn to ptcl
-        ptcl.update_posn(posn)
-        # init vel
-        vel = np.zeros(3)
-        # gen rand vel
-        mu, sigma = 0.0, 0.1  # default mean and standard deviation
-        theta = np.random.normal(mu, sigma)
-        vel[0], vel[1] = sin(theta), -cos(theta)
-        # pass vel to ptcl
-        ptcl.update_vel(vel)
+        ptcl.init_posn()
+        ptcl.init_vel()
+        if oper.idiag:
+            init_posn.append(ptcl.posn)
+            init_vel.append(ptcl.vel)
         ################################
         
         ########## record initial position ##########
@@ -117,7 +112,9 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
         if idiag:
             rec_traj[-1] = np.array(rec_traj[-1]).T
     
-    
+    np.save('Feat2D_initPosn.npy', init_posn)
+    np.save('Feat2D_initVel.npy', init_vel)
+   
     # rec_surf = []
     # for temp_idx in mesh.surf_set:
     #     temp_svec, temp_stheta = mesh.calc_surf_norm(temp_idx, 
