@@ -6,13 +6,14 @@ Particle.py serves as a data center/hub,
 
 import numpy as np
 from math import sqrt, acos, degrees
+import pandas as pd
 
 from packages.Constants import (AMU, J2EV)
 
 class PARTICLE(object):
     """Create PARTICLE() object."""
 
-    def __init__(self, name='Particle'):
+    def __init__(self):
         """
         Init the PARTICLE().
         
@@ -25,16 +26,22 @@ class PARTICLE(object):
         vel: arr(3) of float, velocity in (x, z, y), unit in m/s
         """
         self.name = name
-        self.ptype = list()
-        self.mass = np.array(list())
-        self.charge = np.array(list())
-        self.isAlive = np.array(list())
-        self.posn = np.array(list())
-        self.vel = np.array(list())
+        self.ptype = None
+        self.mass = None
+        self.charge = None
+        self.isAlive = None
+        self.posn = np.zeros(3)
+        self.vel = np.zeros(3)
      
-    def read_species(self, fname):
-        """Read in species info from a database (Species.csv)."""
-        pass
+    def read_species(self, fsp='Species'):
+        """
+        Read in species info from a database (Species.csv).
+        
+        Store species information in DataFrame.
+        fsp: str, filename for species database
+        df_species: DataFrame, store species information
+        """
+        self.df_species = pd.read_csv(fsp + '.csv', header=0)
     
     def select_ptcl(self, sp_name):
         """Select particle from the database and assign the info."""
