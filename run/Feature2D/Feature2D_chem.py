@@ -2,6 +2,7 @@
 
 import pandas as pd
 import numpy as np
+import random
 
 fsp = 'Ar_Cl2_v01_Species'
 fmat = 'Ar_Cl2_v01_Material'
@@ -64,6 +65,15 @@ def func_yield(inum, energy, angle):
     pass
     return 1.00
 
+def calc_prob(df):
+    df['Prob'] = 0.0
+    yield_tot = sum(df['Yield'])
+    for idx, row in df.iterrows():
+        Yield = row['Yield']
+        Prob = Yield/yield_tot
+        df.loc[idx, ['Prob']] = Prob 
+    return df
+
 def choose_react(species, material, energy=0.0, angle=0.0):
     """
     Return chosen reaction/reflection given parameters.
@@ -76,11 +86,10 @@ def choose_react(species, material, energy=0.0, angle=0.0):
     df_sub = df_rct[(df_rct['Species'] == species) & 
                     (df_rct['Material'] == material)].copy()
     df_sub['Yield'] = 0.0
-    df_sub['Probability'] = 0.0
     print('\nThe sub dataframe is filtered.')
     print(df_sub[['Species', 'Material', 'Reaction_Type', 'Energy_Type',
                   'A', 'n', 'erg_th', 'erg_ref', 'Angle_Type']])
-    
+     
     for idx, row in df_sub.iterrows():
         # calc energy-dependent yield
         Yield = 0.0
@@ -102,8 +111,16 @@ def choose_react(species, material, energy=0.0, angle=0.0):
             pass
         
         df_sub.loc[idx, ['Yield']] = Yield
+        
+        df_sub = calc_prob(df_sub)
     
     print('\n', df_sub[['Species', 'Material', 'Reaction_Type', 'Energy_Type',
-                  'Yield', 'Probability']])
+                  'Yield', 'Prob']])
+    
+    chosen_react = df_sub.sample(n=10, weights='Prob', 
+                                 replace=True, random_state=13)
+    return chosen_react
 
-choose_react('Ar+', 'Si_', energy=10.0, angle=0)
+chosen_react = choose_react('Cl+', 'Si_', energy=1000.0, angle=0)
+print('\n', chosen_react[['Species', 'Material', 'Reaction_Type',
+                  'Yield', 'Prob']])
