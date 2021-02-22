@@ -25,7 +25,7 @@ class PARTICLE(object):
         posn: arr(3) of float, position in (x, z, y), unit in m
         vel: arr(3) of float, velocity in (x, z, y), unit in m/s
         """
-        self.name = name
+        self.name = None
         self.ptype = None
         self.mass = None
         self.charge = None
@@ -50,21 +50,18 @@ class PARTICLE(object):
         sp_name: str, name of species.
         """
         if sp_name in self.df_species['Name']:
-            row = df_species[df_species['Name'] == sp_name].iloc[0]
+            row = self.df_species[self.df_species['Name'] == sp_name].iloc[0]
             self.name = row['Name']
             self.mass = row['Mass']
             self.charge = row['Charge']
         else:
             return f'\n{sp_name} is not found in the databae, "Species.csv".'
     
-    def customize_ptcl(self, ptype, mass, charge, isAlive=True):
+    def customize_ptcl(self, ptype, mass, charge):
         """Customize a particle."""
         self.ptype = ptype
         self.mass = mass
         self.charge = charge
-        self.isAlive = isAlive
-        self.posn = np.zeros(3)
-        self.vel = np.zeros(3)
         
     def update_posn(self, posn):
         """Update position."""
