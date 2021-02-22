@@ -3,8 +3,9 @@
 import numpy as np
 from math import sin, cos
 from copy import deepcopy
+import pandas as pd
 
-  def MAIN(oper, ptcl, mesh, rct, rflct):
+def MAIN(oper, ptcl, mesh, rct, rflct):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
@@ -22,6 +23,14 @@ from copy import deepcopy
     delta_L = (mesh.res*oper.step_fac).min()
 
     for k in range(oper.num_ptcl):
+        
+        ########## choose particle #########
+        df_flux = pd.read_csv(oper.fflux + '.csv', header=0)
+        chosen_row = df_flux.sample(n=1, weights='Flux', 
+                                 replace=True, random_state=13).iloc[0]
+        sp_name = chosen_row['Name']
+        ptcl.select_ptcl(sp_name)
+        ####################################
         
         idiag = False
         if k > oper.num_ptcl - 20:
