@@ -44,8 +44,18 @@ class PARTICLE(object):
         self.df_species = pd.read_csv(fsp + '.csv', header=0)
     
     def select_ptcl(self, sp_name):
-        """Select particle from the database and assign the info."""
-        pass
+        """
+        Select particle from the database and assign the info.
+        
+        sp_name: str, name of species.
+        """
+        if sp_name in self.df_species['Name']:
+            row = df_species[df_species['Name'] == sp_name].iloc[0]
+            self.name = row['Name']
+            self.mass = row['Mass']
+            self.charge = row['Charge']
+        else:
+            return f'\n{sp_name} is not found in the databae, "Species.csv".'
     
     def customize_ptcl(self, ptype, mass, charge, isAlive=True):
         """Customize a particle."""
