@@ -1,0 +1,7 @@
+Species,Material,Reaction_Type,Product1,Product2,Product3,Removal1,Removal2,Removal3,Energy_Type,Special_Number,A,n,erg_th,erg_ref,Angle_Type
+Ar+,PR_,Etch,None,None,None,Ar+,PR_,None,Power,0,0.001,0.5,20,100,0
+Ar+,Si_,Etch,None,None,None,Ar+,Si_,None,Power,0,0.1,0.5,5,100,0
+Cl+,PR_,Etch,None,None,None,Cl+,PR_,None,Power,0,0.001,0.5,20,100,0
+Cl+,Si_,Reflect,Cl+,Si_,None,None,None,None,Constant,0,0.2,0,0,0,0
+Cl+,Si_,Etch,None,None,None,Cl+,Si_,None,Power,0,0.5,0.5,5,100,0
+Cl+,Si_,Chem,SiCl_,None,None,None,None,None,Function,-100,0,0,0,0,0
