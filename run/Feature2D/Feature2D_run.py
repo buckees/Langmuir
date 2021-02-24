@@ -49,8 +49,8 @@ def vFunc():
     idx = random.randint(0, num_vel_list-1)
     return vel_list[idx]
 
-ptcl.add_initPosnFunc(xFunc)
-ptcl.add_initVelFunc(vFunc)
+ptcl.add_xFunc(xFunc)
+ptcl.add_vFunc(vFunc)
 
 # init chemistry
 chem = CHEMISTRY()
