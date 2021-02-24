@@ -33,7 +33,7 @@ class PARTICLE(object):
         self.posn = np.zeros(3)
         self.vel = np.zeros(3)
      
-    def read_species(self, fsp='Species'):
+    def load_database(self, fsp='Species'):
         """
         Read in species info from a database (Species.csv).
         
@@ -41,7 +41,8 @@ class PARTICLE(object):
         fsp: str, filename for species database
         df_species: DataFrame, store species information
         """
-        self.df_species = pd.read_csv(fsp + '.csv', header=0)
+        self.df_species = pd.read_csv(fsp + '.csv', header=0,
+                                      index_col=0)
     
     def select_ptcl(self, sp_name):
         """
@@ -49,13 +50,12 @@ class PARTICLE(object):
         
         sp_name: str, name of species.
         """
-        if sp_name in self.df_species['Name']:
-            row = self.df_species[self.df_species['Name'] == sp_name].iloc[0]
-            self.name = row['Name']
-            self.mass = row['Mass']
-            self.charge = row['Charge']
+        if sp_name in self.df_species.index:
+            self.name = sp_name
+            self.mass = self.df_species.loc[sp_name]['Mass']
+            self.charge = self.df_species.loc[sp_name]['Charge']
         else:
-            return f'\n{sp_name} is not found in the databae, "Species.csv".'
+            print(f'\n"{sp_name}" is not found in database, "Species.csv".')
     
     def customize_ptcl(self, ptype, mass, charge):
         """Customize a particle."""
