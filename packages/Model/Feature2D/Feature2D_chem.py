@@ -27,12 +27,12 @@ class CHEMISTRY(object):
         
         fname: str, var, basename for chemistry input files.
         """
-        df_sp = pd.read_csv(fname + '_Species.csv', header=0)
-        df_mat = pd.read_csv(fname + '_Material.csv', header=0)
+        self.df_sp = pd.read_csv(fname + '_Species.csv', header=0)
+        self.df_mat = pd.read_csv(fname + '_Material.csv', header=0)
         df_rct = pd.DataFrame(columns=self.col)
         # create default reflections with assigned default values 
-        for sp in df_sp['Species']:
-            for mat in df_mat['Material']:
+        for sp in self.df_sp['Species']:
+            for mat in self.df_mat['Material']:
                 #       Sp, Mat, Rct_Type, 
                 temp = [sp, mat, 'Reflect',
                 #       Prod1, Prod2, Prod3, Rm1, Rm2, Rm3, 
@@ -55,8 +55,6 @@ class CHEMISTRY(object):
                         if (s_rct['Species'] == 
                             s_rct2['Species']) and (s_rct['Material'] == 
                                                     s_rct2['Material']):
-                            print('Value Matched.',
-                                  df_rct.loc[j, 'A'], s_rct2['A'], '\n')
                             df_rct.loc[j, 'A'] = s_rct2['A']
                             
             else:
