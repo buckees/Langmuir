@@ -3,14 +3,16 @@
 import numpy as np
 from math import sin, cos
 from copy import deepcopy
+import random
 import pandas as pd
 
-def MAIN(oper, ptcl, mesh, rct, rflct):
+def MAIN(oper, ptcl, mesh, chem, rct, rflct):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
     ptcl: PARTICLE(obj), contains all particle information.
     mesh: MESH2D(obj), contains all mesh informatin.
+    chem: CHEMISTRY(obj), contains all reaction information.
     rct: REACTION(obj), contains all reaction informatino.
     rflct: REFLECTION(obj), contains all reflection information.
     """
@@ -20,16 +22,25 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
         init_posn, init_vel = list(), list()
         rec_traj, rec_surf, rec_mesh = [], [], []
     
+    # update mesh dict
+    num_mat = len(mesh.dict_num2mat)
+    for mat in chem.df_mat['Material']:
+        if mat not in mesh.dict_mat2num.keys():
+            num_mat += 1
+            mesh.dict_mat2num[mat] = num_mat
+            mesh.dict_num2mat[num_mat] = mat
+    # readin flux
+    df_flux = pd.read_csv(oper.fname + '_Flux.csv', header=0)
+    sp_list = df_flux['Species'].tolist()
+    weight = df_flux['Flux'].tolist()
+    
     delta_L = (mesh.res*oper.step_fac).min()
 
     for k in range(oper.num_ptcl):
         
         ########## choose particle #########
-        df_flux = pd.read_csv(oper.fflux + '.csv', header=0)
-        chosen_row = df_flux.sample(n=1, weights='Flux', 
-                                 replace=True, random_state=13).iloc[0]
-        sp_name = chosen_row['Name']
-        ptcl.select_ptcl(sp_name)
+        chosen_ptcl = random.choices(sp_list, weights=weight, k=1)[0]
+        ptcl.select_ptcl(chosen_ptcl)
         ####################################
         
         idiag = False
@@ -90,14 +101,18 @@ def MAIN(oper, ptcl, mesh, rct, rflct):
                 if idiag:
                     rec_traj[-1].append(deepcopy(ptcl.posn))
                 # at this position, th ptcl hits a mat
-                # mat_name = mesh.mat_dict[hit_mat]
                 # calc surf norm
                 rflct.svec, rflct.stheta = \
                     mesh.calc_surf_norm(hit_idx, radius=oper.surf_norm_range, 
                                         imode=oper.surf_norm_mode)
-                # decide wehter a reflection or reaction
-                rand = np.random.uniform(0.0, 1.0)
-                if rand < oper.prob_rflct:
+                # determine the reaction/reflection
+                ptcl_erg, ptcl_ang = ptcl.vel2erg()
+                hit_mat_name = mesh.dict_num2mat[hit_mat]
+                chosen_rct = chem.choose_react(ptcl.name, hit_mat_name, 
+                                               ptcl_erg, 0.0)
+                
+                
+                if chosen_rct['Reaction_Type'] == 'Reflect':
                     # check max rflct
                     if num_rflct > oper.max_rflct:
                         ptcl.update_state(False)
