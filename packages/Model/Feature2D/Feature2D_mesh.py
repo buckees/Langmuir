@@ -31,7 +31,8 @@ class MESH2D(object):
         self.ngrid = temp['ngrid']
         self.bl = temp['bl']
         self.tr = temp['tr']
-        self.mat_dict = temp['mat_dict'].item()
+        self.dict_num2mat = temp['dict_num2mat'].item()
+        self.dict_mat2num = temp['dict_mat2num'].item()
         self.nx, self.nz = self.ngrid
         self.dx, self.dz = self.res
         self.left, self.bottom = self.bl
