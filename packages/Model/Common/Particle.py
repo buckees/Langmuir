@@ -54,6 +54,7 @@ class PARTICLE(object):
             self.name = sp_name
             self.mass = self.df_species.loc[sp_name]['Mass']
             self.charge = self.df_species.loc[sp_name]['Charge']
+            self.ptype = self.df_species.loc[sp_name]['Type']
         else:
             print(f'\n"{sp_name}" is not found in database, "Species.csv".')
     
@@ -75,21 +76,21 @@ class PARTICLE(object):
         """Update state."""
         self.isAlive = state     
     
-    def add_initPosnFunc(self, xFunc):
+    def add_xFunc(self, xFunc):
         """Add init position function."""
-        self.initPosnFunc = xFunc
+        self.xFunc = xFunc
     
     def init_posn(self):
         """Init position."""
-        self.posn = self.initPosnFunc()
+        self.posn = self.xFunc()
     
-    def add_initVelFunc(self, vFunc):
+    def add_vFunc(self, vFunc):
         """Add init velocity function."""
-        self.initVelFunc = vFunc
+        self.vFunc = vFunc
     
-    def init_vel(self):
+    def init_vel_vFunc(self):
         """Init velocity."""
-        self.vel = self.initVelFunc()
+        self.vel = self.vFunc()
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
