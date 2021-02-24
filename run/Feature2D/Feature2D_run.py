@@ -44,9 +44,9 @@ def xFunc():
     return mesh.init_ptcl_posn()
 
 vel_list = np.load('vel.npy')
-num = len(vel_list)
+num_vel_list = len(vel_list)
 def vFunc():
-    idx = random.randint(0, num-1)
+    idx = random.randint(0, num_vel_list-1)
     return vel_list[idx]
 
 ptcl.add_initPosnFunc(xFunc)
