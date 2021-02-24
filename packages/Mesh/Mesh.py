@@ -15,8 +15,10 @@ class MESH():
         """Import geometry as init."""
         self.geom = import_geom
         self.name = import_geom.name + '_Mesh'
-        self.mat_dict = dict([(v, k) 
-                              for k, v in import_geom.mat_dict.items()])
+        self.dict_num2mat = dict([(v, k) 
+                                  for k, v in import_geom.mat_dict.items()])
+        self.dict_mat2num = dict([(k, v) 
+                                  for k, v in import_geom.mat_dict.items()])
             
     def __str__(self):
         """Print out info."""
@@ -56,7 +58,8 @@ class MESH2D(MESH):
         np.savez(self.name, x=self.x, z=self.z,
                  mat=self.mat, res=self.res, ngrid=self.ngrid,
                  bl=self.geom.domain.bl, tr=self.geom.domain.tr,
-                 mat_dict=self.mat_dict)
+                 dict_num2mat=self.dict_num2mat,
+                 dict_mat2num=self.dict_mat2num)
 
     def plot(self, figsize=(8, 8), dpi=600, s_size=10):
         """Plot mesh."""
