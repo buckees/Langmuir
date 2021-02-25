@@ -46,6 +46,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                 stats.vel[chosen_ptcl] = list()
                 stats.erg[chosen_ptcl] = list()
                 stats.ang[chosen_ptcl] = list()
+                stats.rflct[chosen_ptcl] = list()
         ####################################
                 
         ########## print progress ##########
@@ -84,15 +85,15 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
             ########## check b.c. ##########
             if ptcl.posn[1] > mesh.top:
                 ptcl.update_state(False)
+                if oper.idiag:
+                    stats.escape += 1
+                break
             if not (mesh.left < ptcl.posn[0] < mesh.right):
                 posn = deepcopy(ptcl.posn)
                 posn[0]= mesh.left + ((posn[0] - mesh.left) % mesh.width)
                 ptcl.update_posn(posn)
             ################################
             
-            # check if the ptcl is dead
-            if not ptcl.isAlive:
-                break
             # check hit
             hit_mat, hit_idx = mesh.check_hit(ptcl.posn[0:2])
             if hit_mat:
@@ -106,7 +107,6 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                 hit_mat_name = mesh.dict_num2mat[hit_mat]
                 chosen_rct = chem.choose_react(ptcl.name, hit_mat_name, 
                                                ptcl_erg, 0.0)
-                
                 
                 if chosen_rct['Reaction_Type'] == 'Reflect':
                     # check max rflct
@@ -122,10 +122,12 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                     # now ireact = 1
                     mesh.change_mat(hit_idx)
                     ptcl.update_state(False)
-            # check if the ptcl is dead
-            if not ptcl.isAlive:
-                break
-    
+                    if oper.idiag:
+                        stats.etch += 1
+                    break
+        # when ptcl is dead        
+        if oper.idiag:
+            stats.rflct[ptcl.name].append(deepcopy(num_rflct))
     ################ OUTPUT DIAG INFO #####################
     if oper.idiag:
         print(stats.species)
@@ -133,3 +135,4 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
             np.save('initErg_' + sp, erg)
         for sp, ang in stats.ang.items():
             np.save('initAng_' + sp, ang)
+        return stats
