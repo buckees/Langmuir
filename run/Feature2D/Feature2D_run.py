@@ -36,7 +36,7 @@ oper.fname = 'Ar_Cl2_v01'
 # init mesh
 mesh = MESH2D()
 # readin mesh
-fname = 'Si_Etch_v01_Mesh'
+fname = 'SiEtch_VerticalPR_Mesh'
 mesh.readin_mesh(fname)
 
 # init ptcl
@@ -76,9 +76,10 @@ else:
 
 if oper.idiag:
     with open('SiEtch_SlidePR.txt', 'w') as f:
-        print(stats.species, file=f)
+        print(f'\n# of launched particles: {stats.launch}', file=f)
         print(f'\n# of escaped particles: {stats.escape}', file=f)
         print(f'\n# of etched particles: {stats.etch}', file=f)
+        print(f'\n# of terminated particles: {stats.term}', file=f)
     
     for sp in stats.erg:
         fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
