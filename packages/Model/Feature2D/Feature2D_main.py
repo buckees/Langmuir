@@ -6,7 +6,7 @@ from copy import deepcopy
 import random
 import pandas as pd
 
-def MAIN(oper, ptcl, mesh, chem, rct, rflct):
+def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
@@ -15,13 +15,9 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
     chem: CHEMISTRY(obj), contains all reaction information.
     rct: REACTION(obj), contains all reaction informatino.
     rflct: REFLECTION(obj), contains all reflection information.
+    stats: STATS(obj), contains all diagnostic information.
     """
-        
-    # init diagnostics
-    if oper.idiag:
-        init_posn, init_vel = list(), list()
-        rec_traj, rec_surf, rec_mesh = [], [], []
-    
+            
     # update mesh dict
     num_mat = len(mesh.dict_num2mat)
     for mat in chem.df_mat['Material']:
@@ -41,12 +37,17 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
         ########## choose particle #########
         chosen_ptcl = random.choices(sp_list, weights=weight, k=1)[0]
         ptcl.select_ptcl(chosen_ptcl)
+        if oper.idiag:
+            if chosen_ptcl in stats.species.keys():
+                stats.species[chosen_ptcl] += 1
+            else:
+                stats.species[chosen_ptcl] = 1
+                stats.posn[chosen_ptcl] = list()
+                stats.vel[chosen_ptcl] = list()
+                stats.erg[chosen_ptcl] = list()
+                stats.ang[chosen_ptcl] = list()
         ####################################
-        
-        idiag = False
-        if k > oper.num_ptcl - 20:
-            idiag = True
-        
+                
         ########## print progress ##########
         if (k + 1) % int(oper.num_ptcl/oper.num_plot) == 0:
             print('%d particles are launched!' % (k+1))
@@ -65,15 +66,12 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
         else:
             print('"f{ptcl.ptype}" is not found in the database.')
         if oper.idiag:
-            init_posn.append(ptcl.posn)
-            init_vel.append(ptcl.vel)
+            stats.posn[chosen_ptcl].append(deepcopy(ptcl.posn))
+            stats.vel[chosen_ptcl].append(deepcopy(ptcl.vel))
+            init_erg, init_ang = ptcl.vel2erg()
+            stats.erg[chosen_ptcl].append(deepcopy(init_erg))
+            stats.ang[chosen_ptcl].append(deepcopy(init_ang))
         ################################
-        
-        ########## record initial position ##########
-        if idiag:
-            rec_traj.append([])
-            rec_traj[-1].append(ptcl.posn.copy())
-        #############################################
         
         ###############################################
         ########## main loop for pctl launch ##########
@@ -94,17 +92,10 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
             
             # check if the ptcl is dead
             if not ptcl.isAlive:
-                # record ptcl posn when dead
-                if idiag:
-                    rec_traj[-1].append(deepcopy(ptcl.posn))
                 break
-            
             # check hit
             hit_mat, hit_idx = mesh.check_hit(ptcl.posn[0:2])
             if hit_mat:
-                # record the hit point
-                if idiag:
-                    rec_traj[-1].append(deepcopy(ptcl.posn))
                 # at this position, th ptcl hits a mat
                 # calc surf norm
                 rflct.svec, rflct.stheta = \
@@ -133,64 +124,8 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
                     ptcl.update_state(False)
             # check if the ptcl is dead
             if not ptcl.isAlive:
-                # record ptcl posn when dead
-                if idiag:
-                    rec_traj[-1].append(deepcopy(ptcl.posn))
                 break
     
-        if idiag:
-            rec_traj[-1] = np.array(rec_traj[-1]).T
-    
-    np.save('Feat2D_initPosn.npy', init_posn)
-    np.save('Feat2D_initVel.npy', init_vel)
-   
-    # rec_surf = []
-    # for temp_idx in mesh.surf_set:
-    #     temp_svec, temp_stheta = mesh.calc_surf_norm(temp_idx, 
-    #                                                   radius=surf_norm_range, 
-    #                                                   imode=surf_norm_mode)
-    #     rec_surf.append([temp_idx, temp_svec])
-    
-    # colMap = copy(cm.Accent)
-    # colMap.set_under(color='white')
-    
-    # def plot_traj(ax, traj):
-    #     # for i in range(10):
-    #     #     ax.plot(traj[num_ptcl - i - 1][0, :], traj[num_ptcl - i - 1][1, :],
-    #     #             marker='o', markersize=0.3, linestyle='-', linewidth=0.1)
-    #     for temp_ptcl in traj:
-    #         ax.plot(temp_ptcl[0, :], temp_ptcl[1, :],
-    #                 marker='o', markersize=0.3, linestyle='-', linewidth=0.1)
-    
-    # def plot_surf_norm(ax, posn, svec):
-    #     ax.quiver(posn[0], posn[1],
-    #               svec[0], svec[1], 
-    #               # scale=50, units='xy',
-    #               # headwidth=1, headlength=1, lw=0.01, edgecolors='k',
-    #               width=0.001)
-    
-    
-    # def plot_mesh(mat, ith):
-    #     fig, axes = plt.subplots(1, 2, figsize=(16, 8),
-    #                               constrained_layout=True)
-        
-    #     ax = axes[0]
-    #     ax.contourf(mesh.x, mesh.z, mat, cmap=colMap, vmin=0.2, extend='both')
-    #     ax.set_xlim(0.0, mesh.width)
-    #     ax.set_ylim(0.0, mesh.height)
-    #     plot_traj(ax, rec_traj)
-        
-    #     ax = axes[1]
-    #     ax.scatter(mesh.x, mesh.z, c=mat, s=1, cmap=colMap, vmin=0.2)
-    #     ax.set_xlim(0.0, mesh.width)
-    #     ax.set_ylim(0.0, mesh.height)
-    #     plot_traj(ax, rec_traj)
-    #     for item in rec_surf:
-    #         temp_idx, temp_svec = item
-    #         temp_posn = np.array([mesh.x[temp_idx], mesh.z[temp_idx]])
-    #         plot_surf_norm(ax, temp_posn, temp_svec)
-        
-    #     fig.savefig('mat_%d.png' % ith, dpi=300)
-    
-    # for ith, mat in enumerate(rec_mesh):
-    #     plot_mesh(mat, ith+1)
+    ################ OUTPUT DIAG INFO #####################
+    if idiag:
+        print(stats.species)
