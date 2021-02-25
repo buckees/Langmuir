@@ -127,5 +127,9 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                 break
     
     ################ OUTPUT DIAG INFO #####################
-    if idiag:
+    if oper.idiag:
         print(stats.species)
+        for sp, erg in stats.erg.items():
+            np.save('initErg_' + sp, erg)
+        for sp, ang in stats.ang.items():
+            np.save('initAng_' + sp, ang)
