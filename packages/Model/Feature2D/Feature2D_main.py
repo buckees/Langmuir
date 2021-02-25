@@ -58,7 +58,12 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct):
         # make the ptcl alive
         ptcl.update_state(True)
         ptcl.init_posn()
-        ptcl.init_vel()
+        if ptcl.ptype == 'Ion':
+            ptcl.init_vel_vFunc()
+        elif ptcl.ptype == 'Neut':
+            ptcl.init_vel_norm(oper.Tn)
+        else:
+            print('"f{ptcl.ptype}" is not found in the database.')
         if oper.idiag:
             init_posn.append(ptcl.posn)
             init_vel.append(ptcl.vel)
