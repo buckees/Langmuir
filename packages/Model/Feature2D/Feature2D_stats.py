@@ -14,3 +14,6 @@ class STATS(object):
         self.vel = dict()
         self.erg = dict()
         self.ang = dict()
+        self.rflct = dict()
+        self.escape = 0
+        self.etch = 0
