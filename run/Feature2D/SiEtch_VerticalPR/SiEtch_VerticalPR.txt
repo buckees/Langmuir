@@ -1,0 +1,8 @@
+
+# of launched particles: {'Cl+': 1949, 'Cl': 89941, 'Ar+': 4979, 'Cl2+': 3131}
+
+# of escaped particles: {'Cl+': 1449, 'Cl': 70507, 'Ar+': 3846, 'Cl2+': 2337}
+
+# of etched particles: {'Cl+': 452, 'Cl': 1, 'Ar+': 106, 'Cl2+': 600}
+
+# of terminated particles: {'Cl+': 49, 'Cl': 19370, 'Ar+': 1021, 'Cl2+': 192}
