@@ -19,7 +19,7 @@ from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 1000
+oper.num_ptcl = 100000 
 oper.max_step = 1000
 oper.step_fac = 0.5
 oper.max_rflct = 5
@@ -66,9 +66,11 @@ rflct = REFLECT()
 rct = REACT()
 
 # init stats
-stats = STATS()
-
-MAIN(oper, ptcl, mesh, chem, rct, rflct, stats)
+if oper.idiag:
+    stats = STATS()
+    stats = MAIN(oper, ptcl, mesh, chem, rct, rflct, stats)
+else:
+    MAIN(oper, ptcl, mesh, chem, rct, rflct)
 
 if oper.idiag:
     vel = np.load('Feat2D_initVel.npy')
