@@ -14,6 +14,7 @@ from packages.Model.Feature2D.Feature2D_mesh import MESH2D
 from packages.Model.Feature2D.Feature2D_chem import CHEMISTRY
 from packages.Model.Feature2D.Feature2D_rflct import REFLECT
 from packages.Model.Feature2D.Feature2D_rct import REACT
+from packages.Model.Feature2D.Feature2D_stats import STATS
 from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
@@ -64,7 +65,10 @@ rflct = REFLECT()
 # init reaction
 rct = REACT()
 
-MAIN(oper, ptcl, mesh, chem, rct, rflct)
+# init stats
+stats = STATS()
+
+MAIN(oper, ptcl, mesh, chem, rct, rflct, stats)
 
 if oper.idiag:
     vel = np.load('Feat2D_initVel.npy')
