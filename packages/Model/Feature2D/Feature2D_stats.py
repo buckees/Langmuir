@@ -15,5 +15,5 @@ class STATS(object):
         self.erg = dict()
         self.ang = dict()
         self.rflct = dict()
-        self.escape = 0
-        self.etch = 0
+        self.escape = dict()
+        self.etch = dict()
