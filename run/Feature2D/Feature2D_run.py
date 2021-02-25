@@ -7,6 +7,8 @@ for i in glob.glob("*.png"):
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import pandas as pd
+from collections import Counter
 
 from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Common.Particle import PARTICLE
@@ -73,38 +75,44 @@ else:
     MAIN(oper, ptcl, mesh, chem, rct, rflct)
 
 if oper.idiag:
-    vel = np.load('Feat2D_initVel.npy')
+    with open('SiEtch_SlidePR.txt', 'w') as f:
+        print(stats.species, file=f)
+        print(f'\n# of escaped particles: {stats.escape}', file=f)
+        print(f'\n# of etched particles: {stats.etch}', file=f)
     
-    fig, axes = plt.subplots(2, 2, figsize=(12, 8), dpi=600,
+    for sp in stats.erg:
+        fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
+                                   constrained_layout=True)
+        
+        ax = axes[0]
+        ax.hist(stats.erg[sp], bins=100, density=False)
+        ax.set_title('Energy Distribution')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('a.u.')
+        
+        ax = axes[1]
+        ax.hist(stats.ang[sp], bins=100, density=False)
+        ax.set_title('Velocity Distribution')
+        ax.set_xlabel('Angle (degree)')
+        ax.set_ylabel('a.u.')
+        
+        fig.suptitle(sp, fontsize=20)
+        fig.savefig('init_' + sp + '.png', dpi=600)
+        plt.close()
+    
+    n_sp = len(stats.rflct)
+    fig, axes = plt.subplots(1, n_sp, figsize=(6*n_sp, 6), dpi=600,
                                constrained_layout=True)
-    
-    ax = axes[0, 0]
-    ax.hist2d(vel[:, 0], vel[:, 1], bins=200, density=False)
-    ax.set_title('Velocity Distribution')
-    ax.set_xlabel('Vx (m/s)')
-    ax.set_ylabel('Vz (m/s)')
-    
-    ax = axes[0, 1]
-    ax.hist2d(vel[:, 0], vel[:, 1], bins=200, density=False)
-    ax.set_title('Velocity Distribution')
-    ax.set_xlabel('Angle (degree)')
-    ax.set_ylabel('Energy (eV)')
-    
-    ax = axes[1, 0]
-    ax.hist(vel[:, 0], bins=100, density=False)
-    ax.set_title('Ion Energy Distribution')
-    ax.set_xlabel('Energy (eV)')
-    ax.set_ylabel('Count')
-    # ax.set_xlim([0, 200])
-    
-    ax = axes[1, 1]
-    ax.hist(vel[:, 1], bins=100, density=False)
-    ax.set_title('Ion Angular Distribution')
-    ax.set_xlabel('Angle (degree)')
-    ax.set_ylabel('Count')
-    # ax.set_xlim([-4, 4])
-    
-    fpng = 'init_distrb'
-    fig.savefig(fpng + '.png', dpi=600)
-    plt.close()
-    
+    for i, sp in enumerate(stats.rflct):
+        ax = axes[i]
+        temp = stats.rflct[sp]
+        # ax.hist(temp)
+        # pd.Series(temp).value_counts().plot(kind='bar')
+        cout = Counter(temp)
+        ax.bar(cout.keys(), cout.values())
+        ax.set_title(sp)
+        ax.set_xlabel('Number of Reflections')
+        ax.set_ylabel('Counts')
+    fig.suptitle('Stats of Reflection', fontsize=20)
+    fig.savefig('Reflection.png', dpi=600)
+    plt.close()    
