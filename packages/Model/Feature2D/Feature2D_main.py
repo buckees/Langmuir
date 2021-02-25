@@ -47,6 +47,8 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                 stats.erg[chosen_ptcl] = list()
                 stats.ang[chosen_ptcl] = list()
                 stats.rflct[chosen_ptcl] = list()
+                stats.escape[chosen_ptcl] = 1
+                stats.etch[chosen_ptcl] = 1
         ####################################
                 
         ########## print progress ##########
@@ -67,11 +69,11 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         else:
             print('"f{ptcl.ptype}" is not found in the database.')
         if oper.idiag:
-            stats.posn[chosen_ptcl].append(deepcopy(ptcl.posn))
-            stats.vel[chosen_ptcl].append(deepcopy(ptcl.vel))
+            stats.posn[ptcl.name].append(deepcopy(ptcl.posn))
+            stats.vel[ptcl.name].append(deepcopy(ptcl.vel))
             init_erg, init_ang = ptcl.vel2erg()
-            stats.erg[chosen_ptcl].append(deepcopy(init_erg))
-            stats.ang[chosen_ptcl].append(deepcopy(init_ang))
+            stats.erg[ptcl.name].append(deepcopy(init_erg))
+            stats.ang[ptcl.name].append(deepcopy(init_ang))
         ################################
         
         ###############################################
@@ -86,7 +88,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
             if ptcl.posn[1] > mesh.top:
                 ptcl.update_state(False)
                 if oper.idiag:
-                    stats.escape += 1
+                    stats.escape[ptcl.name] += 1
                 break
             if not (mesh.left < ptcl.posn[0] < mesh.right):
                 posn = deepcopy(ptcl.posn)
@@ -123,16 +125,15 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                     mesh.change_mat(hit_idx)
                     ptcl.update_state(False)
                     if oper.idiag:
-                        stats.etch += 1
+                        stats.etch[ptcl.name] += 1
                     break
         # when ptcl is dead        
         if oper.idiag:
             stats.rflct[ptcl.name].append(deepcopy(num_rflct))
     ################ OUTPUT DIAG INFO #####################
     if oper.idiag:
-        print(stats.species)
-        for sp, erg in stats.erg.items():
-            np.save('initErg_' + sp, erg)
-        for sp, ang in stats.ang.items():
-            np.save('initAng_' + sp, ang)
+        # for sp, erg in stats.erg.items():
+        #     np.save('initErg_' + sp, erg)
+        # for sp, ang in stats.ang.items():
+        #     np.save('initAng_' + sp, ang)
         return stats
