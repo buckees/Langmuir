@@ -9,7 +9,7 @@ class STATS(object):
         
         name: str, var, name of the CHEMISTRY.
         """
-        self.species = dict()
+        self.launch = dict()
         self.posn = dict()
         self.vel = dict()
         self.erg = dict()
@@ -17,3 +17,4 @@ class STATS(object):
         self.rflct = dict()
         self.escape = dict()
         self.etch = dict()
+        self.term = dict()
