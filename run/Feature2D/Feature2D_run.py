@@ -26,6 +26,7 @@ oper.surf_norm_range = 3
 oper.surf_norm_mode = 'Sum Vector'
 oper.num_plot = 5
 oper.prob_rflct = 0.5
+oper.Tn = 0.025 # in eV, temperature for neutrals
 oper.idiag = True
 oper.fname = 'Ar_Cl2_v01'
 
@@ -36,7 +37,7 @@ fname = 'Si_Etch_v01_Mesh'
 mesh.readin_mesh(fname)
 
 # init ptcl
-ptcl = PARTICLE()
+ptcl = PARTICLE() 
 ptcl.load_database()
 # ptcl.customize_ptcl('Ion', 40, 1)
 

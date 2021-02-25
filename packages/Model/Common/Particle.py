@@ -5,10 +5,11 @@ Particle.py serves as a data center/hub,
 """
 
 import numpy as np
-from math import sqrt, acos, degrees
+from math import sqrt, sin, cos, acos, degrees
 import pandas as pd
+from scipy.stats import maxwell
 
-from packages.Constants import (AMU, J2EV)
+from packages.Constants import (AMU, J2EV, EV2J)
 
 class PARTICLE(object):
     """Create PARTICLE() object."""
@@ -81,7 +82,7 @@ class PARTICLE(object):
         self.xFunc = xFunc
     
     def init_posn(self):
-        """Init position."""
+        """Init position to xFunc()."""
         self.posn = self.xFunc()
     
     def add_vFunc(self, vFunc):
@@ -89,8 +90,23 @@ class PARTICLE(object):
         self.vFunc = vFunc
     
     def init_vel_vFunc(self):
-        """Init velocity."""
+        """Init velocity to vFunc()."""
         self.vel = self.vFunc()
+    
+    def init_vel_norm(self, Tn=0.025):
+        """
+        Init velocity to normal distribution.
+        
+        Tn: float, var, temperature for neutrals in eV.
+        """
+        a = sqrt(Tn*EV2J/(self.mass*AMU))  # a = sqrt(kT/m)
+        speed = maxwell.rvs(loc=0.0, scale=a, size=1)
+        self.vel = np.zeros(3)
+        mu, sigma = 0.0, 0.1  # default mean and standard deviation
+        theta = np.random.normal(mu, sigma)
+        self.vel[0], self.vel[1] = sin(theta), -cos(theta)
+        self.vel = speed * self.vel
+        
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
