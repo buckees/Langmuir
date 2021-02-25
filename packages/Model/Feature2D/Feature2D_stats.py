@@ -10,6 +10,7 @@ class STATS(object):
         name: str, var, name of the CHEMISTRY.
         """
         self.species = dict()
+        self.posn = dict()
         self.vel = dict()
         self.erg = dict()
         self.ang = dict()
