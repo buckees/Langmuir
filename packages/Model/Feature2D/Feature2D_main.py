@@ -38,10 +38,10 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         chosen_ptcl = random.choices(sp_list, weights=weight, k=1)[0]
         ptcl.select_ptcl(chosen_ptcl)
         if oper.idiag:
-            if chosen_ptcl in stats.species.keys():
-                stats.species[chosen_ptcl] += 1
+            if chosen_ptcl in stats.launch.keys():
+                stats.launch[chosen_ptcl] += 1
             else:
-                stats.species[chosen_ptcl] = 1
+                stats.launch[chosen_ptcl] = 1
                 stats.posn[chosen_ptcl] = list()
                 stats.vel[chosen_ptcl] = list()
                 stats.erg[chosen_ptcl] = list()
@@ -49,6 +49,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                 stats.rflct[chosen_ptcl] = list()
                 stats.escape[chosen_ptcl] = 1
                 stats.etch[chosen_ptcl] = 1
+                stats.term[chosen_ptcl] = 1
         ####################################
                 
         ########## print progress ##########
@@ -114,6 +115,8 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                     # check max rflct
                     if num_rflct > oper.max_rflct:
                         ptcl.update_state(False)
+                        if oper.idiag:
+                            stats.term[ptcl.name] += 1
                         break
                     
                     vel = deepcopy(ptcl.vel)
