@@ -25,7 +25,7 @@ def MAIN(oper, ptcl, field, coll, move=None):
         ########## init ptcl ##########
         ptcl.update_state(True)
         ptcl.init_posn()
-        ptcl.init_vel()
+        ptcl.init_vel_vFunc()
         if oper.idiag:
             ptcl_erg, ptcl_ang = ptcl.vel2erg()
             init_erg.append(ptcl_erg)
