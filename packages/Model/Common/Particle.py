@@ -106,7 +106,6 @@ class PARTICLE(object):
         theta = np.random.normal(mu, sigma)
         self.vel[0], self.vel[1] = sin(theta), -cos(theta)
         self.vel = speed * self.vel
-        
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
