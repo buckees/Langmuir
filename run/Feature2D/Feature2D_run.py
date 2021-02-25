@@ -26,6 +26,7 @@ oper.surf_norm_range = 3
 oper.surf_norm_mode = 'Sum Vector'
 oper.num_plot = 5
 oper.prob_rflct = 0.5
+oper.Tn = 0.025
 oper.idiag = True
 oper.fname = 'Ar_Cl2_v01'
 
