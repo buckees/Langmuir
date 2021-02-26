@@ -1,0 +1,315 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Subsubsection
+Ambipolar Appoximation
+\end_layout
+
+\begin_layout Standard
+In the steady state where the background gas is dominant, we make the congruence
+ assumption that the flux of electrons and ions out of any region must be
+ equal, 
+\begin_inset Formula $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$
+\end_inset
+
+, such that charge does not build up.
+ This is still true in the presence of ionizing collisions, which create
+ equal numbers of both negative and positive species.
+ Since the electrons are ligher, and would tend to flow out faster (in an
+ unmagnetized plasma), an electric field must spring up to maintain the
+ local flux balance.
+ That is, a few more electrons than ions initially leave the plasma region
+ to set up a charge imbalance and consequently an electric field.
+ Let's expand the flux balance, 
+\begin_inset Formula $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$
+\end_inset
+
+,
+\begin_inset Formula 
+\[
+-\mu_{e}n_{e}\vec{E}-D_{e}\nabla n_{e}=\mu_{i}n_{i}\vec{E}-D_{i}\nabla n_{i}
+\]
+
+\end_inset
+
+Note that the drift term is negative for electrons and positive for ions,
+ where E-field drags electrons down and speed ions up to balance the fluxes.
+ Assume charge neutrality in space, 
+\begin_inset Formula $n_{e}=n_{i}$
+\end_inset
+
+, E-field can be solved as
+\begin_inset Formula 
+\[
+\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This E-field is called ambipolar E-field and substituted to the flux,
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{e}-D_{i}\nabla n_{e}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{e}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can see the coefficient is symmetric, and equal to electron and ion.
+ A new diffusion coefficient can be defined as
+\begin_inset Formula 
+\[
+D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{e}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\mu_{e}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{e}})\gg\mu_{i}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{i}}),\:since\:m_{e}\ll m_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+D_{ambi}\approx D_{i}+\frac{\mu_{i}}{\mu_{e}}D_{e}=D_{i}(1+\frac{T_{e}}{T_{i}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+put it back to the continuity equation,
+\begin_inset Formula 
+\[
+\frac{\partial n}{\partial t}+D_{ambi}\nabla^{2}n=S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the continuity becomes a standard DIFFUSION equation with source term,
+ and much easier to solve.
+ When using ambipolar diffusion appoximation, we only calculate ion density
+ 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+, and enforce charge neutrality, 
+\begin_inset Formula $n_{e}=n_{i}$
+\end_inset
+
+.
+ Ambipolar E-field, 
+\begin_inset Formula $E_{ambi}$
+\end_inset
+
+, can be used for electron energy equation.
+ In this way, Poisson's equation is avoided.
+\end_layout
+
+\begin_layout Standard
+Computatinally, ion density, 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+, is first solved from the continuity equation,
+\begin_inset Formula 
+\[
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After that, it is simply to put 
+\begin_inset Formula $n_{e}$
+\end_inset
+
+ equal to 
+\begin_inset Formula $n_{i}$
+\end_inset
+
+.
+ And electric field is obtained by,
+\begin_inset Formula 
+\[
+\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When there are more than one ions in plasmas, ambipolar assumption might
+ result in complex solution.
+ Another trick could be imposed for simplicity.
+ Assume that each ion gets equilibrium only with electrons, indicating that
+ ion-ion interaction is ignored, we can have ambipolar equations for each
+ ion.
+ Taking a simple case that contains two ions, the original ambiplor assumption
+ is,
+\begin_inset Formula 
+\[
+n_{e}=n_{i1}+n_{i2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e}=\vec{\Gamma}_{i1}+\vec{\Gamma}_{i2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The stronger ambipolar assumption becomes,
+\begin_inset Formula 
+\[
+n_{e}=n_{e1}+n_{e2},\;n_{e1}=n_{i1},\;and\;n_{e2}=n_{i2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{\Gamma}_{e}=\vec{\Gamma}_{e1}+\vec{\Gamma}_{e2},\;\vec{\Gamma}_{e1}=\vec{\Gamma}_{i1},\;and\;\vec{\Gamma}_{e2}=\vec{\Gamma}_{i2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The additional assumption, in some degree, divides the whole plasma into
+ two independent plasmas.
+ Ions interact only with electrons, instead of other ions.
+ Computationally, the densities of the two ions are computed separately
+ and independently.
+ After that, make 
+\begin_inset Formula $n_{e}=n_{i1}+n_{i2}$
+\end_inset
+
+.
+ Internal electric field is then only determined by the electron density.
+\end_layout
+
+\end_body
+\end_document

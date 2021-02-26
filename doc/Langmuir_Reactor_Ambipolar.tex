@@ -1,0 +1,105 @@
+%% LyX 2.3.6.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{babel}
+\begin{document}
+
+\subsubsection{Ambipolar Appoximation}
+
+In the steady state where the background gas is dominant, we make
+the congruence assumption that the flux of electrons and ions out
+of any region must be equal, $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$,
+such that charge does not build up. This is still true in the presence
+of ionizing collisions, which create equal numbers of both negative
+and positive species. Since the electrons are ligher, and would tend
+to flow out faster (in an unmagnetized plasma), an electric field
+must spring up to maintain the local flux balance. That is, a few
+more electrons than ions initially leave the plasma region to set
+up a charge imbalance and consequently an electric field. Let's expand
+the flux balance, $\vec{\Gamma}_{e}=\vec{\Gamma}_{i}$,
+\[
+-\mu_{e}n_{e}\vec{E}-D_{e}\nabla n_{e}=\mu_{i}n_{i}\vec{E}-D_{i}\nabla n_{i}
+\]
+Note that the drift term is negative for electrons and positive for
+ions, where E-field drags electrons down and speed ions up to balance
+the fluxes. Assume charge neutrality in space, $n_{e}=n_{i}$, E-field
+can be solved as
+\[
+\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+\[
+\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+This E-field is called ambipolar E-field and substituted to the flux,
+\[
+\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{e}-D_{i}\nabla n_{e}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{e}
+\]
+
+You can see the coefficient is symmetric, and equal to electron and
+ion. A new diffusion coefficient can be defined as
+\[
+D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
+\]
+\[
+\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{e}
+\]
+\[
+\mu_{e}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{e}})\gg\mu_{i}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{i}}),\:since\:m_{e}\ll m_{i}
+\]
+\[
+D_{ambi}\approx D_{i}+\frac{\mu_{i}}{\mu_{e}}D_{e}=D_{i}(1+\frac{T_{e}}{T_{i}})
+\]
+
+put it back to the continuity equation,
+\[
+\frac{\partial n}{\partial t}+D_{ambi}\nabla^{2}n=S
+\]
+
+Now the continuity becomes a standard DIFFUSION equation with source
+term, and much easier to solve. When using ambipolar diffusion appoximation,
+we only calculate ion density $n_{i}$, and enforce charge neutrality,
+$n_{e}=n_{i}$. Ambipolar E-field, $E_{ambi}$, can be used for electron
+energy equation. In this way, Poisson's equation is avoided.
+
+Computatinally, ion density, $n_{i}$, is first solved from the continuity
+equation,
+\[
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
+\]
+
+After that, it is simply to put $n_{e}$ equal to $n_{i}$. And electric
+field is obtained by,
+\[
+\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\]
+
+When there are more than one ions in plasmas, ambipolar assumption
+might result in complex solution. Another trick could be imposed for
+simplicity. Assume that each ion gets equilibrium only with electrons,
+indicating that ion-ion interaction is ignored, we can have ambipolar
+equations for each ion. Taking a simple case that contains two ions,
+the original ambiplor assumption is,
+\[
+n_{e}=n_{i1}+n_{i2}
+\]
+\[
+\vec{\Gamma}_{e}=\vec{\Gamma}_{i1}+\vec{\Gamma}_{i2}
+\]
+
+The stronger ambipolar assumption becomes,
+\[
+n_{e}=n_{e1}+n_{e2},\;n_{e1}=n_{i1},\;and\;n_{e2}=n_{i2}
+\]
+\[
+\vec{\Gamma}_{e}=\vec{\Gamma}_{e1}+\vec{\Gamma}_{e2},\;\vec{\Gamma}_{e1}=\vec{\Gamma}_{i1},\;and\;\vec{\Gamma}_{e2}=\vec{\Gamma}_{i2}
+\]
+
+The additional assumption, in some degree, divides the whole plasma
+into two independent plasmas. Ions interact only with electrons, instead
+of other ions. Computationally, the densities of the two ions are
+computed separately and independently. After that, make $n_{e}=n_{i1}+n_{i2}$.
+Internal electric field is then only determined by the electron density.
+\end{document}
