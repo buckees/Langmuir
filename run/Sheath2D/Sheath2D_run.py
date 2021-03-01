@@ -20,7 +20,7 @@ from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 200000 
+oper.num_ptcl = 20000
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
 oper.Tg = 0.025  # eV
@@ -137,14 +137,14 @@ ax.hist(erg, bins=100, density=False)
 ax.set_title('Ion Energy Distribution')
 ax.set_xlabel('Energy (eV)')
 ax.set_ylabel('Count')
-ax.set_xlim([0, 200])
+# ax.set_xlim([0, 200])
 
 ax = axes[1, 1]
 ax.hist(ang, bins=100, density=False)
 ax.set_title('Ion Angular Distribution')
 ax.set_xlabel('Angle (degree)')
 ax.set_ylabel('Count')
-ax.set_xlim([-10, 10])
+# ax.set_xlim([-10, 10])
 
 
 fig.savefig(fname + '.png', dpi=600)
