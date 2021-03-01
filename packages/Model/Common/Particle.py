@@ -9,7 +9,7 @@ from math import sqrt, sin, cos, acos, degrees
 import pandas as pd
 from scipy.stats import maxwell
 
-from packages.Constants import (AMU, J2EV, EV2J)
+from packages.Constants import (AMU, J2EV, EV2J, K2J)
 
 class PARTICLE(object):
     """Create PARTICLE() object."""
@@ -89,7 +89,7 @@ class PARTICLE(object):
         """Add init velocity function."""
         self.vFunc = vFunc
     
-    def init_vel_vFunc(self):
+    def setVel_vFunc(self):
         """Init velocity to vFunc()."""
         self.vel = self.vFunc()
     

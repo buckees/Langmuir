@@ -64,7 +64,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         ptcl.update_state(True)
         ptcl.init_posn()
         if ptcl.ptype == 'Ion':
-            ptcl.init_vel_vFunc()
+            ptcl.setVel_vFunc()
         elif ptcl.ptype == 'Neut':
             ptcl.setVel_norm(oper.Tn)
         else:
