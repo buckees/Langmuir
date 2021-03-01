@@ -26,7 +26,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
             mesh.dict_mat2num[mat] = num_mat
             mesh.dict_num2mat[num_mat] = mat
     # readin flux
-    df_flux = pd.read_csv(oper.fname + '_Flux.csv', header=0)
+    df_flux = pd.read_csv(oper.fcase + '_Flux.csv', header=0)
     sp_list = df_flux['Species'].tolist()
     weight = df_flux['Flux'].tolist()
     

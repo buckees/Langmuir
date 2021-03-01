@@ -21,7 +21,7 @@ from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 10000
+oper.num_ptcl = 100000
 oper.max_step = 1000
 oper.step_fac = 0.5
 oper.max_rflct = 5
@@ -31,13 +31,15 @@ oper.num_plot = 5
 oper.prob_rflct = 0.5
 oper.Tn = 0.025
 oper.idiag = True
-oper.fname = 'Ar_Cl2_v01'
+oper.fcase = 'SiEtch_VerticalPR'
+oper.fchem = 'Ar_Cl2_v01'
+oper.fmesh = 'SiEtch_VerticalPR_Mesh'
+
 
 # init mesh
 mesh = MESH2D()
 # readin mesh
-fname = 'SiEtch_VerticalPR_Mesh'
-mesh.readin_mesh(fname)
+mesh.readin_mesh(oper.fmesh)
 
 # init ptcl
 ptcl = PARTICLE()
@@ -58,8 +60,8 @@ ptcl.add_vFunc(vFunc)
 
 # init chemistry
 chem = CHEMISTRY()
-chem.load(oper.fname)
-chem.save(oper.fname)
+chem.load(oper.fchem)
+chem.save(oper.fchem)
 
 # init reflection
 rflct = REFLECT()
@@ -69,7 +71,7 @@ rct = REACT()
 
 # init stats
 if oper.idiag:
-    stats = STATS(oper.fname)
+    stats = STATS(oper.fchem)
     stats = MAIN(oper, ptcl, mesh, chem, rct, rflct, stats)
 else:
     MAIN(oper, ptcl, mesh, chem, rct, rflct)
@@ -81,7 +83,7 @@ if oper.idiag:
     stats.df_sp['Terminated Pct'] = \
         stats.df_sp['Terminated']/stats.df_sp['Launched']
     
-    fcsv = oper.fname + '_Stats.csv'
+    fcsv = oper.fcase + '_Stats.csv'
     stats.df_sp.to_csv(fcsv, index=True,
                        columns=['Launched', 'Escaped', 'Escaped Pct',
                                 'Etch', 'Etch Pct',
