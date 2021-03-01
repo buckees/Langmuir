@@ -93,24 +93,21 @@ class PARTICLE(object):
         """Init velocity to vFunc()."""
         self.vel = self.vFunc()
     
-    def setVel_norm(self, Tn=300, v0=np.zeros(3)):
+    def setVel_norm(self, Tn=300, v0=np.zeros(3), dim=2):
         """
         Set velocity to normal distribution.
         
         Tn: float, var, temperature for neutrals in K.
+        v0: arr(3) of float, average velocity.
+        dim: int, chosen from {1, 2, 3}, dimension.
         """
-        v0_x, v0_z, v0_y = v0
-        sigma = sqrt(Tn*K2J/(self.mass*AMU))  # a = sqrt(kT/m)
-        vx = np.random.normal(v0_x, sigma, 1)[0]
-        vz = np.random.normal(v0_z, sigma, 1)[0]
-        vy = np.random.normal(v0_y, sigma, 1)[0]
-        self.vel = np.array([vx, vz, vy])
-        # speed = maxwell.rvs(loc=0.0, scale=a, size=1)
-        # self.vel = np.zeros(3)
-        # mu, sigma = 0.0, 0.1  # default mean and standard deviation
-        # theta = np.random.normal(mu, sigma)
-        # self.vel[0], self.vel[1] = sin(theta), -cos(theta)
-        # self.vel = speed * self.vel
+        self.vel = np.zeros(3)
+        if dim == 1:
+            pass
+        elif dim == 2:
+            pass
+        elif dim == 3:
+            pass
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
