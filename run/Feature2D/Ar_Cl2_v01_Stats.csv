@@ -1,0 +1,12 @@
+Species,Launched,Escaped,Escaped Pct,Etch,Etch Pct,Terminated,Terminated Pct
+Ar+,468,401,0.86,12,0.03,54,0.12
+Cl+,171,129,0.75,39,0.23,2,0.01
+Cl2+,321,259,0.81,58,0.18,3,0.01
+Cl,9040,7965,0.88,0,0.00,1067,0.12
+SiCl2,0,0,NA,0,NA,0,NA
+
+Material,Etch
+PR_,0
+Si_,109
+SiO2_,0
+SiCl_,0
