@@ -66,7 +66,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         if ptcl.ptype == 'Ion':
             ptcl.init_vel_vFunc()
         elif ptcl.ptype == 'Neut':
-            ptcl.init_vel_norm(oper.Tn)
+            ptcl.setVel_norm(oper.Tn)
         else:
             print('"f{ptcl.ptype}" is not found in the database.')
         if oper.idiag:
