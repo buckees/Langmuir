@@ -25,7 +25,7 @@ def MAIN(oper, ptcl, field, coll, move=None):
         ########## init ptcl ##########
         ptcl.update_state(True)
         ptcl.init_posn()
-        ptcl.init_vel_vFunc()
+        ptcl.setVel_vFunc()
         if oper.idiag:
             ptcl_erg, ptcl_ang = ptcl.vel2erg()
             init_erg.append(ptcl_erg)
@@ -68,8 +68,7 @@ def MAIN(oper, ptcl, field, coll, move=None):
             prob_coll = 1.0 - exp( - coll_freq * dt)
             rand = np.random.uniform(0.0, 1.0)
             if rand < prob_coll:
-                vel_new = coll.func_ReinitVel(ptcl.vel)
-                ptcl.update_vel(vel_new)
+                ptcl.setVel_norm()
     
     ########## plot results ##########
     print(f'{oper.num_ptcl} particles are launched.' 
