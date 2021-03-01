@@ -21,7 +21,7 @@ from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 100000 
+oper.num_ptcl = 10000
 oper.max_step = 1000
 oper.step_fac = 0.5
 oper.max_rflct = 5
@@ -69,30 +69,34 @@ rct = REACT()
 
 # init stats
 if oper.idiag:
-    stats = STATS()
+    stats = STATS(oper.fname)
     stats = MAIN(oper, ptcl, mesh, chem, rct, rflct, stats)
 else:
     MAIN(oper, ptcl, mesh, chem, rct, rflct)
 
 if oper.idiag:
-    with open('SiEtch_SlidePR.txt', 'w') as f:
-        print(f'\n# of launched particles: {stats.launch}', file=f)
-        print(f'\n# of escaped particles: {stats.escape}', file=f)
-        print(f'\n# of etched particles: {stats.etch}', file=f)
-        print(f'\n# of terminated particles: {stats.term}', file=f)
+    stats.df['Escaped Pct'] = stats.df['Escaped']/stats.df['Launched']
+    stats.df['Etch Pct'] = stats.df['Etch']/stats.df['Launched']
+    stats.df['Terminated Pct'] = stats.df['Terminated']/stats.df['Launched']
+    stats.df.to_csv(fname + '_Stats.csv', index=True,
+                   columns=['Launched', 'Escaped', 'Escaped Pct',
+                            'Etch', 'Etch Pct',
+                            'Terminated', 'Terminated Pct'],
+                   float_format='%.2f',
+                   na_rep='NA')
     
-    for sp in stats.erg:
+    for sp in stats.df.index:
         fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
                                    constrained_layout=True)
         
         ax = axes[0]
-        ax.hist(stats.erg[sp], bins=100, density=False)
+        ax.hist(stats.df.loc[sp, 'Init Erg'], bins=100, density=False)
         ax.set_title('Energy Distribution')
         ax.set_xlabel('Energy (eV)')
         ax.set_ylabel('a.u.')
         
         ax = axes[1]
-        ax.hist(stats.ang[sp], bins=100, density=False)
+        ax.hist(stats.df.loc[sp, 'Init Ang'], bins=100, density=False)
         ax.set_title('Velocity Distribution')
         ax.set_xlabel('Angle (degree)')
         ax.set_ylabel('a.u.')
@@ -101,12 +105,12 @@ if oper.idiag:
         fig.savefig('init_' + sp + '.png', dpi=600)
         plt.close()
     
-    n_sp = len(stats.rflct)
+    n_sp = len(stats.df)
     fig, axes = plt.subplots(1, n_sp, figsize=(6*n_sp, 6), dpi=600,
                                constrained_layout=True)
-    for i, sp in enumerate(stats.rflct):
+    for i, sp in enumerate(stats.df.index):
         ax = axes[i]
-        temp = stats.rflct[sp]
+        temp = stats.df.loc[sp, 'Reflection']
         # ax.hist(temp)
         # pd.Series(temp).value_counts().plot(kind='bar')
         cout = Counter(temp)

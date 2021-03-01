@@ -38,18 +38,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         chosen_ptcl = random.choices(sp_list, weights=weight, k=1)[0]
         ptcl.select_ptcl(chosen_ptcl)
         if oper.idiag:
-            if chosen_ptcl in stats.launch.keys():
-                stats.launch[chosen_ptcl] += 1
-            else:
-                stats.launch[chosen_ptcl] = 1
-                stats.posn[chosen_ptcl] = list()
-                stats.vel[chosen_ptcl] = list()
-                stats.erg[chosen_ptcl] = list()
-                stats.ang[chosen_ptcl] = list()
-                stats.rflct[chosen_ptcl] = list()
-                stats.escape[chosen_ptcl] = 1
-                stats.etch[chosen_ptcl] = 1
-                stats.term[chosen_ptcl] = 1
+            stats.df.loc[ptcl.name, 'Launched'] += 1
         ####################################
                 
         ########## print progress ##########
@@ -70,11 +59,11 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         else:
             print('"f{ptcl.ptype}" is not found in the database.')
         if oper.idiag:
-            stats.posn[ptcl.name].append(deepcopy(ptcl.posn))
-            stats.vel[ptcl.name].append(deepcopy(ptcl.vel))
+            stats.df.loc[ptcl.name, 'Init Posn'].append(deepcopy(ptcl.posn))
+            stats.df.loc[ptcl.name, 'Init Vel'].append(deepcopy(ptcl.vel))
             init_erg, init_ang = ptcl.vel2erg()
-            stats.erg[ptcl.name].append(deepcopy(init_erg))
-            stats.ang[ptcl.name].append(deepcopy(init_ang))
+            stats.df.loc[ptcl.name, 'Init Erg'].append(deepcopy(init_erg))
+            stats.df.loc[ptcl.name, 'Init Ang'].append(deepcopy(init_ang))
         ################################
         
         ###############################################
@@ -89,7 +78,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
             if ptcl.posn[1] > mesh.top:
                 ptcl.update_state(False)
                 if oper.idiag:
-                    stats.escape[ptcl.name] += 1
+                    stats.df.loc[ptcl.name, 'Escaped'] += 1
                 break
             if not (mesh.left < ptcl.posn[0] < mesh.right):
                 posn = deepcopy(ptcl.posn)
@@ -116,7 +105,7 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                     if num_rflct > oper.max_rflct:
                         ptcl.update_state(False)
                         if oper.idiag:
-                            stats.term[ptcl.name] += 1
+                            stats.df.loc[ptcl.name, 'Terminated'] += 1
                         break
                     
                     vel = deepcopy(ptcl.vel)
@@ -128,11 +117,11 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
                     mesh.change_mat(hit_idx)
                     ptcl.update_state(False)
                     if oper.idiag:
-                        stats.etch[ptcl.name] += 1
+                        stats.df.loc[ptcl.name, 'Etch'] += 1
                     break
         # when ptcl is dead        
         if oper.idiag:
-            stats.rflct[ptcl.name].append(deepcopy(num_rflct))
+            stats.df.loc[ptcl.name, 'Reflection'].append(deepcopy(num_rflct))
     ################ OUTPUT DIAG INFO #####################
     if oper.idiag:
         # for sp, erg in stats.erg.items():
