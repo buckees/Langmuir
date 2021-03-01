@@ -20,7 +20,7 @@ from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 200000
+oper.num_ptcl = 200000 
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
 oper.Tg = 0.025  # eV
@@ -48,14 +48,14 @@ def vFunc():
     a = sqrt(oper.Ti*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
     speed = maxwell.rvs(loc=0.0, scale=a, size=1)
     vel = np.zeros(3)
-    mu, sigma = 0.0, 0.1  # default mean and standard deviation
+    mu, sigma = 0.0, 10.0  # default mean and standard deviation
     theta = np.random.normal(mu, sigma)
     vel[0], vel[1] = sin(theta), -cos(theta)
     vel = speed * vel
     return vel
 
-ptcl.add_initPosnFunc(xFunc)
-ptcl.add_initVelFunc(vFunc)
+ptcl.add_xFunc(xFunc)
+ptcl.add_vFunc(vFunc)
 
 # init field
 field = FIELD_SHEATH('Sheath')
@@ -144,7 +144,7 @@ ax.hist(ang, bins=100, density=False)
 ax.set_title('Ion Angular Distribution')
 ax.set_xlabel('Angle (degree)')
 ax.set_ylabel('Count')
-ax.set_xlim([-4, 4])
+ax.set_xlim([-10, 10])
 
 
 fig.savefig(fname + '.png', dpi=600)

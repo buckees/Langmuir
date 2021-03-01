@@ -58,7 +58,7 @@ class EFUNC(object):
         E: arr(3) of float, E-field
         """
         E = np.zeros(3)
-        E[0] = -self.Vdc/self.d_sh * 0.01
+        E[0] = -self.Vdc/self.d_sh * 0.1
         E[1] = -self.Vdc/self.d_sh \
                -self.Vrf/self.d_sh*sin(2*PI*self.freq*t)
         E[1] = min(E[1], 0.0)
