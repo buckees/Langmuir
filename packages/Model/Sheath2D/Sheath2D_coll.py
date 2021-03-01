@@ -28,3 +28,12 @@ class COLLISION(object):
         func_ReinitVel: function of velocity, f(velocity) returns velocity.
         """
         self.func_ReinitVel = func_ReinitVel
+    
+    def reinit_Normal(self, Tn=300.0):
+        """
+        Reinit velocity according to Normal distribution.
+        
+        Tn: float, var, in K, neutral temperature
+        vel: arr(3) of float, Velocity
+        """
+        
