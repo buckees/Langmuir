@@ -31,8 +31,8 @@ def ANALYSIS(oper, mesh, pla):
                   var_name=['E Temperature', 'Ion Temperature'],
                   fname='Temperature.png')
     
-    dne = mesh.cnt_diff(self.ne)
-    dni = mesh.cnt_diff(self.ni)
+    dne = mesh.cnt_diff(pla.ne)
+    dni = mesh.cnt_diff(pla.ni)
     mesh.plot_var(var=[pla.ne, pla.ni], 
                   var_name=['Delta E Density', 'Delta Ion Density'],
                   fname='Delta_Density.png')
