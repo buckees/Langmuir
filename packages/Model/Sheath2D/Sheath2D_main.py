@@ -3,10 +3,11 @@
 import numpy as np
 from math import exp
 from copy import deepcopy
+import pandas as pd
 
 from packages.Constants import PI
 
-def MAIN(oper, ptcl, field, coll, move=None):
+def MAIN(oper, ptcl, field, coll, move, stats=None):
     """
     MAIN() actually runs the feature model.
     oper: OPERATION(obj), contains all operation parameters.
@@ -14,22 +15,25 @@ def MAIN(oper, ptcl, field, coll, move=None):
     field: FIELD(obj), contains all field information.
     coll: COLLISION(obj), contains all collision information.
     move: Func, selected from Particle_Mover
+    stats: STATS(obj), contains all diagnostic information.
     """
 
     vel = list()
-    if oper.idiag:
-        init_erg, init_ang = list(), list()
-        erg, ang = list(), list()
     for i in range(oper.num_ptcl):
-        
         ########## init ptcl ##########
         ptcl.update_state(True)
         ptcl.init_posn()
         ptcl.init_vel_vFunc()
         if oper.idiag:
+            stats.df.append_row()
+            # print(stats.df)
+            # print(stats.df.iloc[-1])
+            # print(stats.df.iloc[-1].loc['Collision'])
+            stats.df.iloc[-1].loc['Collision'] = 0
             ptcl_erg, ptcl_ang = ptcl.vel2erg()
-            init_erg.append(ptcl_erg)
-            init_ang.append(ptcl_ang)
+            stats.df.iloc[-1].loc['Init_Vel'] = deepcopy(ptcl.vel)
+            stats.df.iloc[-1].loc['Init_Erg'] = deepcopy(ptcl_erg)
+            stats.df.iloc[-1].loc['Init_Ang'] = deepcopy(ptcl_ang)
         ################################
         
         dt = oper.dt
@@ -57,11 +61,20 @@ def MAIN(oper, ptcl, field, coll, move=None):
             if ptcl.posn[1] < oper.wfr_loc:
                 ptcl.update_state(False)
                 vel.append(deepcopy(ptcl.vel))
-                ptcl_erg, ptcl_ang = ptcl.vel2erg()
-                erg.append(ptcl_erg)
-                ang.append(ptcl_ang)
+                if oper.idiag:
+                    ptcl_erg, ptcl_ang = ptcl.vel2erg()
+                    stats.df.iloc[-1].loc['End_Vel'] = deepcopy(ptcl.vel)
+                    stats.df.iloc[-1].loc['End_Erg'] = deepcopy(ptcl_erg)
+                    stats.df.iloc[-1].loc['End_Ang'] = deepcopy(ptcl_ang)
+                    stats.df.iloc[-1].loc['hitWafer'] = True
             if step > oper.max_step:
                 ptcl.update_state(False)
+                if oper.idiag:
+                    ptcl_erg, ptcl_ang = ptcl.vel2erg()
+                    stats.df.iloc[-1].loc['End_Vel'] = deepcopy(ptcl.vel)
+                    stats.df.iloc[-1].loc['End_Erg'] = deepcopy(ptcl_erg)
+                    stats.df.iloc[-1].loc['End_Ang'] = deepcopy(ptcl_ang)
+                    stats.df.iloc[-1].loc['hitWafer'] = False
 
             # collision
             coll_freq = coll.func_CollFreq(ptcl.vel)
@@ -70,12 +83,14 @@ def MAIN(oper, ptcl, field, coll, move=None):
             if rand < prob_coll:
                 vel_new = coll.func_ReinitVel(ptcl.vel)
                 ptcl.update_vel(vel_new)
+                if oper.idiag:
+                    stats.df.iloc[-1].loc['Collision'] += 1
     
     ########## plot results ##########
     print(f'{oper.num_ptcl} particles are launched.' 
-          + f'\n{len(erg)} particles are collected by the wafer.')
+          + f'\n{len(vel)} particles are collected by the wafer.')
     
     if oper.idiag:
-        return vel, erg, ang, init_erg, init_ang
+        return vel, stats
     else:
         return vel

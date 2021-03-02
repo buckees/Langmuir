@@ -12,6 +12,7 @@ from packages.Model.Common.Yaml import PARAMETER
 from packages.Model.Sheath2D.Sheath2D_main import MAIN
 from packages.Model.Sheath2D.Sheath2D_field import FIELD_SHEATH
 from packages.Model.Sheath2D.Sheath2D_coll import COLLISION
+from packages.Model.Sheath2D.Sheath2D_stats import STATS
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
 from scipy.stats import maxwell
 from packages.Constants import EV2J, AMU
@@ -20,7 +21,7 @@ from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 200000 
+oper.num_ptcl = 20000
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
 oper.Tg = 0.025  # eV
@@ -97,7 +98,12 @@ coll = COLLISION('Ion_Collision')
 coll.add_func_CollFreq(func_CollFreq)
 coll.add_func_ReinitVel(func_ReinitVel)
 
-vel, erg, ang, init_erg, init_ang = MAIN(oper, ptcl, field, coll, move=move)
+
+if oper.idiag:
+    stats = STATS()
+    vel, stats = MAIN(oper, ptcl, field, coll, move, stats)
+else:
+    vel = MAIN(oper, ptcl, field, coll, move, stats)
 
 fname = 'test'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
@@ -137,14 +143,14 @@ ax.hist(erg, bins=100, density=False)
 ax.set_title('Ion Energy Distribution')
 ax.set_xlabel('Energy (eV)')
 ax.set_ylabel('Count')
-ax.set_xlim([0, 200])
+# ax.set_xlim([0, 200])
 
 ax = axes[1, 1]
 ax.hist(ang, bins=100, density=False)
 ax.set_title('Ion Angular Distribution')
 ax.set_xlabel('Angle (degree)')
 ax.set_ylabel('Count')
-ax.set_xlim([-10, 10])
+# ax.set_xlim([-10, 10])
 
 
 fig.savefig(fname + '.png', dpi=600)
