@@ -140,11 +140,13 @@ class PARTICLE(object):
         erg: float, energy of the particle.
         theta: float, theta w.r.t. nvec.
         """
-        speed, uvec = self.vel2speed()
-        erg = 0.5*(self.mass*AMU)*speed**2
-        erg *= J2EV
-        theta = acos(np.dot(uvec, nvec))*np.sign(uvec)[0]
-        theta = degrees(theta)
+        erg, theta = 0.0, 0.0
+        if np.any(self.vel):
+            speed, uvec = self.vel2speed()
+            erg = 0.5*(self.mass*AMU)*speed**2
+            erg *= J2EV
+            theta = acos(np.dot(uvec, nvec))*np.sign(uvec)[0]
+            theta = degrees(theta)
         return erg, theta
     
     def move_in_space(self, dL):
@@ -154,9 +156,12 @@ class PARTICLE(object):
         Assume no field at all.
         dL: float, space step, unit in m.
         """
-        speed, uvec = self.vel2speed()
-        self.posn += uvec*dL
-        self.lifetime += dL/speed
+        if np.any(self.vel):
+            speed, uvec = self.vel2speed()
+            self.posn += uvec*dL
+            self.lifetime += dL/speed
+        else:
+            print("Velocity is zero! Check error!")
         
     def move_in_time(self, dt):
         """
