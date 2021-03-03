@@ -116,37 +116,39 @@ fname = 'IAEDF'
 for i in glob.glob(fname + '.*'):
     os.remove(i)
 
-fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
-                            constrained_layout=True)
-
-ax = axes[0, 0]
-stats.df['Init_Erg'].hist(bins=100, density=False, ax=ax)
-ax.set_title('Ion Energy Distribution')
-ax.set_xlabel('Energy (eV)')
-ax.set_ylabel('Count')
-# ax.set_xlim([0, 12])
-
-ax = axes[0, 1]
-stats.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
-ax.set_title('Ion Angular Distribution')
-ax.set_xlabel('Angle (degree)')
-ax.set_ylabel('Count')
-# ax.set_xlim([-20, 20])
-
-ax = axes[1, 0]
-stats.df['End_Erg'].hist(bins=100, density=False, ax=ax)
-ax.set_title('Ion Energy Distribution')
-ax.set_xlabel('Energy (eV)')
-ax.set_ylabel('Count')
-# ax.set_xlim([0, 200])
-
-ax = axes[1, 1]
-stats.df['End_Ang'].hist(bins=100, density=False, ax=ax)
-ax.set_title('Ion Angular Distribution')
-ax.set_xlabel('Angle (degree)')
-ax.set_ylabel('Count')
-# ax.set_xlim([-10, 10])
-
-fig.savefig(fname + '.png', dpi=600)
-plt.close()
-
+if oper.idiag:
+    stats.save2csv()
+    
+    fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
+                                constrained_layout=True)
+    
+    ax = axes[0, 0]
+    stats.df['Init_Erg'].hist(bins=100, density=False, ax=ax)
+    ax.set_title('Ion Energy Distribution')
+    ax.set_xlabel('Energy (eV)')
+    ax.set_ylabel('Count')
+    # ax.set_xlim([0, 12])
+    
+    ax = axes[0, 1]
+    stats.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
+    ax.set_title('Ion Angular Distribution')
+    ax.set_xlabel('Angle (degree)')
+    ax.set_ylabel('Count')
+    # ax.set_xlim([-20, 20])
+    
+    ax = axes[1, 0]
+    stats.df['End_Erg'].hist(bins=100, density=False, ax=ax)
+    ax.set_title('Ion Energy Distribution')
+    ax.set_xlabel('Energy (eV)')
+    ax.set_ylabel('Count')
+    # ax.set_xlim([0, 200])
+    
+    ax = axes[1, 1]
+    stats.df['End_Ang'].hist(bins=100, density=False, ax=ax)
+    ax.set_title('Ion Angular Distribution')
+    ax.set_xlabel('Angle (degree)')
+    ax.set_ylabel('Count')
+    # ax.set_xlim([-10, 10])
+    
+    fig.savefig(fname + '.png', dpi=600)
+    plt.close()

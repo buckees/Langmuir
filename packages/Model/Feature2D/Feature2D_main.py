@@ -129,4 +129,10 @@ def MAIN(oper, ptcl, mesh, chem, rct, rflct, stats=None):
         #     np.save('initErg_' + sp, erg)
         # for sp, ang in stats.ang.items():
         #     np.save('initAng_' + sp, ang)
+        stats.df_sp['Escaped Pct'] = \
+            stats.df_sp['Escaped']/stats.df_sp['Launched']
+        stats.df_sp['Etch Pct'] = stats.df_sp['Etch']/stats.df_sp['Launched']
+        stats.df_sp['Terminated Pct'] = \
+            stats.df_sp['Terminated']/stats.df_sp['Launched']
+
         return stats

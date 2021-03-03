@@ -77,24 +77,7 @@ else:
     MAIN(oper, ptcl, mesh, chem, rct, rflct)
 
 if oper.idiag:
-    stats.df_sp['Escaped Pct'] = \
-        stats.df_sp['Escaped']/stats.df_sp['Launched']
-    stats.df_sp['Etch Pct'] = stats.df_sp['Etch']/stats.df_sp['Launched']
-    stats.df_sp['Terminated Pct'] = \
-        stats.df_sp['Terminated']/stats.df_sp['Launched']
-    
-    fcsv = oper.fcase + '_Stats.csv'
-    stats.df_sp.to_csv(fcsv, index=True,
-                       columns=['Launched', 'Escaped', 'Escaped Pct',
-                                'Etch', 'Etch Pct',
-                                'Terminated', 'Terminated Pct'],
-                       float_format='%.2f', na_rep='NA')
-    
-    with open(fcsv, 'a') as f:
-        f.write('\n')
-    
-    stats.df_mat.to_csv(fcsv, mode='a', index=True, 
-                        float_format='%.2f', na_rep='NA')
+    stats.save2csv()    
     
     for sp in stats.df_sp.index:
         fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,

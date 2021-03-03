@@ -18,3 +18,9 @@ class STATS(object):
                     'End_Erg', 'End_Ang',
                     'Collision', 'hitWafer']
         self.df = pd.DataFrame(columns=self.col)
+
+    def save2csv(self, fcsv='Sheath2D'):
+        """Save stats to csv file."""        
+        self.df.to_csv(fcsv + '_Stats.csv', mode='w', 
+                       index=True, header=True,
+                       na_rep='NA')
