@@ -37,6 +37,7 @@ oper.freq = 14e6
 oper.Vrf2 = 20.0
 oper.freq2 = 14e6
 oper.coll_freq = 0  # 4e6
+oper.num_report = 5
 oper.idiag = True
 
 # init ptcl

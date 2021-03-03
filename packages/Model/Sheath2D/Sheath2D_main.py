@@ -20,6 +20,12 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
 
     vel = list()
     for i in range(oper.num_ptcl):
+        
+        ########## print progress ##########
+        if (i+1) % int(oper.num_ptcl/oper.num_report) == 0:
+            print('%d particles are launched!' % (i+1))
+        ####################################
+        
         ########## init ptcl ##########
         ptcl.update_state(True)
         ptcl.init_posn()
