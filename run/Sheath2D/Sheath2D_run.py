@@ -36,7 +36,7 @@ oper.Vrf = 50.0
 oper.freq = 14e6
 oper.Vrf2 = 20.0
 oper.freq2 = 14e6
-oper.coll_freq = 0  # 4e6
+oper.coll_freq = 4e6
 oper.num_report = 5
 oper.idiag = True
 
@@ -87,7 +87,7 @@ def func_CollFreq(ptcl_vel):
     return oper.coll_freq
 
 def func_ReinitVel(ptcl_vel):
-    a = sqrt(oper.Tg*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
+    a = sqrt(oper.Tn*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
     speed = maxwell.rvs(loc=0.0, scale=a, size=1)
     vel = np.zeros(3)
     mu, sigma = 0.0, 0.1  # default mean and standard deviation
