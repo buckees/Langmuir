@@ -9,7 +9,7 @@ from math import sqrt, sin, cos, acos, degrees
 import pandas as pd
 from scipy.stats import maxwell, cosine
 
-from packages.Constants import (AMU, J2EV, EV2J)
+from packages.Constants import (AMU, J2EV, EV2J, K2J)
 
 class PARTICLE(object):
     """Create PARTICLE() object."""
@@ -114,7 +114,7 @@ class PARTICLE(object):
         Tn: float, var, temperature for neutrals in K.
         """
         self.vel = np.zeros(3)
-        a = sqrt(Tn*EV2J/(self.mass*AMU))  # a = sqrt(kT/m)
+        a = sqrt(Tn*K2J/(self.mass*AMU))  # a = sqrt(kT/m)
         speed = maxwell.rvs(loc=0.0, scale=a, size=1)
         theta = cosine.rvs(size=1)[0]/2.0
         self.vel[0], self.vel[1] = sin(theta), -cos(theta)
