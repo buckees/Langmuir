@@ -46,6 +46,11 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
         ########## main loop for pctl launch ##########
         ###############################################
         while ptcl.isAlive:
+            # check boundary
+            if ptcl.posn[1] > oper.d_sh:
+                ptcl.update_state(False)
+                if oper.idiag:
+                    stats.df.loc[i, 'hitWafer'] = False
             # make sure not over shoot
             if ptcl.vel[1]:
                 dt1 = (oper.wfr_loc - ptcl.posn[1])/ptcl.vel[1]
