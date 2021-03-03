@@ -24,7 +24,8 @@ oper = PARAMETER()
 oper.num_ptcl = 20000
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
-oper.Tg = 0.025  # eV
+oper.Tn = 300.0  # K
+oper.imode_initVel = 'Cosine'
 oper.d_sh = 0.002  # m
 oper.wfr_loc = 0.0
 oper.imode_move = 'LEAPFROG'
@@ -105,7 +106,7 @@ if oper.idiag:
 else:
     vel = MAIN(oper, ptcl, field, coll, move, stats)
 
-fname = 'test'
+fname = 'IAEDF'
 # fname = f'freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'
 # fname += '_H2O'
 # fname = f'dual_freq{int(oper.freq/1e6)}_Vdc{int(oper.Vdc)}_Vrf{int(oper.Vrf)}'

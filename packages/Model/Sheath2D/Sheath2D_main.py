@@ -23,7 +23,13 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
         ########## init ptcl ##########
         ptcl.update_state(True)
         ptcl.init_posn()
-        ptcl.init_vel_vFunc()
+        if oper.imode_initVel == 'Normal':
+            pass
+        elif oper.imode_initVel == 'Cosine':
+            ptcl.setVel_cos(oper.Tn)
+        elif oper.imode_initVel == 'vFunc':
+            ptcl.init_vel_vFunc()
+            
         if oper.idiag:
             # stats.append_row()
             # print(stats.df)
