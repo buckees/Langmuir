@@ -124,14 +124,14 @@ stats.df['Init_Erg'].hist(bins=100, density=False, ax=ax)
 ax.set_title('Ion Energy Distribution')
 ax.set_xlabel('Energy (eV)')
 ax.set_ylabel('Count')
-ax.set_xlim([0, 12])
+# ax.set_xlim([0, 12])
 
 ax = axes[0, 1]
 stats.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
 ax.set_title('Ion Angular Distribution')
 ax.set_xlabel('Angle (degree)')
 ax.set_ylabel('Count')
-ax.set_xlim([-20, 20])
+# ax.set_xlim([-20, 20])
 
 ax = axes[1, 0]
 stats.df['End_Erg'].hist(bins=100, density=False, ax=ax)
