@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from collections import Counter
 
 class STATS(object):
     """Mesh object."""
@@ -17,7 +18,8 @@ class STATS(object):
                     'Init_Erg', 'Init_Ang',
                     'End_Vel_x', 'End_Vel_z', 'End_Vel_y', 
                     'End_Erg', 'End_Ang',
-                    'Collision', 'hitWafer']
+                    'Collision', 'Lifetime'
+                    'hitWafer']
         self.df = pd.DataFrame(columns=self.col)
 
     def save2csv(self, fcsv='Sheath2D'):
@@ -57,3 +59,37 @@ class STATS(object):
         
         fig.savefig(fpng + '_IAEDF.png', dpi=600)
         plt.close()
+        
+        fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
+                                 constrained_layout=True)
+        
+        ax = axes[0, 0]
+        
+        temp = self.df['Collision']
+        cout = Counter(temp)
+        ax.bar(cout.keys(), cout.values())
+        ax.set_title('Collision')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[0, 1]
+        self.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Angular Distribution')
+        ax.set_xlabel('Angle (degree)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[1, 0]
+        self.df['End_Erg'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Energy Distribution')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[1, 1]
+        self.df['End_Ang'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Angular Distribution')
+        ax.set_xlabel('Angle (degree)')
+        ax.set_ylabel('Count')
+        
+        fig.savefig(fpng + '_Stats.png', dpi=600)
+        plt.close()
+
