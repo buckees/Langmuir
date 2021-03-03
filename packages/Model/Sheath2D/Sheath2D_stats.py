@@ -18,9 +18,3 @@ class STATS(object):
                     'End_Erg', 'End_Ang',
                     'Collision', 'hitWafer']
         self.df = pd.DataFrame(columns=self.col)
-    
-    def append_row(self):
-        """Append an empty row."""
-        row = [0.0 for i in range(10)]
-        row.append([0, False])
-        self.df.loc[len(self.df)] = row
