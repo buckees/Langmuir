@@ -73,6 +73,7 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
             posn_next, vel_next = move(ptcl, field, t, dt)
             ptcl.update_posn(posn_next)
             ptcl.update_vel(vel_next)
+            ptcl.lifetime += dt
             t += dt
             step += 1
             
@@ -103,6 +104,7 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
                 ptcl.vel
             stats.df.loc[i, 'End_Erg'] = deepcopy(ptcl_erg)
             stats.df.loc[i, 'End_Ang'] = deepcopy(ptcl_ang)
+            stats.df.loc[i, 'Lifetime'] = deepcopy(ptcl.lifetime)
     ########## plot results ##########
     print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(vel)} particles are collected by the wafer.')

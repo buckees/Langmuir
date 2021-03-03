@@ -21,7 +21,7 @@ from Efunc import EFUNC
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 20000
+oper.num_ptcl = 5000
 oper.max_step = 1000
 oper.Ti = 1.0  # eV
 oper.Tn = 300.0  # K
@@ -36,7 +36,7 @@ oper.Vrf = 50.0
 oper.freq = 14e6
 oper.Vrf2 = 20.0
 oper.freq2 = 14e6
-oper.coll_freq = 4e6
+oper.coll_freq = 1e6
 oper.num_report = 5
 oper.idiag = True
 
@@ -68,11 +68,6 @@ if oper.imode_Efunc == "Single":
     field.add_Efunc(Efunc.sgl_freq)
 elif oper.imode_Efunc == "Dual":
     field.add_Efunc(Efunc.dual_freq)
-    # freq = min(Efunc.freq, Efunc.freq2)
-    # period = 1/freq
-    # time = np.linspace(0.0, period, 101)
-    # voltage = np.array([Efunc.dual_freq(t) for t in time])
-    # plt.plot(time, voltage)
 elif oper.imode_Efunc == "Tilt":
     field.add_Efunc(Efunc.tilt)
 elif oper.imode_Efunc == "Customize":
@@ -96,9 +91,13 @@ def func_ReinitVel(ptcl_vel):
     vel = speed * vel
     return vel
 
+def func_0(ptcl_vel):
+    return np.zeros(3)
+
 coll = COLLISION('Ion_Collision')
 coll.add_func_CollFreq(func_CollFreq)
-coll.add_func_ReinitVel(func_ReinitVel)
+# coll.add_func_ReinitVel(func_ReinitVel)
+coll.add_func_ReinitVel(func_0)
 
 
 if oper.idiag:

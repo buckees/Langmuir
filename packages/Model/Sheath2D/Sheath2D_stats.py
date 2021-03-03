@@ -73,9 +73,9 @@ class STATS(object):
         ax.set_ylabel('Count')
         
         ax = axes[0, 1]
-        self.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
-        ax.set_title('Ion Angular Distribution')
-        ax.set_xlabel('Angle (degree)')
+        self.df['Lifetime'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Lifetime Distribution')
+        ax.set_xlabel('Lifetime (s)')
         ax.set_ylabel('Count')
         
         ax = axes[1, 0]

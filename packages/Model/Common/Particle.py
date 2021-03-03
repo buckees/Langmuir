@@ -25,6 +25,7 @@ class PARTICLE(object):
         isAlive: bool, state of particle
         posn: arr(3) of float, position in (x, z, y), unit in m
         vel: arr(3) of float, velocity in (x, z, y), unit in m/s
+        lifetime: float, lifetime of particle
         """
         self.name = None
         self.ptype = None
@@ -33,6 +34,7 @@ class PARTICLE(object):
         self.isAlive = None
         self.posn = np.zeros(3)
         self.vel = np.zeros(3)
+        self.lifetime = 0.0
      
     def load_database(self, fsp='Species'):
         """
@@ -123,8 +125,11 @@ class PARTICLE(object):
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
-        speed = sqrt(np.sum(self.vel**2))
-        uvec = self.vel/speed
+        speed = 0.0
+        uvec = np.zers(3)
+        if np.any(self.vel):
+            speed = sqrt(np.sum(self.vel**2))
+            uvec = self.vel/speed
         return speed, uvec
     
     def vel2erg(self, nvec=np.array([0, -1, 0])):
@@ -151,6 +156,7 @@ class PARTICLE(object):
         """
         speed, uvec = self.vel2speed()
         self.posn += uvec*dL
+        self.lifetime += dL/speed
         
     def move_in_time(self, dt):
         """
@@ -160,4 +166,5 @@ class PARTICLE(object):
         dt: float, time step, unit in s.
         """
         self.posn += self.vel*dt
+        self.lifetime += dt
         
