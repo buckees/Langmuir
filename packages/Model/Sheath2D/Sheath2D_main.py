@@ -25,15 +25,16 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
         ptcl.init_posn()
         ptcl.init_vel_vFunc()
         if oper.idiag:
-            stats.df.append_row()
+            # stats.append_row()
             # print(stats.df)
             # print(stats.df.iloc[-1])
             # print(stats.df.iloc[-1].loc['Collision'])
-            stats.df.iloc[-1].loc['Collision'] = 0
+            stats.df.loc[i,'Collision'] = 0
             ptcl_erg, ptcl_ang = ptcl.vel2erg()
-            stats.df.iloc[-1].loc['Init_Vel'] = deepcopy(ptcl.vel)
-            stats.df.iloc[-1].loc['Init_Erg'] = deepcopy(ptcl_erg)
-            stats.df.iloc[-1].loc['Init_Ang'] = deepcopy(ptcl_ang)
+            stats.df.loc[i, ['Init_Vel_x', 'Init_Vel_z', 'Init_Vel_y']] = \
+                ptcl.vel
+            stats.df.loc[i, 'Init_Erg'] = deepcopy(ptcl_erg)
+            stats.df.loc[i, 'Init_Ang'] = deepcopy(ptcl_ang)
         ################################
         
         dt = oper.dt
@@ -62,19 +63,11 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
                 ptcl.update_state(False)
                 vel.append(deepcopy(ptcl.vel))
                 if oper.idiag:
-                    ptcl_erg, ptcl_ang = ptcl.vel2erg()
-                    stats.df.iloc[-1].loc['End_Vel'] = deepcopy(ptcl.vel)
-                    stats.df.iloc[-1].loc['End_Erg'] = deepcopy(ptcl_erg)
-                    stats.df.iloc[-1].loc['End_Ang'] = deepcopy(ptcl_ang)
-                    stats.df.iloc[-1].loc['hitWafer'] = True
+                    stats.df.loc[i, 'hitWafer'] = True
             if step > oper.max_step:
                 ptcl.update_state(False)
                 if oper.idiag:
-                    ptcl_erg, ptcl_ang = ptcl.vel2erg()
-                    stats.df.iloc[-1].loc['End_Vel'] = deepcopy(ptcl.vel)
-                    stats.df.iloc[-1].loc['End_Erg'] = deepcopy(ptcl_erg)
-                    stats.df.iloc[-1].loc['End_Ang'] = deepcopy(ptcl_ang)
-                    stats.df.iloc[-1].loc['hitWafer'] = False
+                    stats.df.loc[i, 'hitWafer'] = False
 
             # collision
             coll_freq = coll.func_CollFreq(ptcl.vel)
@@ -84,8 +77,15 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
                 vel_new = coll.func_ReinitVel(ptcl.vel)
                 ptcl.update_vel(vel_new)
                 if oper.idiag:
-                    stats.df.iloc[-1].loc['Collision'] += 1
-    
+                    stats.df.loc[i, 'Collision'] += 1
+        
+        # now particle is marked as dead
+        if oper.idiag:
+            ptcl_erg, ptcl_ang = ptcl.vel2erg()
+            stats.df.loc[i, ['End_Vel_x', 'End_Vel_z', 'End_Vel_y']] = \
+                ptcl.vel
+            stats.df.loc[i, 'End_Erg'] = deepcopy(ptcl_erg)
+            stats.df.loc[i, 'End_Ang'] = deepcopy(ptcl_ang)
     ########## plot results ##########
     print(f'{oper.num_ptcl} particles are launched.' 
           + f'\n{len(vel)} particles are collected by the wafer.')
