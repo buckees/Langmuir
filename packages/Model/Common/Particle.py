@@ -7,7 +7,7 @@ Particle.py serves as a data center/hub,
 import numpy as np
 from math import sqrt, sin, cos, acos, degrees
 import pandas as pd
-from scipy.stats import maxwell
+from scipy.stats import maxwell, cosine
 
 from packages.Constants import (AMU, J2EV, EV2J)
 
@@ -106,6 +106,20 @@ class PARTICLE(object):
         theta = np.random.normal(mu, sigma)
         self.vel[0], self.vel[1] = sin(theta), -cos(theta)
         self.vel = speed * self.vel
+        
+    def setVel_cos(self, Tn=300.0):
+        """
+        Init speed to normal distrib and angle to cosine distrib.
+        
+        Tn: float, var, temperature for neutrals in K.
+        """
+        self.vel = np.zeros(3)
+        a = sqrt(Tn*EV2J/(self.mass*AMU))  # a = sqrt(kT/m)
+        speed = maxwell.rvs(loc=0.0, scale=a, size=1)
+        theta = cosine.rvs(size=1)[0]/2.0
+        self.vel[0], self.vel[1] = sin(theta), -cos(theta)
+        self.vel = speed * self.vel
+        
     
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
