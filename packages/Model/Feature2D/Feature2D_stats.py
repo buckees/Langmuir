@@ -1,6 +1,8 @@
 """Diagnose the feature model."""
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
 
 class STATS(object):
     """Mesh object."""
@@ -41,6 +43,43 @@ class STATS(object):
         with open(fcsv + '_Stats.csv', 'a') as f:
             f.write('\n')
     
-        stats.df_mat.to_csv(fcsv + '_Stats.csv', mode='a', 
+        self.df_mat.to_csv(fcsv + '_Stats.csv', mode='a', 
                             index=True, header=True,
                             float_format='%.2f', na_rep='NA')
+        
+    def plot(self, fpng='Feature2D'):
+        """Plot stats to png file."""
+        for sp in self.df_sp.index:
+            fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
+                                       constrained_layout=True)
+            
+            ax = axes[0]
+            ax.hist(self.df_sp.loc[sp, 'Init Erg'], bins=100, density=False)
+            ax.set_title('Energy Distribution')
+            ax.set_xlabel('Energy (eV)')
+            ax.set_ylabel('a.u.')
+            
+            ax = axes[1]
+            ax.hist(self.df_sp.loc[sp, 'Init Ang'], bins=100, density=False)
+            ax.set_title('Velocity Distribution')
+            ax.set_xlabel('Angle (degree)')
+            ax.set_ylabel('a.u.')
+            
+            fig.suptitle(sp, fontsize=20)
+            fig.savefig('Init_' + sp + '.png', dpi=600)
+            plt.close()
+        
+        n_sp = len(self.df_sp)
+        fig, axes = plt.subplots(1, n_sp, figsize=(6*n_sp, 6), dpi=600,
+                                   constrained_layout=True)
+        for i, sp in enumerate(self.df_sp.index):
+            ax = axes[i]
+            temp = self.df_sp.loc[sp, 'Reflection']
+            cout = Counter(temp)
+            ax.bar(cout.keys(), cout.values())
+            ax.set_title(sp)
+            ax.set_xlabel('Number of Reflections')
+            ax.set_ylabel('Counts')
+        fig.suptitle('Stats of Reflection', fontsize=20)
+        fig.savefig('Reflection.png', dpi=600)
+        plt.close()    

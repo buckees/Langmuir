@@ -21,7 +21,7 @@ from packages.Model.Feature2D.Feature2D_main import MAIN
 
 # init operation parameters
 oper = PARAMETER()
-oper.num_ptcl = 100000
+oper.num_ptcl = 10000
 oper.max_step = 1000
 oper.step_fac = 0.5
 oper.max_rflct = 5
@@ -77,41 +77,42 @@ else:
     MAIN(oper, ptcl, mesh, chem, rct, rflct)
 
 if oper.idiag:
-    stats.save2csv()    
+    stats.save2csv()
+    stats.plot()
     
-    for sp in stats.df_sp.index:
-        fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
-                                   constrained_layout=True)
+    # for sp in stats.df_sp.index:
+    #     fig, axes = plt.subplots(1, 2, figsize=(12, 6), dpi=600,
+    #                                constrained_layout=True)
         
-        ax = axes[0]
-        ax.hist(stats.df_sp.loc[sp, 'Init Erg'], bins=100, density=False)
-        ax.set_title('Energy Distribution')
-        ax.set_xlabel('Energy (eV)')
-        ax.set_ylabel('a.u.')
+    #     ax = axes[0]
+    #     ax.hist(stats.df_sp.loc[sp, 'Init Erg'], bins=100, density=False)
+    #     ax.set_title('Energy Distribution')
+    #     ax.set_xlabel('Energy (eV)')
+    #     ax.set_ylabel('a.u.')
         
-        ax = axes[1]
-        ax.hist(stats.df_sp.loc[sp, 'Init Ang'], bins=100, density=False)
-        ax.set_title('Velocity Distribution')
-        ax.set_xlabel('Angle (degree)')
-        ax.set_ylabel('a.u.')
+    #     ax = axes[1]
+    #     ax.hist(stats.df_sp.loc[sp, 'Init Ang'], bins=100, density=False)
+    #     ax.set_title('Velocity Distribution')
+    #     ax.set_xlabel('Angle (degree)')
+    #     ax.set_ylabel('a.u.')
         
-        fig.suptitle(sp, fontsize=20)
-        fig.savefig('init_' + sp + '.png', dpi=600)
-        plt.close()
+    #     fig.suptitle(sp, fontsize=20)
+    #     fig.savefig('init_' + sp + '.png', dpi=600)
+    #     plt.close()
     
-    n_sp = len(stats.df_sp)
-    fig, axes = plt.subplots(1, n_sp, figsize=(6*n_sp, 6), dpi=600,
-                               constrained_layout=True)
-    for i, sp in enumerate(stats.df_sp.index):
-        ax = axes[i]
-        temp = stats.df_sp.loc[sp, 'Reflection']
-        # ax.hist(temp)
-        # pd.Series(temp).value_counts().plot(kind='bar')
-        cout = Counter(temp)
-        ax.bar(cout.keys(), cout.values())
-        ax.set_title(sp)
-        ax.set_xlabel('Number of Reflections')
-        ax.set_ylabel('Counts')
-    fig.suptitle('Stats of Reflection', fontsize=20)
-    fig.savefig('Reflection.png', dpi=600)
-    plt.close()    
+    # n_sp = len(stats.df_sp)
+    # fig, axes = plt.subplots(1, n_sp, figsize=(6*n_sp, 6), dpi=600,
+    #                            constrained_layout=True)
+    # for i, sp in enumerate(stats.df_sp.index):
+    #     ax = axes[i]
+    #     temp = stats.df_sp.loc[sp, 'Reflection']
+    #     # ax.hist(temp)
+    #     # pd.Series(temp).value_counts().plot(kind='bar')
+    #     cout = Counter(temp)
+    #     ax.bar(cout.keys(), cout.values())
+    #     ax.set_title(sp)
+    #     ax.set_xlabel('Number of Reflections')
+    #     ax.set_ylabel('Counts')
+    # fig.suptitle('Stats of Reflection', fontsize=20)
+    # fig.savefig('Reflection.png', dpi=600)
+    # plt.close()    

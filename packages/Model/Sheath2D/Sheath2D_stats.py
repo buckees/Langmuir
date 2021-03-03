@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class STATS(object):
     """Mesh object."""
@@ -24,3 +25,35 @@ class STATS(object):
         self.df.to_csv(fcsv + '_Stats.csv', mode='w', 
                        index=True, header=True,
                        na_rep='NA')
+    
+    def plot(self, fpng='Sheath2D'):
+        """Plot stats to png file."""
+        fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
+                                 constrained_layout=True)
+        
+        ax = axes[0, 0]
+        self.df['Init_Erg'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Energy Distribution')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[0, 1]
+        self.df['Init_Ang'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Angular Distribution')
+        ax.set_xlabel('Angle (degree)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[1, 0]
+        self.df['End_Erg'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Energy Distribution')
+        ax.set_xlabel('Energy (eV)')
+        ax.set_ylabel('Count')
+        
+        ax = axes[1, 1]
+        self.df['End_Ang'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Ion Angular Distribution')
+        ax.set_xlabel('Angle (degree)')
+        ax.set_ylabel('Count')
+        
+        fig.savefig(fpng + '_IAEDF.png', dpi=600)
+        plt.close()
