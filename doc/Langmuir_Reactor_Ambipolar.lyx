@@ -115,7 +115,7 @@ Note that the drift term is negative for electrons and positive for ions,
 , E-field can be solved as
 \begin_inset Formula 
 \[
-\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{i}}{n_{i}})
 \]
 
 \end_inset
@@ -123,7 +123,7 @@ Note that the drift term is negative for electrons and positive for ions,
 
 \begin_inset Formula 
 \[
-\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i}}{n_{i}})
 \]
 
 \end_inset
@@ -135,7 +135,7 @@ Note that the drift term is negative for electrons and positive for ions,
 This E-field is called ambipolar E-field and substituted to the flux,
 \begin_inset Formula 
 \[
-\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{e}-D_{i}\nabla n_{e}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{e}
+\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{i}-D_{i}\nabla n_{i}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{i}
 \]
 
 \end_inset
@@ -156,7 +156,7 @@ D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
 
 \begin_inset Formula 
 \[
-\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{e}
+\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{i}
 \]
 
 \end_inset
@@ -184,7 +184,7 @@ D_{ambi}\approx D_{i}+\frac{\mu_{i}}{\mu_{e}}D_{e}=D_{i}(1+\frac{T_{e}}{T_{i}})
 put it back to the continuity equation,
 \begin_inset Formula 
 \[
-\frac{\partial n}{\partial t}+D_{ambi}\nabla^{2}n=S
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
 \]
 
 \end_inset
@@ -242,12 +242,16 @@ After that, it is simply to put
  And electric field is obtained by,
 \begin_inset Formula 
 \[
-\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Multiple Ions
 \end_layout
 
 \begin_layout Standard
@@ -303,12 +307,126 @@ The additional assumption, in some degree, divides the whole plasma into
  Ions interact only with electrons, instead of other ions.
  Computationally, the densities of the two ions are computed separately
  and independently.
- After that, make 
-\begin_inset Formula $n_{e}=n_{i1}+n_{i2}$
+ For example, 
+\begin_inset Formula 
+\[
+D_{ambi-i1}=D_{i1}(1+\frac{T_{e}}{T_{i1}}),\;\frac{\partial n_{i1}}{\partial t}+D_{ambi-i1}\nabla^{2}n_{i1}=S_{i1}
+\]
+
 \end_inset
 
-.
- Internal electric field is then only determined by the electron density.
+
+\begin_inset Formula 
+\[
+D_{ambi-i2}=D_{i2}(1+\frac{T_{e}}{T_{i2}}),\;\frac{\partial n_{i2}}{\partial t}+D_{ambi-i2}\nabla^{2}n_{i2}=S_{i2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+n_{e}=n_{i1}+n_{i2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{E}_{internal}=\vec{E}_{ambi-i1}+\vec{E}_{ambi-i2}=-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i1}}{n_{i1}})--\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i2}}{n_{i2}})=-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i1}}{n_{i1}}+\frac{\nabla n_{i2}}{n_{i2}})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Multiple Charges
+\end_layout
+
+\begin_layout Standard
+If an ion has charges more than one, the ambipolar equation needs to be
+ modified slightly.
+ A simple case is used to demonstrate the changes.
+\begin_inset Formula 
+\[
+q_{i}-charges\:of\:an\:ion
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now the ambipolar assumption becomes, 
+\begin_inset Formula $n_{e}=q_{i}\times n_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $\Gamma_{e}=q_{i}\times\Gamma_{i}$
+\end_inset
+
+,
+\begin_inset Formula 
+\[
+-\mu_{e}n_{e}\vec{E}-D_{e}\nabla n_{e}=q_{i}\mu_{i}n_{i}\vec{E}-q_{i}D_{i}\nabla n_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+substitute 
+\begin_inset Formula $n_{e}=q_{i}\times n_{i}$
+\end_inset
+
+ to LHS,
+\begin_inset Formula 
+\[
+-\mu_{e}q_{i}n_{i}\vec{E}-D_{e}q_{i}\nabla n_{i}=q_{i}\mu_{i}n_{i}\vec{E}-q_{i}D_{i}\nabla n_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+actually 
+\begin_inset Formula $q_{i}$
+\end_inset
+
+ is canceled from both sides, leaving the flux balance as the same in the
+ orginal form,
+\begin_inset Formula 
+\[
+-\mu_{e}n_{i}\vec{E}-D_{e}\nabla n_{l}=\mu_{i}n_{i}\vec{E}-D_{i}\nabla n_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \end_body

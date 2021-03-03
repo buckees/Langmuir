@@ -27,15 +27,15 @@ ions, where E-field drags electrons down and speed ions up to balance
 the fluxes. Assume charge neutrality in space, $n_{e}=n_{i}$, E-field
 can be solved as
 \[
-\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{ambi}=\vec{E}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{i}}{n_{i}})
 \]
 \[
-\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{ambi}=\vec{E}\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i}}{n_{i}})
 \]
 
 This E-field is called ambipolar E-field and substituted to the flux,
 \[
-\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{e}-D_{i}\nabla n_{e}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{e}
+\vec{\Gamma}_{e,i}=\mu_{i}\frac{D_{i}-D_{e}}{\mu_{i}-\mu_{e}}\nabla n_{i}-D_{i}\nabla n_{i}=-\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}\nabla n_{i}
 \]
 
 You can see the coefficient is symmetric, and equal to electron and
@@ -44,7 +44,7 @@ ion. A new diffusion coefficient can be defined as
 D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
 \]
 \[
-\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{e}
+\vec{\Gamma}_{e,i}=-D_{ambi}\nabla n_{i}
 \]
 \[
 \mu_{e}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{e}})\gg\mu_{i}=\frac{|q|}{v_{coll\_em}}(\frac{1}{m_{i}}),\:since\:m_{e}\ll m_{i}
@@ -55,7 +55,7 @@ D_{ambi}\approx D_{i}+\frac{\mu_{i}}{\mu_{e}}D_{e}=D_{i}(1+\frac{T_{e}}{T_{i}})
 
 put it back to the continuity equation,
 \[
-\frac{\partial n}{\partial t}+D_{ambi}\nabla^{2}n=S
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
 \]
 
 Now the continuity becomes a standard DIFFUSION equation with source
@@ -73,8 +73,11 @@ equation,
 After that, it is simply to put $n_{e}$ equal to $n_{i}$. And electric
 field is obtained by,
 \[
-\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
+\vec{E}_{internal}=\vec{E}_{ambi}=\frac{D_{i}-D_{e}}{\mu_{i}+\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})\approx-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{e}}{n_{e}})
 \]
+
+
+\subsubsection{Multiple Ions}
 
 When there are more than one ions in plasmas, ambipolar assumption
 might result in complex solution. Another trick could be imposed for
@@ -100,6 +103,51 @@ n_{e}=n_{e1}+n_{e2},\;n_{e1}=n_{i1},\;and\;n_{e2}=n_{i2}
 The additional assumption, in some degree, divides the whole plasma
 into two independent plasmas. Ions interact only with electrons, instead
 of other ions. Computationally, the densities of the two ions are
-computed separately and independently. After that, make $n_{e}=n_{i1}+n_{i2}$.
-Internal electric field is then only determined by the electron density.
+computed separately and independently. For example, 
+\[
+D_{ambi-i1}=D_{i1}(1+\frac{T_{e}}{T_{i1}}),\;\frac{\partial n_{i1}}{\partial t}+D_{ambi-i1}\nabla^{2}n_{i1}=S_{i1}
+\]
+\[
+D_{ambi-i2}=D_{i2}(1+\frac{T_{e}}{T_{i2}}),\;\frac{\partial n_{i2}}{\partial t}+D_{ambi-i2}\nabla^{2}n_{i2}=S_{i2}
+\]
+\[
+n_{e}=n_{i1}+n_{i2}
+\]
+\[
+\vec{E}_{internal}=\vec{E}_{ambi-i1}+\vec{E}_{ambi-i2}=-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i1}}{n_{i1}})--\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i2}}{n_{i2}})=-\frac{D_{e}}{\mu_{e}}(\frac{\nabla n_{i1}}{n_{i1}}+\frac{\nabla n_{i2}}{n_{i2}})
+\]
+
+
+\subsubsection{Multiple Charges}
+
+If an ion has charges more than one, the ambipolar equation needs
+to be modified slightly. A simple case is used to demonstrate the
+changes.
+\[
+q_{i}-charges\:of\:an\:ion
+\]
+
+Now the ambipolar assumption becomes, $n_{e}=q_{i}\times n_{i}$ and
+$\Gamma_{e}=q_{i}\times\Gamma_{i}$,
+\[
+-\mu_{e}n_{e}\vec{E}-D_{e}\nabla n_{e}=q_{i}\mu_{i}n_{i}\vec{E}-q_{i}D_{i}\nabla n_{i}
+\]
+
+substitute $n_{e}=q_{i}\times n_{i}$ to LHS,
+\[
+-\mu_{e}q_{i}n_{i}\vec{E}-D_{e}q_{i}\nabla n_{i}=q_{i}\mu_{i}n_{i}\vec{E}-q_{i}D_{i}\nabla n_{i}
+\]
+
+actually $q_{i}$ is canceled from both sides, leaving the flux balance
+as the same in the orginal form,
+\[
+-\mu_{e}n_{i}\vec{E}-D_{e}\nabla n_{l}=\mu_{i}n_{i}\vec{E}-D_{i}\nabla n_{i}
+\]
+\[
+D_{ambi}=\frac{\mu_{e}D_{i}+\mu_{i}D_{e}}{\mu_{i}+\mu_{e}}
+\]
+\[
+\frac{\partial n_{i}}{\partial t}+D_{ambi}\nabla^{2}n_{i}=S_{i}
+\]
+
 \end{document}
