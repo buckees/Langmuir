@@ -28,6 +28,7 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
         
         ########## init ptcl ##########
         ptcl.update_state(True)
+        ptcl.lifetime = 0.0
         ptcl.init_posn()
         if oper.imode_initVel == 'Normal':
             pass
@@ -110,6 +111,8 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
           + f'\n{len(vel)} particles are collected by the wafer.')
     
     if oper.idiag:
+        stats.df['RF_Cycle'] = stats.df['Lifetime']*oper.freq
+        stats.df['RF_Cycle'] = stats.df['RF_Cycle'].astype(int)
         return vel, stats
     else:
         return vel

@@ -64,12 +64,11 @@ class STATS(object):
                                  constrained_layout=True)
         
         ax = axes[0, 0]
-        
         temp = self.df['Collision']
         cout = Counter(temp)
         ax.bar(cout.keys(), cout.values())
         ax.set_title('Collision')
-        ax.set_xlabel('Energy (eV)')
+        ax.set_xlabel('# of Collisions')
         ax.set_ylabel('Count')
         
         ax = axes[0, 1]
@@ -79,15 +78,17 @@ class STATS(object):
         ax.set_ylabel('Count')
         
         ax = axes[1, 0]
-        self.df['End_Erg'].hist(bins=100, density=False, ax=ax)
-        ax.set_title('Ion Energy Distribution')
-        ax.set_xlabel('Energy (eV)')
+        self.df['Lifetime'].hist(bins=100, density=False, ax=ax)
+        ax.set_title('Lifetime Distribution')
+        ax.set_xlabel('Lifetime (s)')
         ax.set_ylabel('Count')
         
         ax = axes[1, 1]
-        self.df['End_Ang'].hist(bins=100, density=False, ax=ax)
-        ax.set_title('Ion Angular Distribution')
-        ax.set_xlabel('Angle (degree)')
+        temp = self.df['RF_Cycle']
+        cout = Counter(temp)
+        ax.bar(cout.keys(), cout.values())
+        ax.set_title('RF Cycle')
+        ax.set_xlabel('# of RF Cycles')
         ax.set_ylabel('Count')
         
         fig.savefig(fpng + '_Stats.png', dpi=600)
