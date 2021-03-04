@@ -114,8 +114,13 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
           + f'\n{len(vel)} particles are collected by the wafer.')
     
     if oper.idiag:
+        # Clean up dtypes
+        stats.df = stats.df.astype(float)
+        stats.df['Collision'] = stats.df['Collision'].astype(int)
+        stats.df['hitWafer'] = stats.df['hitWafer'].astype(bool)
         stats.df['RF_Cycle'] = stats.df['Lifetime']*oper.freq
         stats.df['RF_Cycle'] = stats.df['RF_Cycle'].astype(int)
+        #
         return vel, stats
     else:
         return vel
