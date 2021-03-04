@@ -59,15 +59,10 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
         ########## main loop for pctl launch ##########
         ###############################################
         while ptcl.isAlive:
-            # check boundary
-            if ptcl.posn[1] > oper.d_sh:
-                ptcl.update_state(False)
-                if oper.idiag:
-                    stats.df.loc[i, 'hitWafer'] = False
             # make sure not over shoot
-            if ptcl.vel[1]:
-                dt1 = (oper.wfr_loc - ptcl.posn[1])/ptcl.vel[1]
-                if dt1 < dt:
+            if not ptcl.vel[1]:
+                dt1 = (ptcl.posn[1] - oper.wfr_loc)/abs(ptcl.vel[1])
+                if dt1 and dt1 < dt:
                     dt = dt1*1.001
             # move
             field.update_E(field.calc_E(t))
@@ -78,16 +73,6 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
             t += dt
             step += 1
             
-            if ptcl.posn[1] < oper.wfr_loc:
-                ptcl.update_state(False)
-                vel.append(deepcopy(ptcl.vel))
-                if oper.idiag:
-                    stats.df.loc[i, 'hitWafer'] = True
-            if step > oper.max_step:
-                ptcl.update_state(False)
-                if oper.idiag:
-                    stats.df.loc[i, 'hitWafer'] = False
-
             # collision
             coll_freq = coll.func_CollFreq(ptcl.vel)
             prob_coll = 1.0 - exp( - coll_freq * dt)
@@ -97,6 +82,24 @@ def MAIN(oper, ptcl, field, coll, move, stats=None):
                 ptcl.update_vel(vel_new)
                 if oper.idiag:
                     stats.df.loc[i, 'Collision'] += 1
+            
+            # check boundary
+            if ptcl.posn[1] > oper.d_sh:
+                ptcl.update_state(False)
+                if oper.idiag:
+                    stats.df.loc[i, 'hitWafer'] = False
+            # check hit wafer
+            if ptcl.posn[1] < oper.wfr_loc:
+                ptcl.update_state(False)
+                vel.append(deepcopy(ptcl.vel))
+                if oper.idiag:
+                    stats.df.loc[i, 'hitWafer'] = True
+            # check max_step
+            if step > oper.max_step:
+                ptcl.update_state(False)
+                if oper.idiag:
+                    stats.df.loc[i, 'hitWafer'] = False
+            
         
         # now particle is marked as dead
         if oper.idiag:
