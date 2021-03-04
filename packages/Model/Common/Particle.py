@@ -126,7 +126,7 @@ class PARTICLE(object):
     def vel2speed(self):
         """Convert velocity to and return speed and uvec."""
         speed = 0.0
-        uvec = np.zers(3)
+        uvec = np.zeros(3)
         if np.any(self.vel):
             speed = sqrt(np.sum(self.vel**2))
             uvec = self.vel/speed
