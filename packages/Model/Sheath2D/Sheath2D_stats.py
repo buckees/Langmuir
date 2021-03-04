@@ -30,6 +30,8 @@ class STATS(object):
     
     def plot(self, fpng='Sheath2D'):
         """Plot stats to png file."""
+        df_hitWafer = self.df.loc[self.df['hitWafer'] == True]
+        
         fig, axes = plt.subplots(2, 2, figsize=(8, 6), dpi=600,
                                  constrained_layout=True)
         
@@ -45,14 +47,15 @@ class STATS(object):
         ax.set_xlabel('Angle (degree)')
         ax.set_ylabel('Count')
         
+        
         ax = axes[1, 0]
-        self.df['End_Erg'].hist(bins=100, density=False, ax=ax)
+        df_hitWafer['End_Erg'].hist(bins=100, density=False, ax=ax)
         ax.set_title('Ion Energy Distribution')
         ax.set_xlabel('Energy (eV)')
         ax.set_ylabel('Count')
         
         ax = axes[1, 1]
-        self.df['End_Ang'].hist(bins=100, density=False, ax=ax)
+        df_hitWafer['End_Ang'].hist(bins=100, density=False, ax=ax)
         ax.set_title('Ion Angular Distribution')
         ax.set_xlabel('Angle (degree)')
         ax.set_ylabel('Count')
@@ -64,7 +67,7 @@ class STATS(object):
                                  constrained_layout=True)
         
         ax = axes[0, 0]
-        temp = self.df['Collision']
+        temp = df_hitWafer['Collision']
         cout = Counter(temp)
         ax.bar(cout.keys(), cout.values())
         ax.set_title('Collision')
@@ -72,19 +75,19 @@ class STATS(object):
         ax.set_ylabel('Count')
         
         ax = axes[0, 1]
-        self.df['Lifetime'].hist(bins=100, density=False, ax=ax)
+        df_hitWafer['Lifetime'].hist(bins=100, density=False, ax=ax)
         ax.set_title('Lifetime Distribution')
         ax.set_xlabel('Lifetime (s)')
         ax.set_ylabel('Count')
         
         ax = axes[1, 0]
-        self.df['Lifetime'].hist(bins=100, density=False, ax=ax)
+        df_hitWafer['Lifetime'].hist(bins=100, density=False, ax=ax)
         ax.set_title('Lifetime Distribution')
         ax.set_xlabel('Lifetime (s)')
         ax.set_ylabel('Count')
         
         ax = axes[1, 1]
-        temp = self.df['RF_Cycle']
+        temp = df_hitWafer['RF_Cycle']
         cout = Counter(temp)
         ax.bar(cout.keys(), cout.values())
         ax.set_title('RF Cycle')
