@@ -15,7 +15,7 @@ from packages.Model.Sheath2D.Sheath2D_coll import COLLISION
 from packages.Model.Sheath2D.Sheath2D_stats import STATS
 from packages.Model.Common.Particle_Mover import EULER_MOVE, LEAPFROG
 from scipy.stats import maxwell
-from packages.Constants import EV2J, AMU
+from packages.Constants import EV2J, AMU, K2J
 
 from Efunc import EFUNC
 
@@ -82,7 +82,7 @@ def func_CollFreq(ptcl_vel):
     return oper.coll_freq
 
 def func_ReinitVel(ptcl_vel):
-    a = sqrt(oper.Tn*EV2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
+    a = sqrt(oper.Tn*K2J/(ptcl.mass*AMU))  # a = sqrt(kT/m)
     speed = maxwell.rvs(loc=0.0, scale=a, size=1)
     vel = np.zeros(3)
     mu, sigma = 0.0, 0.1  # default mean and standard deviation
@@ -96,8 +96,8 @@ def func_0(ptcl_vel):
 
 coll = COLLISION('Ion_Collision')
 coll.add_func_CollFreq(func_CollFreq)
-# coll.add_func_ReinitVel(func_ReinitVel)
-coll.add_func_ReinitVel(func_0)
+coll.add_func_ReinitVel(func_ReinitVel)
+# coll.add_func_ReinitVel(func_0)
 
 
 if oper.idiag:
