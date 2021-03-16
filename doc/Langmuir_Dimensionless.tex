@@ -1,0 +1,118 @@
+%% LyX 2.3.6.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=0.5cm,bmargin=0.5cm,lmargin=0.1cm,rmargin=0.1cm}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{float}
+\usepackage{setspace}
+\onehalfspacing
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+
+\section{Simulation Parameters}
+
+\subsection{Constants}
+
+Pre-defined constats used in Langmuir Model is listed below. 
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Variable Name & Value & Unit & Description\tabularnewline
+\hline 
+\hline 
+$E\_CHARGE$ & $1.602\times10^{-19}$ & $C$ & Elementary Charge\tabularnewline
+\hline 
+$KB$ & $1.38064852\times10^{-23}$ & $m^{2}kgs^{-2}K^{-1}$ or $J/K$ & Boltzmann Constant\tabularnewline
+\hline 
+$AMU$ & $1.661\times10^{-27}$ & $kg$ & Atomic Mass Unit\tabularnewline
+\hline 
+$E\_Mass$  & $9.109\times10^{-31}$ & $kg$ & Electron Mass\tabularnewline
+\hline 
+$EPS0$ & $8.854\times10^{-12}$ & $m^{2}kgs^{-2}K^{-1}$ or $F/m$ & Vacuum Permittivity\tabularnewline
+\hline 
+$MU0$ & $1.257\times10^{-6}$ & $H/m$ & Vacuum Permeability\tabularnewline
+\hline 
+$TORR2PA$  & $133.3$ & $Pa/Torr$ & From Torr to Pa\tabularnewline
+\hline 
+$J2EV$ & $6.24210^{18}$ & $eV/J$ & From J to eV\tabularnewline
+\hline 
+$EV2J$ & $1.602\times10^{-19}$ & $J/eV$ & From eV to J\tabularnewline
+\hline 
+$K2EV$ & $11600.0$ & $eV/K$ & From K to eV\tabularnewline
+\hline 
+$EV2K$ & $1/11600.0$ & $K/eV$ & From eV to K\tabularnewline
+\hline 
+$K2J$ & $KB$ & $J/K$ & From K to J\tabularnewline
+\hline 
+$J2K$ & $1/KB$ & $K/J$ & From J to K\tabularnewline
+\hline 
+\end{tabular}
+
+\subsection{Dimensionless Parameters and Naming Rules}
+
+Conductivity
+
+aaa:
+
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline 
+Variable Name & Type & Unit & Size & Dimensionless & Description\tabularnewline
+\hline 
+\hline 
+$nx$ & int &  &  &  & Number of Grids in X Axis\tabularnewline
+\hline 
+$nz$ & int &  &  &  & Number of Grids in Z Axis\tabularnewline
+\hline 
+$eps[]$ & Real & Dimensionless & $nx\times nz$ & $\frac{real\;value}{EPS0}$ & Relative Dieletric Constant\tabularnewline
+\hline 
+$press$ & Real & $Torr$ & 1 &  & Pressure\tabularnewline
+\hline 
+$I\_coil$ & Real & $A$ & 1 &  & Current\tabularnewline
+\hline 
+$ $ & Species &  & 1 &  & \tabularnewline
+\hline 
+$positiveIon[]$ & Array of Species &  & Num of Positive Ions &  & \tabularnewline
+\hline 
+$negativeIon[]$ & Array of Species &  & Num of Negative Ions &  & \tabularnewline
+\hline 
+$neutral[]$ & Array of Species &  & Num of Neutral Species &  & \tabularnewline
+\hline 
+$nx$ & int &  &  &  & Number of Grids in X Axis\tabularnewline
+\hline 
+$nz$ & int &  &  &  & Number of Grids in Z Axis\tabularnewline
+\hline 
+$m\_type$ & string & Dimensionless & $1$ &  & $'EON'$, $'ION'$ or $'NEUT'$\tabularnewline
+\hline 
+$m\_mass$ & Real & Dimensionless & $1$ & $\frac{real\;value}{AMU}$ & Mass in AMU\tabularnewline
+\hline 
+$m\_charge$ & int & Dimensionless & $1$ & $\frac{real\;value}{E\_CHARGE}$ & Charge in Elementary Charge\tabularnewline
+\hline 
+$m\_density[]$ & RealArray1D & $m^{-3}$ & $nx\times nz$ & $\frac{m\_density}{10^{10}}$(optional) & Species Desnity\tabularnewline
+\hline 
+$m\_temperature[]$ & RealArray1D & $eV$ & $nx\times nz$ &  & Species Temperature\tabularnewline
+\hline 
+$m\_fluxx[]$ & RealArray1D & $m^{-2}s^{-1}$ & $nx\times nz$ &  & Species Flux in X Axis\tabularnewline
+\hline 
+$m\_fluxz[]$ & RealArray1D & $m^{-2}s^{-1}$ & $nx\times nz$ &  & Species Flux in Z Axis\tabularnewline
+\hline 
+$m\_divergence[]$ & RealArray1D & $m^{-3}s^{-1}$ & $nx\times nz$ &  & Flux Term\tabularnewline
+\hline 
+$m\_source[]$ & RealArray1D & $m^{-3}s^{-1}$ & $nx\times nz$ &  & Source Term\tabularnewline
+\hline 
+ &  &  &  &  & \tabularnewline
+\hline 
+\end{tabular}
+\end{document}
