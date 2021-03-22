@@ -33,7 +33,7 @@
 \spacing onehalf
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -58,6 +58,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 0.1cm
+\topmargin 0.5cm
+\rightmargin 0.1cm
+\bottommargin 0.5cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -1243,7 +1247,7 @@ Array of Species
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of Positive Ions
+Num of Positive Ions
 \end_layout
 
 \end_inset
@@ -1302,7 +1306,7 @@ Array of Species
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of Negative Ions
+Num of Negative Ions
 \end_layout
 
 \end_inset
@@ -1361,7 +1365,7 @@ Array of Species
 \begin_inset Text
 
 \begin_layout Plain Layout
-Number of Neutral Species
+Num of Neutral Species
 \end_layout
 
 \end_inset
