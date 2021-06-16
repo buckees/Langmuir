@@ -51,14 +51,14 @@ import random
 theta_mc = list()
 num_count = 0
 while num_count < size:
-    rv1 = random.uniform(-pi, pi)
-    rv2 = random.uniform(0.0, 2.0)
-    thres = 1.0 + cos( rv1 )
+    rv1 = random.uniform(-pi/2.0, pi/2.0)
+    rv2 = random.uniform(0.0, 1.0)
+    thres = cos( rv1 )
     if rv2 <= thres:
         theta_mc.append(rv1)
         num_count += 1
 theta_mc = np.asarray(theta_mc)
-theta_mc = theta_mc/2.0
+# theta_mc = theta_mc/2.0
 theta_mc = np.degrees(theta_mc)
 
 ####################################################################
